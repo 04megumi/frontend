@@ -1,0 +1,14 @@
+<html>
+<head><title>404 Not Found</title></head>
+<body>
+<h1>404 Not Found</h1>
+<ul>
+<li>Code: NoSuchKey</li>
+<li>Message: The specified key does not exist.</li>
+<li>Key: pub_22.x/el/7/x86_64/nodejs-22.14.0-1nodesource.x86_64.rpm</li>
+<li>RequestId: TEXFHJCGEQG7PTCH</li>
+<li>HostId: zcFaBjQGoyCDjWsNWv6PrArqoR5J3l+vGeiCvzGHkCSqRq4WvctbZMqZ0Bus0vegyOfI7Ncn++s=</li>
+</ul>
+<hr/>
+</body>
+</html>

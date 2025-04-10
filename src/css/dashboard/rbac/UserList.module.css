@@ -1,0 +1,86 @@
+.userListContainer {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.searchContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  width: 100%; /* 确保搜索框和按钮在同一行 */
+}
+
+.searchInput {
+  flex: 1; /* 搜索框占据剩余空间 */
+  padding: 0.5rem;
+  margin-right: 0.5rem; /* 为按钮留出间距 */
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.addButton {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.addButton:hover {
+  background-color: #0056b3;
+}
+
+.userList {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.users {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.user {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.user:hover {
+  background: #e6f7ff;
+}
+
+.user h5 {
+  margin: 0 0 0.5rem 0;
+  color: #1890ff;
+  font-size: 1.1rem;
+}
+
+.userPermissions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.userPermissions span {
+  background: #e6f7ff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  color: #1890ff;
+}

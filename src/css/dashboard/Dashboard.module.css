@@ -1,0 +1,171 @@
+.dashboard {
+  min-height: 100vh;
+  display: flex;
+  width: 100%;
+  background-color: #f0f2f5;
+}
+
+.navBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  z-index: 100;
+}
+
+.navLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.homeButton {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.3s;
+}
+
+.homeButton:hover {
+  background: #F5F5F5;
+}
+
+.navRight {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.navButton {
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  background: #f5f5f5;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 500;
+}
+
+.navButton:hover {
+  background: #5cdbd3;
+  color: white;
+}
+
+.active {
+  background: #36cfc9;
+  color: white;
+}
+
+.mainContent {
+  flex: 1;
+  margin-top: 80px;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.columnsContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.column {
+  flex: 1;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  padding: 1.5rem;
+  min-width: 200px;
+}
+
+.contentSection {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  min-height: 400px;
+}
+
+.refreshButton {
+  padding: 0.8rem 1.5rem;
+  background: #36cfc9;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.refreshButton:hover {
+  opacity: 0.8;
+}
+
+.deleteZone {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #ffebee;
+  border: 2px dashed #ff4444;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff4444;
+  font-size: 1.1rem;
+  cursor: pointer;
+  z-index: 100;
+}
+
+/* 加载和错误提示样式 */
+.loading, .error {
+  padding: 20px;
+  text-align: center;
+  font-size: 18px;
+}
+
+.loading {
+  color: #666;
+}
+
+.error {
+  color: #ff4444;
+}
+
+.layoutButton, .binButton {
+  padding: 8px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: white;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-right: 6px;
+}
+
+.binButton {
+  margin-left: 6px;
+}
+
+.layoutButton:hover, .binButton:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f5f5f5;
+}
+
+.layoutButton:active, .binButton:active {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transform: translateY(1px);
+}
