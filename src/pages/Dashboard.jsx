@@ -201,10 +201,6 @@ const Dashboard = () => {
             {activeSection === 'rbac' && <div>RBAC Section Content</div>}
             {activeSection === 'monitoring' && <div>Site Monitoring Content</div>}
             {activeSection === 'history' && <div>History Content</div>}
-            {showUserModal}={() => setShowUserModal(true)}
-            {showRoleModal}={() => setShowRoleModal(true)}
-            {showPermissionModal}={() => setShowPermissionModal(true)}
-            {contextMenu}={handleContextMenu}
           </div>
         </div>
         {contextMenu.visible && <ContextMenu x={contextMenu.x} y={contextMenu.y} type={contextMenu.type} id={contextMenu.id} onHide={hideContextMenu} />}
