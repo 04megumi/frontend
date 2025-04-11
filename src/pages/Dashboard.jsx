@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../css/dashboard/Dashboard.module.css';
-import Navbar from '../components/dashboard/navbar/NavBar';
-import Sidebar from '../components/dashboard/sidebar/SideBar';
-import RBACManagement from '../components/dashboard/rbac/RBACManagement';
-import ContextMenu from '../components/dashboard/contextmenu/ContextMenu';
-import AddUserModal from '../components/dashboard/rbac/modals/AddUserModal';
-import AddRoleModal from '../components/dashboard/rbac/modals/AddRoleModal';
-import AddPermissionModal from '../components/dashboard/rbac/modals/AddPermissionModal';
+import Navbar from '../components/dashboard/navbar/Navbar.jsx';
+import Sidebar from '../components/dashboard/sidebar/Sidebar.jsx';
+import RBACManagement from '../components/dashboard/rbac/RBACManagement.jsx';
+import ContextMenu from '../components/dashboard/contextmenu/ContextMenu.jsx';
+import AddUserModal from '../components/dashboard/rbac/modals/AddUserModal.jsx';
+import AddRoleModal from '../components/dashboard/rbac/modals/AddRoleModal.jsx';
+import AddPermissionModal from '../components/dashboard/rbac/modals/AddPermissionModal.jsx';
 import axios from 'axios';
 import * as rbacApi from '../api/rbac';
 
