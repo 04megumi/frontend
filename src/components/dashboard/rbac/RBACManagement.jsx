@@ -5,6 +5,9 @@ import RoleList from './RoleList';
 import RoleDetails from './RoleDetails';
 import PermissionList from './PermissionList';
 import styles from '../../../css/dashboard/Dashboard.module.css';
+import AddUserModal from './modals/AddUserModal';
+import AddRoleModal from './modals/AddRoleModal';
+import AddPermissionModal from './modals/AddPermissionModal';
 
 
 const RBACManagement = (
@@ -24,9 +27,13 @@ const RBACManagement = (
     handleDropRoleOnUser,
     handleRemovePermissionFromRole,
     handleDropPermissionOnRole,
+    activeSection, onShowUserModal, onShowRoleModal, onShowPermissionModal, onContextMenu
   }
 ) => {
 
+    const [showUserModal, setShowUserModal] = useState(false)
+    const [showRoleModal, setShowRoleModal] = useState(false)
+    const [showPermissionModal, setShowPermissionModal] = useState(false)
   // 根据选中角色判断是否为超管角色（假设超管角色名称为 "超管"）
   const selectedRole = roles.find(role => role.id === selectedRoleId);
   const isSuperAdmin = selectedRole && selectedRole.name === '超管';

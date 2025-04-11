@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from '../../../css/dashboard/rbac/UserList.module.css';
 
-const UserList = ({ users, onSelectUser, onAddUser }) => {
+const UserList = ({ users, onSelectUser, onAddUser, onShowUserModal, onContextMenu }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredUsers = users.filter(user =>
@@ -18,11 +18,14 @@ const UserList = ({ users, onSelectUser, onAddUser }) => {
           onChange={(e) => setSearchTerm(e.target.value)}
           className={styles.searchInput}
         />
-        <button
+        {/* <button
           className={styles.addButton}
           onClick={onAddUser}
         >
           +
+        </button> */}
+        <button onClick={onShowUserModal} className="text-blue-600 hover:text-blue-800">
+          <i className="fas fa-plus"></i>
         </button>
       </div>
       <div className={styles.userList} style={{ maxHeight: '400px', overflowY: 'auto' }}>
