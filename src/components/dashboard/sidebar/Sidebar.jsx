@@ -25,17 +25,17 @@ function Sidebar({ collapsed, setActiveSection }) {
         </div>
         {/* 搜索框 */}
         <div className="relative mb-6">
-          <input 
-            type="text" 
-            placeholder="Search..." 
-            className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+          <input
+            type="text"
+            placeholder="Search..."
+            className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <i className="fas fa-search absolute left-3 top-3 text-gray-400"></i>
         </div>
         {/* 菜单 */}
         <div className="flex-1 overflow-y-auto">
           <div className="mb-4">
-            <div 
+            <div
               className="flex justify-between items-center cursor-pointer group"
               onClick={() => { toggleSubmenu('rbac'); handleMenuClick('rbac') }}
             >
@@ -44,14 +44,14 @@ function Sidebar({ collapsed, setActiveSection }) {
             </div>
             {submenu.rbac && (
               <div className="pl-4 mt-2">
-                <a href="#!" className="block py-2 text-gray-600 hover:text-blue-600">User Management</a>
+                <a href="#!" className="block py-2 text-gray-600 hover:text-blue-600" onClick={() => setActiveSection('RBACManagement')}>User Management</a>
                 <a href="#!" className="block py-2 text-gray-600 hover:text-blue-600">Role Management</a>
                 <a href="#!" className="block py-2 text-gray-600 hover:text-blue-600">Permission Management</a>
               </div>
             )}
           </div>
           <div className="mb-4">
-            <div 
+            <div
               className="flex justify-between items-center cursor-pointer group"
               onClick={() => { toggleSubmenu('monitoring'); handleMenuClick('monitoring') }}
             >
@@ -67,7 +67,7 @@ function Sidebar({ collapsed, setActiveSection }) {
             )}
           </div>
           <div className="mb-4">
-            <div 
+            <div
               className="flex justify-between items-center cursor-pointer group"
               onClick={() => { toggleSubmenu('history'); handleMenuClick('history') }}
             >

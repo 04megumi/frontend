@@ -8,6 +8,7 @@ import RoleDetails from '../components/dashboard/rbac/RoleDetails';
 import DeleteZone from '../components/dashboard/rbac/DeleteZone';
 import Navbar from '../components/dashboard/navbar/NavBar';
 import Sidebar from '../components/dashboard/sidebar/SideBar';
+import RBACManagement from '../components/dashboard/rbac/RBACManagement';
 import ContextMenu from '../components/dashboard/contextmenu/ContextMenu';
 import axios from 'axios';
 import * as rbacApi from '../api/rbac';
@@ -26,8 +27,9 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-  const [activeSection, setActiveSection] = useState('rbac')
+  const [activeSection, setActiveSection] = useState(null);
   const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0, type: '', id: null })
+
 
   // 切换侧边栏状态
   const toggleSidebar = () => setSidebarCollapsed(!sidebarCollapsed)
@@ -138,88 +140,26 @@ const Dashboard = () => {
   };
 
   const renderContent = () => {
-    switch (activeTab) {
-      case 'rbac':
-        // 根据选中角色判断是否为超管角色（假设超管角色名称为 "超管"）
-        const selectedRole = roles.find(role => role.id === selectedRoleId);
-        const isSuperAdmin = selectedRole && selectedRole.name === '超管';
-
+    switch (activeSection) {
+      case 'RBACManagement':
         return (
-          <div className={styles.contentSection}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h2>RBAC 管理</h2>
-              <div>
-                <button className={styles.layoutButton} onClick={toggleLayoutMode}>
-                  Layout
-                </button>
-                <button className={styles.binButton} onClick={() => setShowDeleteZone(!showDeleteZone)}>
-                  {showDeleteZone ? 'Bin Off' : 'Bin on'}
-                </button>
-              </div>
-            </div>
-            {layoutMode ? (
-              // 页面1：用户列表、用户详情、角色列表
-              <div className={styles.columnsContainer}>
-                <div className={styles.column}>
-                  <UserList users={users} onSelectUser={setSelectedUserId} />
-                </div>
-                <div className={styles.column}>
-                  <UserDetails
-                    user={users.find(user => user.id === selectedUserId)}
-                    roles={roles}
-                    permissions={permissions}
-                    onRemoveRole={handleRemoveRoleFromUser}
-                    onDropRole={handleDropRoleOnUser}
-                  />
-                </div>
-                <div className={styles.column}>
-                  <RoleList roles={roles} onDropRole={handleDropRoleOnUser} selectedUserId={selectedUserId} isDraggable={true} />
-                </div>
-              </div>
-            ) : (
-              // 页面2：角色列表、角色详情、权限列表
-              <div className={styles.columnsContainer}>
-                <div className={styles.column}>
-                  <RoleList
-                    roles={roles}
-                    onSelectRole={setSelectedRoleId}
-                    isDraggable={false}
-                    selectedRoleId={selectedRoleId} // 传递当前选中角色ID
-                  />
-                </div>
-                <div className={styles.column}>
-                  <RoleDetails
-                    role={selectedRole}
-                    permissions={permissions}
-                    // 如果是超管角色，则不允许删除或拖拽修改权限
-                    onRemovePermission={!isSuperAdmin ? handleRemovePermissionFromRole : undefined}
-                    onDropPermission={!isSuperAdmin ? handleDropPermissionOnRole : undefined}
-                    readOnly={isSuperAdmin}
-                  />
-                </div>
-                <div className={styles.column}>
-                  <PermissionList permissions={permissions} />
-                </div>
-              </div>
-            )}
-            {showDeleteZone && (
-              <div
-                className={styles.deleteZone}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  const data = e.dataTransfer.getData('text/plain');
-                  if (layoutMode) {
-                    handleRemoveRoleFromUser(data);
-                  } else {
-                    handleRemovePermissionFromRole(data);
-                  }
-                }}
-                onDragOver={(e) => e.preventDefault()}
-              >
-                Trash Bin
-              </div>
-            )}
-          </div>
+          <RBACManagement
+            layoutMode={layoutMode}
+            toggleLayoutMode={() => setLayoutMode(!layoutMode)}
+            showDeleteZone={showDeleteZone}
+            setShowDeleteZone={setShowDeleteZone}
+            users={users}
+            roles={roles}
+            permissions={permissions}
+            selectedUserId={selectedUserId}
+            setSelectedUserId={setSelectedUserId}
+            selectedRoleId={selectedRoleId}
+            setSelectedRoleId={setSelectedRoleId}
+            handleRemoveRoleFromUser={handleRemoveRoleFromUser}
+            handleDropRoleOnUser={handleDropRoleOnUser}
+            handleRemovePermissionFromRole={handleRemovePermissionFromRole}
+            handleDropPermissionOnRole={handleDropPermissionOnRole}
+          />
         );
       case 'sites':
         return (
@@ -298,25 +238,26 @@ const Dashboard = () => {
             </button>
           </div>
         </nav> */}
+
         <Sidebar
           collapsed={sidebarCollapsed}
           setActiveSection={setActiveSection}
         />
         <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-0' : 'ml-[280px]'}`}>
           <Navbar toggleSidebar={toggleSidebar} />
-          <main className={styles.mainContent}>{renderContent()}</main>
+          <div className={styles.dashboard}>
+            <main className={styles.mainContent}>
+              {renderContent()}
+            </main>
+          </div>
+          <div className="main-content">
+            {activeSection === 'rbac' && <div>RBAC Section Content</div>}
+            {activeSection === 'monitoring' && <div>Site Monitoring Content</div>}
+            {activeSection === 'history' && <div>History Content</div>}
+          </div>
         </div>
-        
+        {contextMenu.visible && <ContextMenu x={contextMenu.x} y={contextMenu.y} type={contextMenu.type} id={contextMenu.id} onHide={hideContextMenu} />}
       </div>
-
-      {/* 贴进来的 
-      
-
-      
-      {contextMenu.visible && <ContextMenu x={contextMenu.x} y={contextMenu.y} type={contextMenu.type} id={contextMenu.id} onHide={hideContextMenu} />}
-
-      */}
-
 
     </div>
 
