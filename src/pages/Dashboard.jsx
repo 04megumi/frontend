@@ -1,4 +1,4 @@
-import React,{ useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from '../css/dashboard/Dashboard.module.css';
 import UserList from '../components/dashboard/rbac/UserList';
 import RoleList from '../components/dashboard/rbac/RoleList';
@@ -6,6 +6,9 @@ import PermissionList from '../components/dashboard/rbac/PermissionList';
 import UserDetails from '../components/dashboard/rbac/UserDetails';
 import RoleDetails from '../components/dashboard/rbac/RoleDetails';
 import DeleteZone from '../components/dashboard/rbac/DeleteZone';
+import Navbar from '../components/dashboard/navbar/NavBar';
+import Sidebar from '../components/dashboard/sidebar/SideBar';
+import ContextMenu from '../components/dashboard/contextmenu/ContextMenu';
 import axios from 'axios';
 import * as rbacApi from '../api/rbac';
 
@@ -22,6 +25,21 @@ const Dashboard = () => {
   const [showDeleteZone, setShowDeleteZone] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [activeSection, setActiveSection] = useState('rbac')
+  const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0, type: '', id: null })
+
+  // 切换侧边栏状态
+  const toggleSidebar = () => setSidebarCollapsed(!sidebarCollapsed)
+
+  // 显示右键菜单（简单示例，可进一步扩展）
+  const handleContextMenu = (e, type, id) => {
+    e.preventDefault()
+    setContextMenu({ visible: true, x: e.pageX, y: e.pageY, type, id })
+  }
+
+  // 隐藏右键菜单
+  const hideContextMenu = () => setContextMenu({ ...contextMenu, visible: false })
 
 
   // 初始化加载数据，从后端获取用户、角色、权限信息
@@ -46,10 +64,10 @@ const Dashboard = () => {
     };
     loadData();
     */
-   setUsers([]);
-   setRoles([]);
-   setPermissions([]);
-   setLoading(false);
+    setUsers([]);
+    setRoles([]);
+    setPermissions([]);
+    setLoading(false);
   }, []);
 
 
@@ -58,7 +76,7 @@ const Dashboard = () => {
     try {
       await rbacApi.addRoleToUser(userId, roleId);
       setUsers(users.map(user =>
-        user.id === userId 
+        user.id === userId
           ? { ...user, roles: [...user.roles, roleId] }
           : user
       ));
@@ -146,10 +164,10 @@ const Dashboard = () => {
                   <UserList users={users} onSelectUser={setSelectedUserId} />
                 </div>
                 <div className={styles.column}>
-                  <UserDetails 
-                    user={users.find(user => user.id === selectedUserId)} 
-                    roles={roles} 
-                    permissions={permissions} 
+                  <UserDetails
+                    user={users.find(user => user.id === selectedUserId)}
+                    roles={roles}
+                    permissions={permissions}
                     onRemoveRole={handleRemoveRoleFromUser}
                     onDropRole={handleDropRoleOnUser}
                   />
@@ -162,17 +180,17 @@ const Dashboard = () => {
               // 页面2：角色列表、角色详情、权限列表
               <div className={styles.columnsContainer}>
                 <div className={styles.column}>
-                  <RoleList 
-                  roles={roles} 
-                  onSelectRole={setSelectedRoleId} 
-                  isDraggable={false} 
-                  selectedRoleId={selectedRoleId} // 传递当前选中角色ID
+                  <RoleList
+                    roles={roles}
+                    onSelectRole={setSelectedRoleId}
+                    isDraggable={false}
+                    selectedRoleId={selectedRoleId} // 传递当前选中角色ID
                   />
                 </div>
                 <div className={styles.column}>
-                  <RoleDetails 
-                    role={selectedRole} 
-                    permissions={permissions} 
+                  <RoleDetails
+                    role={selectedRole}
+                    permissions={permissions}
                     // 如果是超管角色，则不允许删除或拖拽修改权限
                     onRemovePermission={!isSuperAdmin ? handleRemovePermissionFromRole : undefined}
                     onDropPermission={!isSuperAdmin ? handleDropPermissionOnRole : undefined}
@@ -247,39 +265,61 @@ const Dashboard = () => {
   if (error) return <div className={styles.error}>错误: {error}</div>;
 
   return (
-    <div className={styles.dashboard}>
-      <nav className={styles.navBar}>
-        <div className={styles.navLeft}>
-          <button
-            className={styles.homeButton}
-            onClick={() => setActiveTab('home')}
-          >
-            🏠 首页
-          </button>
+    <div className="flex">
+      <div className={styles.dashboard}>
+
+        {/* <nav className={styles.navBar}>
+           <div className={styles.navLeft}>
+            <button
+              className={styles.homeButton}
+              onClick={() => setActiveTab('home')}
+            >
+              🏠 首页
+            </button>
+          </div> 
+          <div className={styles.navRight}>
+            <button
+              className={`${styles.navButton} ${activeTab === 'rbac' ? styles.active : ''}`}
+              onClick={() => setActiveTab('rbac')}
+            >
+              RBAC管理
+            </button>
+            <button
+              className={`${styles.navButton} ${activeTab === 'sites' ? styles.active : ''}`}
+              onClick={() => setActiveTab('sites')}
+            >
+              站点监控
+            </button>
+            <button
+              className={`${styles.navButton} ${activeTab === 'history' ? styles.active : ''}`}
+              onClick={() => setActiveTab('history')}
+            >
+              历史相关
+            </button>
+          </div>
+        </nav> */}
+        <Sidebar
+          collapsed={sidebarCollapsed}
+          setActiveSection={setActiveSection}
+        />
+        <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-0' : 'ml-[280px]'}`}>
+          <Navbar toggleSidebar={toggleSidebar} />
+          <main className={styles.mainContent}>{renderContent()}</main>
         </div>
-        <div className={styles.navRight}>
-          <button
-            className={`${styles.navButton} ${activeTab === 'rbac' ? styles.active : ''}`}
-            onClick={() => setActiveTab('rbac')}
-          >
-            RBAC管理
-          </button>
-          <button
-            className={`${styles.navButton} ${activeTab === 'sites' ? styles.active : ''}`}
-            onClick={() => setActiveTab('sites')}
-          >
-            站点监控
-          </button>
-          <button
-            className={`${styles.navButton} ${activeTab === 'history' ? styles.active : ''}`}
-            onClick={() => setActiveTab('history')}
-          >
-            历史相关
-          </button>
-        </div>
-      </nav>
-      <main className={styles.mainContent}>{renderContent()}</main>
+        
+      </div>
+
+      {/* 贴进来的 
+      
+
+      
+      {contextMenu.visible && <ContextMenu x={contextMenu.x} y={contextMenu.y} type={contextMenu.type} id={contextMenu.id} onHide={hideContextMenu} />}
+
+      */}
+
+
     </div>
+
   );
 };
 

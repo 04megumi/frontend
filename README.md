@@ -10,14 +10,11 @@ OS: Windows 10
 npm version: 10.9.2
 yarn version: 1.22.22
 node version: v22.14.0
-vite version: 6.2.1
+vite version: 6.2.6
 react 19
 react-dom: ^19.0.0
-axios: ^1.8.3
-tailwindcss: v4.0.17
-
-
-
+axios: ^1.8.4
+tailwindcss: v4.1.3
 
 ## 二 开发组件说明
 
