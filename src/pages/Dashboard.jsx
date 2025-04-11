@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../css/dashboard/Dashboard.module.css';
-import Navbar from '../components/dashboard/navbar/NavBar';
-import Sidebar from '../components/dashboard/sidebar/SideBar';
+import Navbar from '../components/dashboard/navbar/Navbar';
+import Sidebar from '../components/dashboard/sidebar/Sidebar';
 import RBACManagement from '../components/dashboard/rbac/RBACManagement';
 import ContextMenu from '../components/dashboard/contextmenu/ContextMenu';
 import AddUserModal from '../components/dashboard/rbac/modals/AddUserModal';
@@ -201,6 +201,10 @@ const Dashboard = () => {
             {activeSection === 'rbac' && <div>RBAC Section Content</div>}
             {activeSection === 'monitoring' && <div>Site Monitoring Content</div>}
             {activeSection === 'history' && <div>History Content</div>}
+            {showUserModal}={() => setShowUserModal(true)}
+            {showRoleModal}={() => setShowRoleModal(true)}
+            {showPermissionModal}={() => setShowPermissionModal(true)}
+            {contextMenu}={handleContextMenu}
           </div>
         </div>
         {contextMenu.visible && <ContextMenu x={contextMenu.x} y={contextMenu.y} type={contextMenu.type} id={contextMenu.id} onHide={hideContextMenu} />}
