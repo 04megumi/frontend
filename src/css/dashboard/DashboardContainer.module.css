@@ -7,6 +7,7 @@
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  gap: 20px;
 }
 
 .contentHeader {
@@ -84,7 +85,7 @@
 
 .contentBody {
   flex: 1;
-
+  max-height: 100%;
   padding: 8px 4px; /* 保留滚动条空间 */
 }
 
