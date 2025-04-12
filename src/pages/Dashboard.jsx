@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import DashboardContainer from '../components/dashboard/DashboardContainer.jsx';
 import RBACManagement from '../components/dashboard/rbac/RBACManagement.jsx';
 import useRBACManagement from '../hooks/useRBACManagement.js';
+import useSiteMonitor from '../hooks/useSiteMonitor.js';
 import Sidebar from '../components/dashboard/sidebar/Sidebar.jsx';
 import Navbar from '../components/dashboard/navbar/Navbar.jsx';
 import * as rbacApi from '../api/rbac';
 import styles from '../css/dashboard/Dashboard.module.css';
+import SiteMonitor from '../components/dashboard/siteMonitor/SiteMonitor.jsx';
 
 const Dashboard = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -17,6 +19,7 @@ const Dashboard = () => {
   });
 
   const rbac = useRBACManagement();
+  const monitoring = useSiteMonitor();
 
   return (
     <div className={styles.dashboardRoot}>
@@ -46,6 +49,9 @@ const Dashboard = () => {
               onRoleRemove={rbac.handleRoleRemove}
               onPermissionRemove={rbac.handlePermissionRemove}
             />
+          )}
+          {activeSection ==='monitoring' && (
+            <SiteMonitor />
           )}
         </DashboardContainer>
       </div>
