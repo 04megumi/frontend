@@ -1,13 +1,10 @@
-import React from 'react'; 
+import React from 'react';
 import PropTypes from 'prop-types';
 import styles from '../../css/dashboard/DashboardContainer.module.css';
 
-const DashboardContainer = ({ 
-  children, 
+const DashboardContainer = ({
+  children,
   activeSection,
-  onShowUserModal,
-  onShowRoleModal,
-  onShowPermissionModal 
 }) => {
   return (
     <div className={styles.container}>
@@ -17,26 +14,22 @@ const DashboardContainer = ({
           {activeSection === 'monitoring' && '站点监控'}
           {activeSection === 'history' && '历史'}
         </h1>
-        <div className={styles.actions}>
-          <button 
-            className={styles.actionButton}
-            onClick={onShowUserModal}
-          >
-            + 用户
-          </button>
-          <button 
-            className={styles.actionButton}
-            onClick={onShowRoleModal}
-          >
-            + 角色
-          </button>
-          <button 
-            className={styles.actionButton}
-            onClick={onShowPermissionModal}
-          >
-            + 权限
-          </button>
-        </div>
+        {activeSection === 'rbac' && (
+          <div className={styles.controls}>
+            <button
+              className={styles.controlButton}
+              onClick={() => window.dispatchEvent(new CustomEvent('toggleLayout'))}
+            >
+              切换视图
+            </button>
+            <button
+              className={styles.controlButton}
+              onClick={() => window.dispatchEvent(new CustomEvent('toggleDeleteZone'))}
+            >
+              切换删除区
+            </button>
+          </div>
+        )}
       </div>
       <div className={styles.contentBody}>
         {children}

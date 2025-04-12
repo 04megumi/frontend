@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import UserList from './UserList.jsx';
 import RoleList from './RoleList.jsx';
@@ -14,7 +14,10 @@ const RBACManagement = ({
   onRoleAssign,
   onPermissionAssign,
   onRoleRemove,
-  onPermissionRemove
+  onPermissionRemove,
+  onShowUserModal,
+  onShowRoleModal,
+  onShowPermissionModal,
 }) => {
   const [layoutMode, setLayoutMode] = useState(true); // true: 用户视图；false: 角色视图
   const [selectedUser, setSelectedUser] = useState(null);
@@ -23,27 +26,47 @@ const RBACManagement = ({
 
   const handleLayoutToggle = () => setLayoutMode(!layoutMode);
 
+  useEffect(() => {
+    const toggleLayoutHandler = () => setLayoutMode(prev => !prev);
+    const toggleDeleteZoneHandler = () => setShowDeleteZone(prev => !prev);
+
+    window.addEventListener('toggleLayout', toggleLayoutHandler);
+    window.addEventListener('toggleDeleteZone', toggleDeleteZoneHandler);
+
+    return () => {
+      window.removeEventListener('toggleLayout', toggleLayoutHandler);
+      window.removeEventListener('toggleDeleteZone', toggleDeleteZoneHandler);
+    };
+  }, []);
+
   return (
     <div className={styles.rbacContainer}>
-      <div className={styles.controls}>
-        <button 
-          className={styles.controlButton}
-          onClick={handleLayoutToggle}
+      <div className={styles.actions}>
+        <button
+          className={styles.actionButton}
+          onClick={onShowUserModal}
         >
-          {layoutMode ? '切换到角色视图' : '切换到用户视图'}
+          + 用户
         </button>
         <button
-          className={styles.controlButton}
-          onClick={() => setShowDeleteZone(!showDeleteZone)}
+          className={styles.actionButton}
+          onClick={onShowRoleModal}
         >
-          {showDeleteZone ? '隐藏删除区' : '显示删除区'}
+          + 角色
+        </button>
+        <button
+          className={styles.actionButton}
+          onClick={onShowPermissionModal}
+        >
+          + 权限
         </button>
       </div>
+
 
       {layoutMode ? (
         <div className={styles.layout}>
           <div className={styles.column}>
-            <UserList 
+            <UserList
               users={users}
               onSelect={setSelectedUser}
             />
@@ -86,7 +109,7 @@ const RBACManagement = ({
       )}
 
       {showDeleteZone && (
-        <div 
+        <div
           className={styles.deleteZone}
           onDrop={e => {
             const data = JSON.parse(e.dataTransfer.getData('application/json'));
@@ -112,7 +135,10 @@ RBACManagement.propTypes = {
   onRoleAssign: PropTypes.func.isRequired,
   onPermissionAssign: PropTypes.func.isRequired,
   onRoleRemove: PropTypes.func.isRequired,
-  onPermissionRemove: PropTypes.func.isRequired
+  onPermissionRemove: PropTypes.func.isRequired,
+  onShowUserModal: PropTypes.func.isRequired,
+  onShowRoleModal: PropTypes.func.isRequired,
+  onShowPermissionModal: PropTypes.func.isRequired,
 };
 
 export default RBACManagement;
