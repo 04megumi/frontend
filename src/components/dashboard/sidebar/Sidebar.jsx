@@ -105,12 +105,12 @@ function Sidebar({ collapsed, onSectionChange }) {
         <div className="pt-4 border-t border-gray-200">
           <div className="flex items-center">
             <img
-              src="https://randomuser.me/api/portraits/women/44.jpg"
+              src="../../../../public/xiaoba.svg"
               alt="Profile"
               className="w-10 h-10 rounded-full"
             />
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-700">Jane Smith</p>
+              <p className="text-sm font-medium text-gray-700">Mori Lee</p>
               <p className="text-xs text-gray-500">Admin</p>
             </div>
           </div>
