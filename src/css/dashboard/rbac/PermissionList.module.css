@@ -6,12 +6,37 @@
   margin-bottom: 2rem;
 }
 
-.searchInput {
-  width: 100%;
-  padding: 0.5rem;
+.searchContainer {
+  display: flex;
+  align-items: center;
   margin-bottom: 1rem;
+  width: 100%; /* 确保搜索框和按钮在同一行 */
+}
+
+.searchInput {
+  flex: 1; /* 搜索框占据剩余空间 */
+  padding: 0.5rem;
+  margin-right: 0.5rem; /* 为按钮留出间距 */
   border: 1px solid #ddd;
   border-radius: 4px;
+}
+
+.addButton {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.addButton:hover {
+  background-color: #0056b3;
 }
 
 .permissionList {

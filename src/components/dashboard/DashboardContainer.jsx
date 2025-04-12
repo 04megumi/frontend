@@ -20,13 +20,13 @@ const DashboardContainer = ({
               className={styles.controlButton}
               onClick={() => window.dispatchEvent(new CustomEvent('toggleLayout'))}
             >
-              切换视图
+              View
             </button>
             <button
               className={styles.controlButton}
               onClick={() => window.dispatchEvent(new CustomEvent('toggleDeleteZone'))}
             >
-              切换删除区
+              Delete
             </button>
           </div>
         )}

@@ -34,8 +34,8 @@
   display: flex;
   align-items: center;
   padding: 8px 16px;
-  background-color: #3b82f6;
-  color: #ffffff;
+  background-color: transparent;
+  color: #3b82f6;
   border: none;
   border-radius: 6px;
   font-size: 0.875rem;
@@ -47,7 +47,7 @@
 }
 
 .actionButton:hover {
-  background-color: #2563eb;
+  color: #2563eb;
 }
 
 .actionButton:active {
@@ -84,7 +84,7 @@
 
 .contentBody {
   flex: 1;
-  overflow-y: auto;
+
   padding: 8px 4px; /* 保留滚动条空间 */
 }
 

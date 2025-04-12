@@ -18,15 +18,9 @@ const UserList = ({ users, onSelectUser, onAddUser, onShowUserModal, onContextMe
           onChange={(e) => setSearchTerm(e.target.value)}
           className={styles.searchInput}
         />
-        {/* <button
-          className={styles.addButton}
-          onClick={onAddUser}
-        >
-          +
-        </button> */}
-        <button onClick={onShowUserModal} className="text-blue-600 hover:text-blue-800">
+        {/* <button onClick={onShowUserModal} className="text-blue-600 hover:text-blue-800">
           <i className="fas fa-plus"></i>
-        </button>
+        </button> */}
       </div>
       <div className={styles.userList} style={{ maxHeight: '400px', overflowY: 'auto' }}>
         <h4>Users</h4>

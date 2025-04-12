@@ -7,18 +7,20 @@
 
 .actions {
   display: flex;
+  justify-content: flex-end;
   gap: 12px;
 }
 
 .actionButton {
   display: flex;
+  justify-content: flex-end;
   align-items: center;
   padding: 8px 16px;
-  background-color: #3b82f6;
-  color: #ffffff;
+  background-color: transparent;
+  color: #3b82f6;
   border: none;
   border-radius: 6px;
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
   transition: 
@@ -27,7 +29,8 @@
 }
 
 .actionButton:hover {
-  background-color: #2563eb;
+  color: #2563eb;
+  transform: scale(1.05);
 }
 
 .actionButton:active {
