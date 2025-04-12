@@ -11,7 +11,7 @@ const DashboardContainer = ({
       <div className={styles.contentHeader}>
         <h1 className={styles.title}>
           {activeSection === 'rbac' && 'RBAC 管理'}
-          {activeSection === 'monitoring' && '站点监控'}
+          {activeSection === 'monitoring' && 'Site Monitoring'}
           {activeSection === 'history' && '历史'}
         </h1>
         {activeSection === 'rbac' && (

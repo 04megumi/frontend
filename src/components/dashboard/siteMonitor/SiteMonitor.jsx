@@ -7,7 +7,7 @@ function SiteMonitor({ }) {
 
   return (
     //Site Monitor Content
-    <div id="monitor-content" className="dashboard-content bg-white rounded-lg shadow p-6">
+    <div id="monitor-content" className="dashboard-content bg-white rounded-lg mt-4"> 
       <h1 className="text-2xl font-bold text-gray-800 mb-6">站点监控</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
@@ -89,6 +89,84 @@ function SiteMonitor({ }) {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      {/* Traffic Overview */}
+      <div class="bg-white p-6 rounded-lg border border-gray-200 mb-6">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-semibold">流量概览</h2>
+          <div class="flex space-x-2">
+            <button class="px-3 py-1 bg-blue-100 text-blue-700 rounded text-sm">今天</button>
+            <button class="px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm">本周</button>
+            <button class="px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm">本月</button>
+          </div>
+        </div>
+        <div class="h-64">
+          {/* Placeholder for chart */}
+          <div class="flex items-center justify-center h-full bg-gray-100 rounded">
+            <p class="text-gray-500">流量图表</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-4 gap-4 mt-4">
+          <div class="text-center">
+            <p class="text-sm text-gray-500">总访问量</p>
+            <p class="font-semibold">24,568</p>
+          </div>
+          <div class="text-center">
+            <p class="text-sm text-gray-500">独立访客</p>
+            <p class="font-semibold">8,742</p>
+          </div>
+          <div class="text-center">
+            <p class="text-sm text-gray-500">平均停留</p>
+            <p class="font-semibold">2分45秒</p>
+          </div>
+          <div class="text-center">
+            <p class="text-sm text-gray-500">跳出率</p>
+            <p class="font-semibold">32%</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Activity */}
+      <div class="bg-white p-6 rounded-lg border border-gray-200">
+        <h2 class="text-lg font-semibold mb-4">最近活动</h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">时间</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">事件</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">详情</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2分钟前</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">登录</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">MoriLee@example.com</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">成功登录</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5分钟前</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">用户更新</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">wtz66@example.com</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">角色变更为编辑者</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">12分钟前</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">设置更新</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">04megumi@example.com</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">更新SMTP设置</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">30分钟前</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">备份</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">system</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">每日数据库备份</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
