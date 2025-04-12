@@ -16,6 +16,8 @@ react-dom: ^19.0.0
 axios: ^1.8.4
 tailwindcss: v4.1.3
 
+prop-types: 15.8.1
+
 ## 二 开发组件说明
 
 SpringBoot: 3.4.3

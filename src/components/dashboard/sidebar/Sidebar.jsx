@@ -1,24 +1,28 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
-function Sidebar({ collapsed, setActiveSection }) {
+function Sidebar({ collapsed, onSectionChange }) {
   // 控制各个子菜单的显示状态
   const [submenu, setSubmenu] = useState({
     rbac: false,
     monitoring: false,
     history: false,
-  })
+  });
 
   const toggleSubmenu = (menu) => {
-    setSubmenu(prev => ({ ...prev, [menu]: !prev[menu] }))
-  }
+    setSubmenu(prev => ({ ...prev, [menu]: !prev[menu] }));
+  };
 
-  // 示例：点击菜单项后切换主内容显示
+  // 点击菜单项后调用传入的回调 onSectionChange
   const handleMenuClick = (section) => {
-    setActiveSection(section)
-  }
+    onSectionChange(section);
+  };
 
   return (
-    <div className={`sidebar fixed h-full bg-white shadow-md transition-transform duration-300 ${collapsed ? '-translate-x-[280px]' : 'translate-x-0'}`}>
+    <div
+      className={`sidebar fixed left-0 top-0 bottom-0 w-[280px] bg-white shadow-md transition-transform duration-300 ${
+        collapsed ? '-translate-x-full' : 'translate-x-0'
+      }`}
+    >
       <div className="p-4 h-full flex flex-col">
         <div className="mb-6">
           <h1 className="text-xl font-bold text-gray-800">Admin Dashboard</h1>
@@ -34,26 +38,39 @@ function Sidebar({ collapsed, setActiveSection }) {
         </div>
         {/* 菜单 */}
         <div className="flex-1 overflow-y-auto">
+          {/* RBAC 菜单 */}
           <div className="mb-4">
             <div
               className="flex justify-between items-center cursor-pointer group"
-              onClick={() => { toggleSubmenu('rbac'); handleMenuClick('rbac') }}
+              onClick={() => { toggleSubmenu('rbac'); handleMenuClick('rbac'); }}
             >
               <span className="font-medium text-gray-700 group-hover:text-blue-600">RBAC</span>
               <i className={`fas ${submenu.rbac ? 'fa-minus' : 'fa-plus'} text-gray-400 group-hover:text-blue-600`}></i>
             </div>
             {submenu.rbac && (
               <div className="pl-4 mt-2">
-                <a href="#!" className="block py-2 text-gray-600 hover:text-blue-600" onClick={() => setActiveSection('RBACManagement')}>User Management</a>
-                <a href="#!" className="block py-2 text-gray-600 hover:text-blue-600">Role Management</a>
-                <a href="#!" className="block py-2 text-gray-600 hover:text-blue-600">Permission Management</a>
+                {/* 当点击User Management时，将 activeSection 设为 'rbac'，Dashboard 中则渲染 RBACManagement */}
+                <a
+                  href="#!"
+                  className="block py-2 text-gray-600 hover:text-blue-600"
+                  onClick={() => onSectionChange('rbac')}
+                >
+                  User Management
+                </a>
+                <a href="#!" className="block py-2 text-gray-600 hover:text-blue-600">
+                  Role Management
+                </a>
+                <a href="#!" className="block py-2 text-gray-600 hover:text-blue-600">
+                  Permission Management
+                </a>
               </div>
             )}
           </div>
+          {/* Site Monitoring 菜单 */}
           <div className="mb-4">
             <div
               className="flex justify-between items-center cursor-pointer group"
-              onClick={() => { toggleSubmenu('monitoring'); handleMenuClick('monitoring') }}
+              onClick={() => { toggleSubmenu('monitoring'); handleMenuClick('monitoring'); }}
             >
               <span className="font-medium text-gray-700 group-hover:text-blue-600">Site Monitoring</span>
               <i className={`fas ${submenu.monitoring ? 'fa-minus' : 'fa-plus'} text-gray-400 group-hover:text-blue-600`}></i>
@@ -66,10 +83,11 @@ function Sidebar({ collapsed, setActiveSection }) {
               </div>
             )}
           </div>
+          {/* History 菜单 */}
           <div className="mb-4">
             <div
               className="flex justify-between items-center cursor-pointer group"
-              onClick={() => { toggleSubmenu('history'); handleMenuClick('history') }}
+              onClick={() => { toggleSubmenu('history'); handleMenuClick('history'); }}
             >
               <span className="font-medium text-gray-700 group-hover:text-blue-600">History</span>
               <i className={`fas ${submenu.history ? 'fa-minus' : 'fa-plus'} text-gray-400 group-hover:text-blue-600`}></i>
@@ -86,7 +104,11 @@ function Sidebar({ collapsed, setActiveSection }) {
         {/* 用户信息 */}
         <div className="pt-4 border-t border-gray-200">
           <div className="flex items-center">
-            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Profile" className="w-10 h-10 rounded-full" />
+            <img
+              src="https://randomuser.me/api/portraits/women/44.jpg"
+              alt="Profile"
+              className="w-10 h-10 rounded-full"
+            />
             <div className="ml-3">
               <p className="text-sm font-medium text-gray-700">Jane Smith</p>
               <p className="text-xs text-gray-500">Admin</p>
@@ -95,7 +117,7 @@ function Sidebar({ collapsed, setActiveSection }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Sidebar
+export default Sidebar;

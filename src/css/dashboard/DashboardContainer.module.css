@@ -1,0 +1,101 @@
+/* src/css/dashboard/DashboardContainer.module.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 64px); /* 减去导航栏高度 */
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.contentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e4e7ec;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: #3b82f6;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 
+      background-color 0.2s ease,
+      transform 0.1s ease;
+}
+
+.actionButton:hover {
+  background-color: #2563eb;
+}
+
+.actionButton:active {
+  transform: scale(0.98);
+}
+
+.contentBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 4px; /* 保留滚动条空间 */
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .container {
+      padding: 16px;
+      height: calc(100vh - 56px);
+  }
+
+  .contentHeader {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+  }
+
+  .title {
+      font-size: 1.25rem;
+  }
+
+  .actions {
+      width: 100%;
+      justify-content: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .actionButton {
+      padding: 6px 12px;
+      font-size: 0.75rem;
+  }
+
+  .actionButton span {
+      display: none;
+  }
+
+  .actionButton::before {
+      content: "+";
+      font-size: 1rem;
+  }
+}

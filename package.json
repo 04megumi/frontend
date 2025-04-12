@@ -23,6 +23,7 @@
     "axios": "^1.8.3",
     "class-variance-authority": "^0.7.1",
     "lucide-react": "^0.485.0",
+    "prop-types": "^15.8.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^6.30.0"
