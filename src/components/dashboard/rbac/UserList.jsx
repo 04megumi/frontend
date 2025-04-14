@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import styles from '../../../css/dashboard/rbac/UserList.module.css';
 
-const UserList = ({ users, onSelectUser, onAddUser, onShowUserModal, onContextMenu }) => {
+const UserList = ({ 
+  users, 
+  onSelectUser, 
+  onAddUser, 
+  onShowUserModal, 
+  onContextMenu 
+}) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredUsers = users.filter(user =>
@@ -29,7 +35,7 @@ const UserList = ({ users, onSelectUser, onAddUser, onShowUserModal, onContextMe
             <div
               key={user.id}
               className={styles.user}
-              onClick={() => onSelectUser && onSelectUser(user.id)}
+              onClick={() => onSelectUser && onSelectUser(user)}
             >
               {user.name}
             </div>

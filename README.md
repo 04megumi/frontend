@@ -18,6 +18,8 @@ tailwindcss: v4.1.3
 
 prop-types: 15.8.1
 
+antd: npm install antd --save
+
 ## 二 开发组件说明
 
 SpringBoot: 3.4.3

@@ -68,13 +68,14 @@ const RBACManagement = ({
           <div className={styles.column}>
             <UserList
               users={users}
-              onSelect={setSelectedUser}
+              onSelectUser={setSelectedUser}
             />
           </div>
           <div className={styles.column}>
             <UserDetails
               user={selectedUser}
               roles={roles}
+              permissions={permissions}
               onAssignRole={onRoleAssign}
               onRemoveRole={onRoleRemove}
             />
