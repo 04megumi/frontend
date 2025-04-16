@@ -9,19 +9,26 @@ const useRBACManagement = () => {
   useEffect(() => {
     // 模拟后端数据
     const dummyUsers = [
-      { id: 'u1', name: 'Alice', roles: ['r1'], permissions: ['p1', 'p2'] },
-      { id: 'u2', name: 'Bob', roles: ['r2'], permissions: ['p3'] },
-      { id: 'u3', name: 'Charlie', roles: [], permissions: [] }
+      { id: 'u1', name: 'Mori Lee', roles: ['r1'] },
+      { id: 'u2', name: 'Seraphim Wei', roles: ['r2'] },
+      { id: 'u3', name: 'wtz666', roles: ['r4'] },
+      { id: 'u4', name: 'syz', roles: ['r3'] }
     ];
     const dummyRoles = [
-      { id: 'r1', name: '管理员' },
-      { id: 'r2', name: '编辑' },
-      { id: 'r3', name: '访客' }
+      { id: 'r1', name: '超管', permissions: ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8'] },
+      { id: 'r2', name: '管理员', permissions: ['p1', 'p2', 'p3', 'p4'] },
+      { id: 'r3', name: '历史管理员', permissions: ['p5', 'p6', 'p7'] },
+      { id: 'r4', name: '访客', permissions: ['p8'] },
     ];
     const dummyPermissions = [
-      { id: 'p1', name: '读' },
-      { id: 'p2', name: '写' },
-      { id: 'p3', name: '删' }
+      { id: 'p1', name: 'rbac.login' },
+      { id: 'p2', name: 'rbac.modifyPermission' },
+      { id: 'p3', name: 'rbac.modifyRole' },
+      { id: 'p4', name: 'rbac.modifyUser' },
+      { id: 'p5', name: 'history.file' },
+      { id: 'p6', name: 'history.login' },
+      { id: 'p7', name: 'history.train' },
+      { id: 'p8', name: 'visit' },
     ];
 
     // 模拟网络延迟
@@ -53,71 +60,12 @@ const useRBACManagement = () => {
     );
   };
 
-  {/* const [data, setData] = useState({
-    users: [],
-    roles: [],
-    permissions: [],
-    loading: true,
-    error: null
-  });
-
-  const fetchData = async () => {
-    try {
-      const [usersRes, rolesRes, permissionsRes] = await Promise.all([
-        axios.get('/api/users'),
-        axios.get('/api/roles'),
-        axios.get('/api/permissions')
-      ]);
-      
-      setData({
-        users: usersRes.data,
-        roles: rolesRes.data,
-        permissions: permissionsRes.data,
-        loading: false,
-        error: null
-      });
-    } catch (error) {
-      setData(prev => ({
-        ...prev,
-        loading: false,
-        error: error.message
-      }));
-    }
-  };
-
-  const handleRoleAssign = async (userId, roleId) => {
-    try {
-      await axios.post(`/api/users/${userId}/roles`, { roleId });
-      setData(prev => ({
-        ...prev,
-        users: prev.users.map(user =>
-          user.id === userId 
-            ? { ...user, roles: [...user.roles, roleId] }
-            : user
-        )
-      }));
-    } catch (error) {
-      console.error('角色分配失败:', error);
-    }
-  };
-
-  // 其他操作方法类似实现...
-
-  useEffect(() => {
-    fetchData();
-  }, []); */}
-
   return {
     users,
     roles,
     permissions,
     handleRoleAssign,
     handleRoleRemove,
-    //...data,
-    //handleRoleAssign,
-    //handlePermissionAssign: async (roleId, permissionId) => {/* 实现 */},
-    //handleRoleRemove: async (userId, roleId) => {/* 实现 */},
-    //handlePermissionRemove: async (roleId, permissionId) => {/* 实现 */}
   };
 };
 

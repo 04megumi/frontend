@@ -42,9 +42,9 @@
 .userList {
   background: white;
   border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-  padding: 1.5rem;
+  padding: 0.5rem;
   margin-bottom: 2rem;
+  margin-left: 0px;
 }
 
 .users {

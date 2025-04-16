@@ -44,12 +44,12 @@
     color: #666;
   }
 
-  .dropTarget {
+  /* .dropTarget {
     border: 2px dashed #ddd;
     padding: 20px;
     margin-top: 10px;
     transition: background 0.3s;
-  }
+  } */
   
   .dropTarget:hover {
     background: #f5f5f5;

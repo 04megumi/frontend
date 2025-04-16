@@ -78,12 +78,18 @@ const RBACManagement = ({
               permissions={permissions}
               onAssignRole={onRoleAssign}
               onRemoveRole={onRoleRemove}
+              onDropRole={onRoleAssign}
             />
           </div>
           <div className={styles.column}>
             <RoleList
               roles={roles}
               onDrop={roleId => onRoleAssign(selectedUser?.id, roleId)}
+              onSelectRole={() => {}} 
+              isDraggable={true} 
+              onAddUser={null} 
+              onShowRoleModal={onShowRoleModal} 
+              onContextMenu={() => {}}
             />
           </div>
         </div>

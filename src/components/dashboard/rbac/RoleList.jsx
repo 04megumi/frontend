@@ -1,33 +1,39 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styles from '../../../css/dashboard/rbac/RoleList.module.css';
+import useDragDrop from '../../../hooks/useDragDrop';
 
 const RoleList = ({
   roles,
   onDragStart,
   onSelectRole,
   onDropRole,
-  selectedUserId,
+  //selectedUserId,
   isDraggable,
-  onAddUser,
-  isLayoutMode,
-  onShowRoleModal,
+  //onAddUser,
+  //isLayoutMode,
+  //onShowRoleModal,
   onContextMenu
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const { handleDragStart, handleDragOver } = useDragDrop(); // 从 Hook 中获取处理函数
+
 
   const filteredRoles = roles.filter(role =>
     role.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // 拖拽开始时的回调
-  const handleDragStart = (e, role) => {
-    // 设置拖拽数据：在拖拽时需要传递数据
-    e.dataTransfer.setData('roleId', role.id);
-    if (onDragStart) onDragStart(role);  // 可选择传递额外的回调
+  // 统一封装角色拖拽开始事件
+  const handleRoleDragStart = (e, role) => {
+    console.log('拖拽开始：', role);
+    // 使用 hook 封装的 handleDragStart，传递数据对象
+    handleDragStart(e, { type: 'role', roleId: role.id });
+    if (onDragStart) {
+      onDragStart(role); // 额外的回调（如果需要）
+    }
   };
 
-  const handleRightClick = (e, roleId) => {
+  const handleRoleRightClick = (e, roleId) => {
     e.preventDefault(); // 防止默认的右键菜单显示
     if (onContextMenu) {
       onContextMenu(roleId); // 调用右键菜单的回调
@@ -45,9 +51,9 @@ const RoleList = ({
           onChange={(e) => setSearchTerm(e.target.value)}
           className={styles.searchInput}
         />
+      </div>
 
       {/* 角色列表 */}
-      </div>
       <div className={styles.roleList} style={{ maxHeight: '400px', overflowY: 'auto' }}>
         <h4>Roles</h4>
         <div className={styles.roles}>
@@ -56,9 +62,9 @@ const RoleList = ({
               key={role.id}
               className={styles.role}
               draggable={isDraggable}
-              onDragStart={(e) => handleDragStart(e, role)}  // 在拖拽开始时设置数据
+              onDragStart={(e) => handleRoleDragStart(e, role)}  // 在拖拽开始时设置数据
               onClick={() => onSelectRole && onSelectRole(role.id)}
-              onContextMenu={(e) => handleRightClick(e, role.id)}
+              onContextMenu={(e) => handleRoleRightClick(e, role.id)}
             >
               {role.name}
             </div>
