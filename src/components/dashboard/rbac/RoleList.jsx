@@ -31,6 +31,7 @@ const RoleList = ({
     if (onDragStart) {
       onDragStart(role); // 额外的回调（如果需要）
     }
+    console.log('RoleList 拖拽开始，数据：', role.id);
   };
 
   const handleRoleRightClick = (e, roleId) => {

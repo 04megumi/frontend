@@ -117,6 +117,7 @@ const UserDetails = ({ user, roles, permissions, onRemoveRole, onDropRole }) => 
       <Tree
         treeData={treeData}
         draggable
+        blockNode                  // ← 整行均为可放置区域
         titleRender={titleRender}
         onDrop={handleTreeDrop}
         onDragOver={(e) => e.preventDefault()}
