@@ -55,3 +55,8 @@ export const deleteUser = async (userNameDTO) => {
 export const modifyUser = async (userLogInDTO) => {
   return await sendRequest('/admin/users/modify', 'post', userLogInDTO);
 };
+
+// 获取全部
+export const loadAllUserNames = async () => {
+  return await sendRequest('/admin/users/loadAll', 'get');
+};

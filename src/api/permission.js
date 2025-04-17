@@ -35,3 +35,8 @@ export const deletePermission = async (idDTO) => {
 export const loadPermission = async (idDTO) => {
   return await sendRequest('/api/v1/admin/permissions/load', 'post', idDTO);
 };
+
+// 获取全部
+export const loadAllPermissionIds = async () => {
+  return await sendRequest('/admin/permissions/loadAll', 'get');
+};
