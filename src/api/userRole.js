@@ -8,10 +8,10 @@ const sendRequest = async (url, method = 'post', data = null) => {
     if (response.status === 200) {
       return { success: true, data: response.data };  // 请求成功，返回数据
     } else if (response.status === 401) {
-      // 处理 401 Unauthorized 错误
       return { success: false, message: '未授权' };
+    } else if (response.status === 404) {
+      return { success: false, message: '请求的资源未找到' };
     } else {
-      // 处理其他状态码错误
       return { success: false, message: '发生未知错误' };
     }
 
