@@ -5,7 +5,7 @@ import useRBACManagement from '../hooks/useRBACManagement.js';
 import useSiteMonitor from '../hooks/useSiteMonitor.js';
 import Sidebar from '../components/dashboard/sidebar/Sidebar.jsx';
 import Navbar from '../components/dashboard/navbar/Navbar.jsx';
-import * as rbacApi from '../api/rbac';
+import * as rbacApi from '../api/user.js';
 import styles from '../css/dashboard/Dashboard.module.css';
 import SiteMonitor from '../components/dashboard/siteMonitor/SiteMonitor.jsx';
 
