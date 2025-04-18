@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 
 function AddPermissionModal({ onClose }) {
-  const [permissionname, setPermissionname] = useState('')
+  const [permissionId, setPermissionId] = useState('')
+  const [permissionName, setPermissionName] = useState('')
   const [description, setDescription] = useState('')
 
   const handleAddPermission = () => {
-    if(permissionname && description) {
+    if(permissionName && description) {
       alert(`Added permission: ${permissionname}, ${description}`)
       onClose()
       // 重置表单逻辑...
@@ -25,11 +26,20 @@ function AddPermissionModal({ onClose }) {
         </div>
         <form className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Permissionname</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Id</label>
+              <input 
+                type="text" 
+                value={permissionId} 
+                onChange={(e)=> setPermissionId(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" 
+              />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
             <input 
               type="text" 
-              value={permissionname} 
-              onChange={(e)=> setPermissionname(e.target.value)}
+              value={permissionName} 
+              onChange={(e)=> setPermissionName(e.target.value)}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" 
             />
           </div>

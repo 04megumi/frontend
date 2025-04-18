@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 
 function AddRoleModal({ onClose }) {
-  const [rolename, setRolename] = useState('')
+  const [roleId, setRoleId] = useState('')
+  const [roleName, setRoleName] = useState('')
   const [description, setDescription] = useState('')
 
   const handleAddRole = () => {
-    if(rolename && description) {
-      alert(`Added role: ${rolename}, ${description}`)
+    if(roleName && description) {
+      alert(`Added role: ${roleName}, ${description}`)
       onClose()
       // 重置表单逻辑...
     } else {
@@ -25,11 +26,20 @@ function AddRoleModal({ onClose }) {
         </div>
         <form className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Rolename</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Id</label>
+              <input 
+                type="text" 
+                value={roleId} 
+                onChange={(e)=> setRoleId(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" 
+              />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
             <input 
               type="text" 
-              value={rolename} 
-              onChange={(e)=> setRolename(e.target.value)}
+              value={roleName} 
+              onChange={(e)=> setRoleName(e.target.value)}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" 
             />
           </div>

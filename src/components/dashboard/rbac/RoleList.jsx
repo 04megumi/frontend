@@ -64,9 +64,6 @@ const RoleList = ({
           onChange={(e) => setSearchTerm(e.target.value)}
           className={styles.searchInput}
         />
-        <button onClick={onShowRoleModal} className="text-blue-600 hover:text-blue-800">
-          <i className="fas fa-plus"></i>
-        </button>
       </div>
 
       {/* 角色列表 */}
