@@ -18,9 +18,6 @@ const PermissionList = ({ permissions, onShowPermissionModal, onContextMenu }) =
           onChange={(e) => setSearchTerm(e.target.value)}
           className={styles.searchInput}
         />
-        {/* <button onClick={onShowPermissionModal} className="text-blue-600 hover:text-blue-800">
-          <i className="fas fa-plus"></i>
-        </button> */}
       </div>
       <div className={styles.permissionList} style={{ maxHeight: '400px', overflowY: 'auto' }}>
         <h4>Permissions</h4>
@@ -33,7 +30,7 @@ const PermissionList = ({ permissions, onShowPermissionModal, onContextMenu }) =
               onDragStart={(e) => {
                 e.dataTransfer.setData('text/plain', permission.id);
               }}
-
+              onContextMenu={(event) => handleContextMenu(event, user)}
             >
               {permission.name}
             </div>

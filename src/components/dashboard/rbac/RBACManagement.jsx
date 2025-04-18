@@ -22,6 +22,7 @@ const RBACManagement = ({
   onShowUserModal,
   onShowRoleModal,
   onShowPermissionModal,
+  onUserContextMenu,
 }) => {
   const [layoutMode, setLayoutMode] = useState(true); // true: 用户视图；false: 角色视图
   const [selectedUser, setSelectedUser] = useState(null);
@@ -75,6 +76,7 @@ const RBACManagement = ({
             <UserList
               users={users}
               onSelectUser={setSelectedUser}
+              onContextMenu={onUserContextMenu}
             />
           </div>
           <div className={styles.column}>
@@ -96,7 +98,7 @@ const RBACManagement = ({
               }}
               onSelectRole={() => { }}
               isDraggable={true}
-              onContextMenu={() => { }}
+              onContextMenu={onUserContextMenu}
             />
           </div>
         </div>
@@ -106,6 +108,7 @@ const RBACManagement = ({
             <RoleList
               roles={roles}
               onSelect={setSelectedRole}
+              onContextMenu={onUserContextMenu}
             />
           </div>
           <div className={styles.column}>
@@ -117,7 +120,9 @@ const RBACManagement = ({
             />
           </div>
           <div className={styles.column}>
-            <PermissionList permissions={permissions} />
+            <PermissionList permissions={permissions} 
+            onContextMenu={onUserContextMenu}
+            />
           </div>
         </div>
       )}
@@ -177,6 +182,7 @@ RBACManagement.propTypes = {
   onShowUserModal: PropTypes.func.isRequired,
   onShowRoleModal: PropTypes.func.isRequired,
   onShowPermissionModal: PropTypes.func.isRequired,
+  onUserContextMenu: PropTypes.func.isRequired,
 };
 
 export default RBACManagement;

@@ -1,31 +1,33 @@
-import React from 'react'
+import React from 'react';
+import styles from './ContextMenu.module.css';
 
-function ContextMenu({ x, y, type, id, onHide }) {
+const ContextMenu = ({ onClose, onContextMenu, contextMenuPosition }) => {
   const handleEdit = () => {
-    alert(`Editing ${type} with ID ${id}`)
-    onHide()
-  }
+    onContextMenu('edit');
+    onClose();
+  };
+
   const handleDelete = () => {
-    if(window.confirm(`Are you sure you want to delete this ${type}?`)) {
-      alert(`${type} with ID ${id} deleted`)
+    if (window.confirm(`Are you sure you want to delete this user?`)) {
+      onContextMenu('delete');
     }
-    onHide()
-  }
+    onClose();
+  };
 
   return (
     <div 
-      className="context-menu fixed bg-white shadow-md rounded-lg z-50" 
-      style={{ top: y, left: x }}
-      onMouseLeave={onHide}
+      className={styles.contextMenu}
+      style={{ top: contextMenuPosition.y, left: contextMenuPosition.x }}
+      onMouseLeave={onClose}
     >
-      <div className="context-menu-item px-4 py-2 cursor-pointer hover:bg-gray-100" onClick={handleEdit}>
-        <i className="fas fa-edit mr-2"></i> Edit
+      <div className={styles.contextMenuItem} onClick={handleEdit}>
+        <i className="fas fa-edit mr-2"></i> 编辑
       </div>
-      <div className="context-menu-item px-4 py-2 cursor-pointer hover:bg-gray-100" onClick={handleDelete}>
-        <i className="fas fa-trash mr-2"></i> Delete
+      <div className={styles.contextMenuItem} onClick={handleDelete}>
+        <i className="fas fa-trash mr-2"></i> 删除
       </div>
     </div>
-  )
+  );
 }
 
-export default ContextMenu
+export default ContextMenu;

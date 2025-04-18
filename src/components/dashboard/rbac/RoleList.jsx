@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import ContextMenu from '../contextMenu/ContextMenu.jsx';
 import useDragDrop from '../../../hooks/useDragDrop';
 import styles from '../../../css/dashboard/rbac/RoleList.module.css';
 
@@ -8,7 +9,7 @@ const RoleList = ({
   onDragStart,
   onSelectRole,
   onDropRole,
-  selectedUserId, // ✅ 补上注释
+  selectedUserId,
   isDraggable,
   onAddUser,
   isLayoutMode,
@@ -16,7 +17,11 @@ const RoleList = ({
   onContextMenu
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const { handleDragStart } = useDragDrop(); // ✅ 只需 handleDragStart
+  const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
+  const [showContextMenu, setShowContextMenu] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(null);
+
+  const { handleDragStart } = useDragDrop();
 
   const filteredRoles = roles.filter(role =>
     role.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -33,11 +38,19 @@ const RoleList = ({
     console.log('RoleList 拖拽开始，数据：', role.id);
   };
 
-  const handleRoleRightClick = (e, roleId) => {
-    e.preventDefault(); // 防止默认的右键菜单显示
-    if (onContextMenu) {
-      onContextMenu(roleId); // 调用右键菜单的回调
-    }
+  const handleContextMenu = (event, role) => {
+    event.preventDefault(); // 阻止默认的右键菜单
+    setContextMenuPosition({ x: event.clientX, y: event.clientY });
+    setSelectedRole(role); // 设置选中的角色
+    setShowContextMenu(true);
+  };
+
+  const handleCloseContextMenu = () => {
+    setShowContextMenu(false);
+  };
+
+  const handleContextMenuAction = (action) => {
+    onContextMenu(action, selectedRole);
   };
 
   return (
@@ -51,6 +64,9 @@ const RoleList = ({
           onChange={(e) => setSearchTerm(e.target.value)}
           className={styles.searchInput}
         />
+        <button onClick={onShowRoleModal} className="text-blue-600 hover:text-blue-800">
+          <i className="fas fa-plus"></i>
+        </button>
       </div>
 
       {/* 角色列表 */}
@@ -64,13 +80,22 @@ const RoleList = ({
               draggable={isDraggable}
               onDragStart={(e) => handleRoleDragStart(e, role)} // ✅ 使用封装逻辑
               onClick={() => onSelectRole && onSelectRole(role.id)}
-              onContextMenu={(e) => handleRoleRightClick(e, role.id)}
+              onContextMenu={(event) => handleContextMenu(event, role)} // ✅ 使用正确的变量
             >
               {role.name}
             </div>
           ))}
         </div>
       </div>
+
+      {/* 渲染 ContextMenu */}
+      {showContextMenu && (
+        <ContextMenu
+          onClose={handleCloseContextMenu}
+          onContextMenu={handleContextMenuAction}
+          contextMenuPosition={contextMenuPosition} // 传递 contextMenuPosition
+        />
+      )}
     </div>
   );
 };
