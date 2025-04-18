@@ -21,13 +21,17 @@ const useDragDrop = () => {
    */
   const handleDrop = useCallback((e) => {
     e.preventDefault();
+    console.log('原生事件对象:', e); // 调试日志
     try {
       const dataStr = e.dataTransfer.getData('application/json');
+      console.log('原始拖拽数据字符串:', dataStr); // 调试日志
       if (dataStr) {
-        return JSON.parse(dataStr);
+        const data = JSON.parse(dataStr);
+        console.log('handleDrop 解析成功:', data);
+        return data; // 返回解析后的数据对象
       }
     } catch (err) {
-      console.error('Drop parsing error:', err);
+      console.error('解析失败:', err);
     }
     return null;
   }, []);

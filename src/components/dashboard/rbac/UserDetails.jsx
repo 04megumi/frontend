@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { DownOutlined } from '@ant-design/icons';
 import { Tree } from 'antd';
+import useDragDrop from '../../../hooks/useDragDrop.js'; // 引入钩子
 import styles from '../../../css/dashboard/rbac/UserDetails.module.css';
 
 /**
@@ -14,12 +15,14 @@ const UserDetails = ({ user, roles, permissions, onRemoveRole, onDropRole }) => 
     return <div className={styles.noUserSelected}>请选择一个用户</div>;
   }
 
+  // 使用钩子中的 handleDrop
+  const { handleDrop } = useDragDrop();
   // 使用 ref 记录用户详情容器
   const containerRef = useRef(null);
   // 用于记录当前正在拖拽的角色ID
   const [draggedRoleId, setDraggedRoleId] = useState(null);
   // 确保是数组
-  const userRoles = Array.isArray(user.roles) ? user.roles : [];  
+  const userRoles = Array.isArray(user.roles) ? user.roles : [];
 
 
   // 新的树形数据构造：
@@ -64,7 +67,7 @@ const UserDetails = ({ user, roles, permissions, onRemoveRole, onDropRole }) => 
           draggable
           onDragStart={(e) => {
             // 设置拖拽数据，记录开始拖拽的角色ID
-            const roleId = nodeData.key.split('-')[1];
+            const roleId = nodeData.data.roleId;
             e.dataTransfer.setData('application/json', JSON.stringify({ type: 'role', roleId }));
             setDraggedRoleId(roleId);
           }}
@@ -79,48 +82,55 @@ const UserDetails = ({ user, roles, permissions, onRemoveRole, onDropRole }) => 
 
   // 拖拽事件：使用 Tree 组件的 onDrop 方法，注意 antd Tree 内部 event 对象在 info.event 中
   const handleTreeDrop = (info) => {
-    // info.event 为原生事件
-    try {
-      const dataStr = info.event.dataTransfer.getData('application/json');
-      const data = JSON.parse(dataStr);
-      if (data && data.type === 'role') {
-        // 调用外部传入的 onDropRole，将拖入的角色赋予用户
-        onDropRole(user.id, data.roleId);
-      }
-    } catch (err) {
-      console.error('Tree onDrop解析数据失败:', err);
+    console.log('Ant Design Tree onDrop 触发'); // 调试日志
+    const data = handleDrop(info.event); // 关键：传递原生事件
+    console.log('拖放数据:', data);
+    if (data && data.type === 'role') {
+      console.log('解析成功，roleId:', data.roleId);
+      onDropRole(user.id, data.roleId);
     }
   };
 
   // 处理拖拽结束，在 UserDetails 内检测鼠标是否离开容器
   const handleDragEnd = (e) => {
-    if (containerRef.current && draggedRoleId) {
-      const rect = containerRef.current.getBoundingClientRect();
-      // 如果鼠标结束位置不在用户详情容器内，则视为移除角色
-      if (
-        e.clientX < rect.left ||
-        e.clientX > rect.right ||
-        e.clientY < rect.top ||
-        e.clientY > rect.bottom
-      ) {
-        onRemoveRole(user.id, draggedRoleId);
-      }
-      // 清除当前拖拽的角色ID
-      setDraggedRoleId(null);
+    if (!draggedRoleId) return; // 仅在存在拖拽角色时处理
+
+    const rect = containerRef.current.getBoundingClientRect();
+    // 判断拖拽结束时鼠标是否在容器外
+    if (
+      e.clientX < rect.left ||
+      e.clientX > rect.right ||
+      e.clientY < rect.top ||
+      e.clientY > rect.bottom
+    ) {
+      onRemoveRole(user.id, draggedRoleId); // 触发删除
     }
+    setDraggedRoleId(null); // 重置状态
   };
 
   return (
-    <div className={styles.userDetails} onDragOver={(e) => e.preventDefault()}>
+    <div
+      className={styles.userDetails}
+      ref={containerRef}
+      onDragOver={(e) => {
+        e.preventDefault(); // 必须调用，否则无法触发 onDrop
+        e.dataTransfer.dropEffect = 'move';
+      }}>
       <h4>{user.name}'s Details</h4>
       {/* 使用 Ant Design Tree 展示 */}
       <Tree
         treeData={treeData}
-        draggable
+        draggable={true}         // ← 允许整个树拖拽
         blockNode                  // ← 整行均为可放置区域
+        allowDrop={() => true}     // ← 允许任意拖放
         titleRender={titleRender}
         onDrop={handleTreeDrop}
-        onDragOver={(e) => e.preventDefault()}
+        onDragOver={(e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+        }
+        }
+        onDragStart={() => { }}
         onDragEnd={handleDragEnd} // 当拖拽结束时检测是否拖出容器
       />
     </div>

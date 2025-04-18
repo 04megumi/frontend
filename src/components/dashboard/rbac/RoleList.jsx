@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import styles from '../../../css/dashboard/rbac/RoleList.module.css';
 import useDragDrop from '../../../hooks/useDragDrop';
+import styles from '../../../css/dashboard/rbac/RoleList.module.css';
 
 const RoleList = ({
   roles,
@@ -25,7 +25,8 @@ const RoleList = ({
 
   // 统一封装角色拖拽开始事件
   const handleRoleDragStart = (e, role) => {
-    console.log('拖拽开始：', role);
+    const data = { type: 'role', roleId: role.id };
+    console.log('拖拽数据:', JSON.stringify(data)); // 调试日志
     // 使用 hook 封装的 handleDragStart，传递数据对象
     handleDragStart(e, { type: 'role', roleId: role.id });
     if (onDragStart) {
