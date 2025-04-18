@@ -8,16 +8,15 @@ const RoleList = ({
   onDragStart,
   onSelectRole,
   onDropRole,
-  //selectedUserId,
+  selectedUserId, // ✅ 补上注释
   isDraggable,
-  //onAddUser,
-  //isLayoutMode,
-  //onShowRoleModal,
+  onAddUser,
+  isLayoutMode,
+  onShowRoleModal,
   onContextMenu
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const { handleDragStart, handleDragOver } = useDragDrop(); // 从 Hook 中获取处理函数
-
+  const { handleDragStart } = useDragDrop(); // ✅ 只需 handleDragStart
 
   const filteredRoles = roles.filter(role =>
     role.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -27,10 +26,9 @@ const RoleList = ({
   const handleRoleDragStart = (e, role) => {
     const data = { type: 'role', roleId: role.id };
     console.log('拖拽数据:', JSON.stringify(data)); // 调试日志
-    // 使用 hook 封装的 handleDragStart，传递数据对象
-    handleDragStart(e, { type: 'role', roleId: role.id });
+    handleDragStart(e, data); // ✅ 使用封装 hook
     if (onDragStart) {
-      onDragStart(role); // 额外的回调（如果需要）
+      onDragStart(role); // ✅ 回调父组件
     }
     console.log('RoleList 拖拽开始，数据：', role.id);
   };
@@ -64,7 +62,7 @@ const RoleList = ({
               key={role.id}
               className={styles.role}
               draggable={isDraggable}
-              onDragStart={(e) => handleRoleDragStart(e, role)}  // 在拖拽开始时设置数据
+              onDragStart={(e) => handleRoleDragStart(e, role)} // ✅ 使用封装逻辑
               onClick={() => onSelectRole && onSelectRole(role.id)}
               onContextMenu={(e) => handleRoleRightClick(e, role.id)}
             >
@@ -86,6 +84,8 @@ RoleList.propTypes = {
   onAddUser: PropTypes.func.isRequired,  // 添加用户的回调
   onShowRoleModal: PropTypes.func.isRequired,  // 显示角色模态框的回调
   onContextMenu: PropTypes.func.isRequired,  // 右键菜单的回调
+  selectedUserId: PropTypes.string, // 当前选中的用户ID
+  isLayoutMode: PropTypes.bool // 是否处于布局模式
 };
 
 export default RoleList;

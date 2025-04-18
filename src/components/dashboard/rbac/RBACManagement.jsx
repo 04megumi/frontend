@@ -5,6 +5,10 @@ import RoleList from './RoleList.jsx';
 import PermissionList from './PermissionList.jsx';
 import UserDetails from './UserDetails.jsx';
 import RoleDetails from './RoleDetails.jsx';
+import AddUserModal from './modals/AddUserModal.jsx';
+import AddRoleModal from './modals/AddRoleModal.jsx';
+import AddPermissionModal from './modals/AddPermissionModal.jsx';
+import useRBACManagement from '../../../hooks/useRBACManagement';
 import styles from '../../../css/dashboard/rbac/RBACManagement.module.css';
 
 const RBACManagement = ({
@@ -23,6 +27,9 @@ const RBACManagement = ({
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedRole, setSelectedRole] = useState(null);
   const [showDeleteZone, setShowDeleteZone] = useState(false);
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [showAddRoleModal, setShowAddRoleModal] = useState(false);
+  const [showAddPermissionModal, setShowAddPermissionModal] = useState(false);
 
   const handleLayoutToggle = () => setLayoutMode(!layoutMode);
 
@@ -44,24 +51,23 @@ const RBACManagement = ({
       <div className={styles.actions}>
         <button
           className={styles.actionButton}
-          onClick={onShowUserModal}
+          onClick={() => setShowAddUserModal(true)}
         >
           + 用户
         </button>
         <button
           className={styles.actionButton}
-          onClick={onShowRoleModal}
+          onClick={() => setShowAddRoleModal(true)}
         >
           + 角色
         </button>
         <button
           className={styles.actionButton}
-          onClick={onShowPermissionModal}
+          onClick={() => setShowAddPermissionModal(true)}
         >
           + 权限
         </button>
       </div>
-
 
       {layoutMode ? (
         <div className={styles.layout}>
@@ -76,20 +82,21 @@ const RBACManagement = ({
               user={selectedUser}
               roles={roles}
               permissions={permissions}
-              onAssignRole={onRoleAssign}
-              onRemoveRole={onRoleRemove}
-              onDropRole={onRoleAssign}
+              onDropRole={(userId, roleId) => onRoleAssign(userId, roleId)}
+              onRemoveRole={(userId, roleId) => onRoleRemove(userId, roleId)}
             />
           </div>
           <div className={styles.column}>
             <RoleList
               roles={roles}
-              onDrop={roleId => onRoleAssign(selectedUser?.id, roleId)}
-              onSelectRole={() => {}} 
-              isDraggable={true} 
-              onAddUser={null} 
-              onShowRoleModal={onShowRoleModal} 
-              onContextMenu={() => {}}
+              onDrop={roleId => {
+                if (selectedUser) {
+                  onRoleAssign(selectedUser.id, roleId);
+                }
+              }}
+              onSelectRole={() => { }}
+              isDraggable={true}
+              onContextMenu={() => { }}
             />
           </div>
         </div>
@@ -130,6 +137,30 @@ const RBACManagement = ({
         >
           🗑️ 拖拽至此删除
         </div>
+      )}
+
+      {/* 渲染 AddUserModal */}
+      {showAddUserModal && (
+        <AddUserModal
+          onClose={() => setShowAddUserModal(false)}
+          onAddUser={onShowUserModal}
+        />
+      )}
+
+      {/* 渲染 AddRoleModal */}
+      {showAddRoleModal && (
+        <AddRoleModal
+          onClose={() => setShowAddRoleModal(false)}
+          onAddRole={onShowRoleModal}
+        />
+      )}
+
+      {/* 渲染 AddPermissionModal */}
+      {showAddPermissionModal && (
+        <AddPermissionModal
+          onClose={() => setShowAddPermissionModal(false)}
+          onAddPermission={onShowPermissionModal}
+        />
       )}
     </div>
   );

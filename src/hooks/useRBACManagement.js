@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect, useCallback } from 'react';
 
 const useRBACManagement = () => {
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
   const [permissions, setPermissions] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  // 用户角色映射表（userId => Set of roleIds）
+  const [userRoleMap, setUserRoleMap] = useState({});
 
   useEffect(() => {
-    // 模拟后端数据
     const dummyUsers = [
       { id: 'u1', name: 'Mori Lee', roles: ['r1'] },
       { id: 'u2', name: 'Seraphim Wei', roles: ['r2'] },
@@ -30,42 +31,61 @@ const useRBACManagement = () => {
       { id: 'p7', name: 'history.train' },
       { id: 'p8', name: 'visit' },
     ];
+    const dummyMap = {
+      u1: new Set(['r1']),
+      u2: new Set(['r2']),
+      u3: new Set(['r4']),
+      u4: new Set(['r3']),
+    };
 
-    // 模拟网络延迟
-    setTimeout(() => {
-      setUsers(dummyUsers);
-      setRoles(dummyRoles);
-      setPermissions(dummyPermissions);
-    }, 500);
+    setUsers(dummyUsers);
+    setRoles(dummyRoles);
+    setPermissions(dummyPermissions);
+    setUserRoleMap(dummyMap); // 初始化 userRoleMap
   }, []);
 
-  // 定义角色赋予、移除等操作（暂时可以直接更新状态）
-  const handleRoleAssign = (userId, roleId) => {
-    setUsers(prevUsers =>
-      prevUsers.map(user =>
-        user.id === userId && !user.roles.includes(roleId)
-          ? { ...user, roles: [...user.roles, roleId] }
-          : user
-      )
-    );
-  };
+  const handleSelectUser = useCallback((userId) => {
+    setSelectedUserId(userId);
+  }, []);
 
-  const handleRoleRemove = (userId, roleId) => {
-    setUsers(prevUsers =>
-      prevUsers.map(user =>
-        user.id === userId
-          ? { ...user, roles: user.roles.filter(r => r !== roleId) }
-          : user
-      )
-    );
-  };
+  // 分配角色给用户
+  const handleAssignRole = useCallback((userId, roleId) => {
+    setUserRoleMap((prevMap) => {
+      const updatedMap = { ...prevMap };
+      if (!updatedMap[userId]) {
+        updatedMap[userId] = new Set();
+      }
+      updatedMap[userId].add(roleId);
+      return { ...updatedMap };
+    });
+  }, []);
+
+  const removeRole = useCallback((userId, roleId) => {
+    setUserRoleMap(prev => {
+      const next = { ...prev };
+      if (next[userId]) {
+        next[userId].delete(roleId);
+      }
+      return next;
+    });
+  }, []);
+
+  const dropRole = useCallback((userId, data) => {
+    if (data?.type === 'role') {
+      handleAssignRole(userId, data.roleId); // 使用 handleAssignRole
+    }
+  }, [handleAssignRole]);
 
   return {
     users,
     roles,
     permissions,
-    handleRoleAssign,
-    handleRoleRemove,
+    selectedUserId,
+    userRoleMap,
+    handleSelectUser,
+    handleAssignRole,
+    removeRole,
+    dropRole,
   };
 };
 
