@@ -1,117 +1,69 @@
 import React, { useRef, useMemo, useCallback } from 'react';
-import PropTypes, { node } from 'prop-types';
+import PropTypes from 'prop-types';
 import { Tree } from 'antd';
-import useDragDrop from '../../../hooks/useDragDrop.js';
+import useDragDrop from '../../../hooks/useDragDrop';
 import styles from '../../../css/dashboard/rbac/RoleDetails.module.css';
 
-const getSafeArray = value => (Array.isArray(value) ? value : []);
-const createNodeKey = (type, id) => `${type}-${id}`;
+const getSafeArray = v => Array.isArray(v) ? v : [];
+const createKey = (t, id) => `${t}-${id}`;
 
 const RoleDetails = ({ role, permissions, onDropPermission, onRemovePermission }) => {
-  const containerRef = useRef(null);
+  const ref = useRef(null);
   const { handleDragStart, handleDragOver, handleDrop } = useDragDrop();
+  const permIds = useMemo(() => getSafeArray(role?.permissions), [role]);
+  const nodes = useMemo(() =>
+  (role ? [{
+    title: role.name, key: createKey('role', role.id), children:
+      permIds.map(pid => ({
+        title: permissions.find(p => p.id === pid)?.name || '',
+        key: createKey('permission', pid),
+        draggable: true,
+        data: { type: 'permission', permissionId: pid }
+      }))
+  }] : []), [role, permIds, permissions]);
 
-  const rolePermissions = useMemo(() => getSafeArray(role?.permissions), [role]);
+  const onDragEnd = useCallback(e => {
+    const { clientX, clientY, dataTransfer } = e;
+    const rect = ref.current.getBoundingClientRect();
+    if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom) {
+      const data = JSON.parse(dataTransfer.getData('application/json'));
+      if (data.permissionId) onRemovePermission(role.id, data.permissionId);
+    }
+  }, [onRemovePermission, role]);
 
-  const permissionNodes = useMemo(
-    () =>
-      permissions
-        .filter(permission => rolePermissions.includes(permission.id))
-        .map(permission => ({
-          title: permission.name,
-          key: createNodeKey('permission', permission.id),
-          draggable: true,
-          data: { type: 'permission', permissionId: permission.id },
-        })),
-    [permissions, rolePermissions]
-  );
-
-  const treeData = useMemo(
-    () => (role ? [{ title: role.name, key: createNodeKey('role', role.id), children: permissionNodes }] : []),
-    [role, permissionNodes]
-  );
-
-  // 当内部节点拖出时删除
-  const handleDragEnd = useCallback(
-    e => {
-      const { clientX, clientY, dataTransfer } = e;
-      const rect = containerRef.current?.getBoundingClientRect();
-      if (
-        rect &&
-        (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom)
-      ) {
-        const raw = dataTransfer.getData('application/json');
-        const data = JSON.parse(raw);
-        if (data?.roleId) {
-          onRemovePermission(role.id, data.permissionId);
-        }
-      }
-    },
-    [onRemovePermission, role]
-  );
-
-  // 外部拖放捕获，先于 Tree.onDrop
-  const handleContainerDropCapture = useCallback(
-    e => {
-      handleDragOver(e);
-      const data = handleDrop(e);
-      if (!data) return;
-      const permissionId = data.version === '2.0' ? data.id : data.permissionId;
-      if (!permissionId || !permissions.some(p => p.id === permissionId)) return;
-      if (rolePermissions.includes(permissionId)) return;
-      onDropUser(role.id, data);
-    },
-    [handleDragOver, handleDrop, onDropPermission, permissions, rolePermissions, role]
-  );
+  const onDropCap = useCallback(e => {
+    handleDragOver(e);
+    const data = handleDrop(e);
+    if (data?.type === 'permission') {
+      const pid = data.version === '2.0' ? data.id : data.permissionId;
+      if (pid && !permIds.includes(pid)) onDropPermission(role.id, data);
+    }
+  }, [handleDragOver, handleDrop, onDropPermission, permIds, role]);
 
   if (!role) return <div className={styles.noRoleSelected}>请选择一个角色</div>;
 
   return (
-    <div
-      ref={containerRef}
-      className={styles.roleDetails}
-      onDragOver={handleDragOver}
-      onDropCapture={handleContainerDropCapture}
-    >
+    <div ref={ref} className={styles.roleDetails} onDragOver={handleDragOver} onDropCapture={onDropCap}>
       <h4>{role.name}'s Permissions</h4>
       <Tree
-        treeData={treeData}
-        key={`tree-${role.id}-${treeData.length}`}
+        treeData={nodes}
         draggable
         blockNode
-        titleRender={nodeData => {
-          if (nodeData.key.startsWith('permission-')) {
-            return (
-              <div
-                draggable
-                onDragStart={(e) => handleDragStart(e, { type: 'permission', permissionId: nodeData.data.permissionId })}
-              >
-                {nodeData.title}
-              </div>
-            );
-          }
-          return <span>{nodeData.title}</span>;
-        }}
-        onDragEnd={handleDragEnd}
+        titleRender={nd =>
+          nd.key.startsWith('permission-') ?
+            <div draggable onDragStart={e => handleDragStart(e, { type: 'permission', permissionId: nd.data.permissionId })} style={{ cursor: 'move' }}>{nd.title}</div>
+            : <span>{nd.title}</span>
+        }
+        onDragEnd={onDragEnd}
       />
     </div>
   );
 };
-
 RoleDetails.propTypes = {
-  role: PropTypes.shape({
-    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    name: PropTypes.string.isRequired,
-    permissions: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number]))
-  }),
-  permissions: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-      name: PropTypes.string.isRequired,
-    })
-  ).isRequired,
+  role: PropTypes.shape({ id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired, name: PropTypes.string.isRequired, permissions: PropTypes.array }),
+  permissions: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired, name: PropTypes.string.isRequired })).isRequired,
   onDropPermission: PropTypes.func.isRequired,
-  onRemovePermission: PropTypes.func.isRequired,
+  onRemovePermission: PropTypes.func.isRequired
 };
-
+RoleDetails.defaultProps = { role: null };
 export default React.memo(RoleDetails);

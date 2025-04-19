@@ -11,15 +11,13 @@ import AddPermissionModal from './modals/AddPermissionModal.jsx';
 import useRBACManagement from '../../../hooks/useRBACManagement';
 import styles from '../../../css/dashboard/rbac/RBACManagement.module.css';
 
-const RBACManagement = ({
-  onPermissionAssign,
-  onPermissionRemove,
-  onShowUserModal,
-  onShowRoleModal,
-  onShowPermissionModal,
-  onUserContextMenu
-}) => {
-  const { users, roles, permissions, addUserRole, removeUserRole, dropUserRole } = useRBACManagement();
+const RBACManagement = ({ onShowUserModal, onShowRoleModal, onShowPermissionModal, onUserContextMenu }) => {
+  const {
+    users, roles, permissions,
+    addUserRole, removeUserRole, dropUserRole,
+    addRolePermission, removeRolePermission, dropRolePermission
+  } = useRBACManagement();
+
   const [layoutMode, setLayoutMode] = useState(true);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedRole, setSelectedRole] = useState(null);
@@ -37,13 +35,13 @@ const RBACManagement = ({
         setVersion(v => v + 1);
       }
     }
-    const toggleLayout = () => setLayoutMode(prev => !prev);
-    const toggleDelete = () => setShowDeleteZone(prev => !prev);
-    window.addEventListener('toggleLayout', toggleLayout);
-    window.addEventListener('toggleDeleteZone', toggleDelete);
+    const togLayout = () => setLayoutMode(prev => !prev);
+    const togDelete = () => setShowDeleteZone(prev => !prev);
+    window.addEventListener('toggleLayout', togLayout);
+    window.addEventListener('toggleDeleteZone', togDelete);
     return () => {
-      window.removeEventListener('toggleLayout', toggleLayout);
-      window.removeEventListener('toggleDeleteZone', toggleDelete);
+      window.removeEventListener('toggleLayout', togLayout);
+      window.removeEventListener('toggleDeleteZone', togDelete);
     };
   }, [users, selectedUser]);
 
@@ -74,9 +72,8 @@ const RBACManagement = ({
             <RoleList
               roles={roles}
               isDraggable
-              selectedUserId={selectedUser?.id}
-              onDropRole={roleId => selectedUser && addUserRole(selectedUser.id, roleId)}
-              onSelectRole={() => {}}
+              onDropRole={rid => selectedUser && addUserRole(selectedUser.id, rid)}
+              onSelectRole={() => {} }
               onContextMenu={onUserContextMenu}
             />
           </div>
@@ -88,14 +85,20 @@ const RBACManagement = ({
           </div>
           <div className={styles.column}>
             <RoleDetails
-              role={selectedRole}
+              role={roles.find(r => r.id === selectedRole?.id)}
               permissions={permissions}
-              onAssignPermission={onPermissionAssign}
-              onRemovePermission={onPermissionRemove}
+              onDropPermission={dropRolePermission}
+              onRemovePermission={removeRolePermission}
+              key={`${selectedRole?.id}-${version}`}
             />
           </div>
           <div className={styles.column}>
-            <PermissionList permissions={permissions} onContextMenu={onUserContextMenu} />
+            <PermissionList
+              permissions={permissions}
+              isDraggable
+              onSelectPermission={() => {} }
+              onContextMenu={onUserContextMenu}
+            />
           </div>
         </div>
       )}
@@ -103,18 +106,13 @@ const RBACManagement = ({
       {showDeleteZone && (
         <div
           className={styles.deleteZone}
+          onDragOver={e => e.preventDefault()}
           onDrop={e => {
             const data = JSON.parse(e.dataTransfer.getData('application/json'));
-            if (data.type === 'role') {
-              removeUserRole(data.userId, data.id || data.roleId);
-            } else if (data.type === 'permission') {
-              onPermissionRemove(data.id);
-            }
+            if (data.type === 'role') removeUserRole(data.userId, data.id || data.roleId);
+            if (data.type === 'permission') onShowPermissionModal(data.id);
           }}
-          onDragOver={e => e.preventDefault()}
-        >
-          🗑️ 拖拽至此删除
-        </div>
+        >拖拽至此删除</div>
       )}
 
       {showAddUserModal && <AddUserModal onClose={() => setShowAddUserModal(false)} onAddUser={onShowUserModal} />}
@@ -125,8 +123,6 @@ const RBACManagement = ({
 };
 
 RBACManagement.propTypes = {
-  onPermissionAssign: PropTypes.func.isRequired,
-  onPermissionRemove: PropTypes.func.isRequired,
   onShowUserModal: PropTypes.func.isRequired,
   onShowRoleModal: PropTypes.func.isRequired,
   onShowPermissionModal: PropTypes.func.isRequired,

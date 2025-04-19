@@ -1,77 +1,39 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ContextMenu from '../contextMenu/ContextMenu.jsx';
+import useDragDrop from '../../../hooks/useDragDrop';
 import styles from '../../../css/dashboard/rbac/PermissionList.module.css';
 
-const PermissionList = ({
-  permissions,
-  onSelectPermission,
-  onContextMenu,
-}) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
-  const [showContextMenu, setShowContextMenu] = useState(false);
-  const [selectedPermission, setSelectedPermission] = useState(null);
+const PermissionList = ({ permissions, isDraggable, onSelectPermission, onContextMenu }) => {
+  const [term, setTerm]=useState('');
+  const [ctxPos, setCtxPos]=useState({x:0,y:0});
+  const [showCtx, setShowCtx]=useState(false);
+  const [selPerm, setSelPerm]=useState(null);
+  const { handleDragStart } = useDragDrop();
 
-  const filteredPermissions = permissions.filter(permission =>
-    permission.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const handleContextMenu = (event, Permission) => {
-    event.preventDefault();
-    setContextMenuPosition({ x: event.clientX, y: event.clientY });
-    setSelectedPermission(Permission);
-    setShowContextMenu(true);
-  };
-
-  const handleCloseContextMenu = () => {
-    setShowContextMenu(false);
-  };
-
-  const handleContextMenuAction = (action) => {
-    onContextMenu(action, selectedPermission);
-  };
+  const filtered = permissions.filter(p => p.name.toLowerCase().includes(term.toLowerCase()));
+  const onCtx = (e,p)=>{e.preventDefault();setCtxPos({x:e.clientX,y:e.clientY});setSelPerm(p);setShowCtx(true);};
 
   return (
-    <div className={styles.permissionListContainer}>
-      <div className={styles.searchContainer}>
-        <input
-          type="text"
-          placeholder="搜索权限..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className={styles.searchInput}
-        />
-      </div>
-      <div className={styles.permissionList} style={{ maxHeight: '400px', overflowY: 'auto' }}>
+    <div className={styles.permissionListContainer} style={{maxHeight:'600px',overflowY:'auto'}}>
+      <div className={styles.searchContainer}><input type="text" placeholder="搜索权限..." value={term} onChange={e=>setTerm(e.target.value)} className={styles.searchInput}/></div>
+      <div className={styles.permissionList} style={{maxHeight:'400px',overflowY:'auto'}}>
         <h4>Permissions</h4>
         <div className={styles.permissions}>
-          {filteredPermissions.map(permission => (
-            <div
-              key={permission.id}
-              className={styles.permission}
-              onClick={() => onSelectPermission && onSelectPermission(permission)}
-              draggable="true"
-              onDragStart={(e) => {
-                e.dataTransfer.setData('text/plain', permission.id);
-              }}
-              onContextMenu={(event) => handleContextMenu(event, permission)}
-            >
-              {permission.name}
-            </div>
+          {filtered.map(p=>(
+            <div key={p.id} className={styles.permission} draggable={isDraggable} onDragStart={e=>{e.stopPropagation();handleDragStart(e,{version:'2.0',type:'permission',id:p.id,timestamp:Date.now(),signature:Math.random().toString(36).slice(2)})}} onClick={()=>onSelectPermission&&onSelectPermission(p)} onContextMenu={e=>onCtx(e,p)} data-testid={`perm-item-${p.id}`}>{p.name}</div>
           ))}
         </div>
       </div>
-      {/* 渲染 ContextMenu */}
-      {showContextMenu && (
-        <ContextMenu
-          onClose={handleCloseContextMenu}
-          onContextMenu={handleContextMenuAction}
-          contextMenuPosition={contextMenuPosition} // 传递 contextMenuPosition
-        />
-      )}
+      {showCtx&&<ContextMenu onClose={()=>setShowCtx(false)} onContextMenu={action=>onContextMenu(action,selPerm)} contextMenuPosition={ctxPos} menuItems={[{label:'编辑权限',action:'edit'},{label:'删除权限',action:'delete'},{label:'复制ID',action:'copyId'}]}/>}  
     </div>
   );
 };
-
+PermissionList.propTypes={
+  permissions:PropTypes.arrayOf(PropTypes.shape({id:PropTypes.oneOfType([PropTypes.string,PropTypes.number]).isRequired,name:PropTypes.string.isRequired})).isRequired,
+  isDraggable:PropTypes.bool,
+  onSelectPermission:PropTypes.func,
+  onContextMenu:PropTypes.func
+};
+PermissionList.defaultProps={isDraggable:false,onSelectPermission:null,onContextMenu:()=>{}};
 export default PermissionList;
