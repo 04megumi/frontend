@@ -28,13 +28,6 @@ const RBACManagement = ({ onShowUserModal, onShowRoleModal, onShowPermissionModa
   const [version, setVersion] = useState(0);
 
   useEffect(() => {
-    if (selectedUser) {
-      const fresh = users.find(u => u.id === selectedUser.id);
-      if (fresh && fresh !== selectedUser) {
-        setSelectedUser(fresh);
-        setVersion(v => v + 1);
-      }
-    }
     const togLayout = () => setLayoutMode(prev => !prev);
     const togDelete = () => setShowDeleteZone(prev => !prev);
     window.addEventListener('toggleLayout', togLayout);
@@ -65,7 +58,6 @@ const RBACManagement = ({ onShowUserModal, onShowRoleModal, onShowPermissionModa
               permissions={permissions}
               onDropRole={dropUserRole}
               onRemoveRole={removeUserRole}
-              key={`${selectedUser?.id}-${version}`}
             />
           </div>
           <div className={styles.column}>
@@ -89,7 +81,6 @@ const RBACManagement = ({ onShowUserModal, onShowRoleModal, onShowPermissionModa
               permissions={permissions}
               onDropPermission={dropRolePermission}
               onRemovePermission={removeRolePermission}
-              key={`${selectedRole?.id}-${version}`}
             />
           </div>
           <div className={styles.column}>

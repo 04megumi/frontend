@@ -9,8 +9,8 @@ const createNodeKey = (type, id) => `${type}-${id}`;
 
 const UserDetails = ({ user, roles, permissions, onDropRole, onRemoveRole }) => {
   const containerRef = useRef(null);
+  const draggedRoleRef = useRef(null); // Track currently dragged role ID
   const { handleDragStart, handleDragOver, handleDrop } = useDragDrop();
-
   const userRoles = useMemo(() => getSafeArray(user?.roles), [user]);
 
   const roleNodes = useMemo(
@@ -37,26 +37,24 @@ const UserDetails = ({ user, roles, permissions, onDropRole, onRemoveRole }) => 
     [user, roleNodes]
   );
 
-  // 当内部节点拖出时删除
   const handleDragEnd = useCallback(
     e => {
-      const { clientX, clientY, dataTransfer } = e;
+      const { clientX, clientY } = e;
       const rect = containerRef.current?.getBoundingClientRect();
       if (
         rect &&
         (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom)
       ) {
-        const raw = dataTransfer.getData('application/json');
-        const data = JSON.parse(raw);
-        if (data?.roleId) {
-          onRemoveRole(user.id, data.roleId);
+        const roleId = draggedRoleRef.current;
+        if (roleId) {
+          onRemoveRole(user.id, roleId);
         }
       }
+      draggedRoleRef.current = null;
     },
     [onRemoveRole, user]
   );
 
-  // 外部拖放捕获，先于 Tree.onDrop
   const handleContainerDropCapture = useCallback(
     e => {
       handleDragOver(e);
@@ -87,10 +85,15 @@ const UserDetails = ({ user, roles, permissions, onDropRole, onRemoveRole }) => 
         blockNode
         titleRender={nodeData => {
           if (nodeData.key.startsWith('role-')) {
+            const roleId = nodeData.data.roleId;
             return (
               <div
                 draggable
-                onDragStart={(e) => handleDragStart(e, { type: 'role', roleId: nodeData.data.roleId })}
+                onDragStart={e => {
+                  draggedRoleRef.current = roleId;
+                  handleDragStart(e, { version: '2.0', type: 'role', id: roleId });
+                }}
+                onDragEnd={handleDragEnd}
                 style={{ cursor: 'move' }}
               >
                 {nodeData.title}
@@ -99,7 +102,6 @@ const UserDetails = ({ user, roles, permissions, onDropRole, onRemoveRole }) => 
           }
           return <span>{nodeData.title}</span>;
         }}
-        onDragEnd={handleDragEnd}
       />
     </div>
   );
@@ -126,6 +128,10 @@ UserDetails.propTypes = {
   ).isRequired,
   onDropRole: PropTypes.func.isRequired,
   onRemoveRole: PropTypes.func.isRequired
+};
+
+UserDetails.defaultProps = {
+  user: null
 };
 
 export default React.memo(UserDetails);
