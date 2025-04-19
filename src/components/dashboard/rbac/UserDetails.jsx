@@ -90,7 +90,7 @@ const UserDetails = ({ user, roles, permissions, onDropRole, onRemoveRole }) => 
             return (
               <div
                 draggable
-                onDragStart={e => handleDragStart(e, { type: 'role', roleId: nodeData.data.roleId })}
+                onDragStart={(e) => handleDragStart(e, { type: 'role', roleId: nodeData.data.roleId })}
                 style={{ cursor: 'move' }}
               >
                 {nodeData.title}

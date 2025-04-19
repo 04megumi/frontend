@@ -18,12 +18,10 @@ const RoleList = ({
   const [selectedRole, setSelectedRole] = useState(null);
   const { handleDragStart } = useDragDrop();
 
-  // 过滤角色列表
   const filteredRoles = roles.filter(role =>
     role.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // 右键菜单处理
   const handleContextMenu = (event, role) => {
     event.preventDefault();
     setContextMenuPosition({ x: event.clientX, y: event.clientY });
@@ -64,7 +62,7 @@ const RoleList = ({
                   signature: Math.random().toString(36).slice(2)
                 });
               }}
-              onClick={() => onSelectRole && onSelectRole(role.id)}
+              onClick={() => onSelectRole && onSelectRole(role)}
               onContextMenu={e => handleContextMenu(e, role)}
               data-testid={`role-item-${role.id}`}
             >

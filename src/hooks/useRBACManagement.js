@@ -39,6 +39,37 @@ const useRBACManagement = () => {
     }
   }, [addUserRole]);
 
+  const addRolePermission = useCallback((roleId, permissionId) => {
+    setRoles(prev => prev.map(role => {
+      if (role.id === roleId && !role.permissions.includes(permissionId)) {
+        return {
+          ...role,
+          permissions: [...role.permissions, permissionId]
+        };
+      }
+      return role;
+    }));
+  }, []);
+
+  const removeRolePermission = useCallback((roleId, permissionId) => {
+    setRoles(prev => prev.map(role => {
+      if (role.id === roleId) {
+        return {
+          ...role,
+          permissions: role.permissions.filter(id => id !== permissionId)
+        };
+      }
+      return role;
+    }));
+  }, []);
+
+  const dropRolePermission = useCallback((roleId, data) => {
+    if (data?.type === 'permission') {
+      const permissionId = data.version === '2.0' ? data.id : data.permissionId;
+      addRolePermission(roleId, permissionId);
+    }
+  }, [addRolePermission]);
+
   // 初始化示例数据
   useEffect(() => {
     setUsers([
@@ -70,8 +101,11 @@ const useRBACManagement = () => {
     roles,
     permissions,
     addUserRole,
+    addRolePermission,
     removeUserRole,
-    dropUserRole
+    removeRolePermission,
+    dropUserRole,
+    dropRolePermission
   };
 };
 

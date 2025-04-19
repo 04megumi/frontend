@@ -18,9 +18,9 @@ const UserList = ({
   );
 
   const handleContextMenu = (event, user) => {
-    event.preventDefault(); // 阻止默认的右键菜单
+    event.preventDefault();
     setContextMenuPosition({ x: event.clientX, y: event.clientY });
-    setSelectedUser(user); // 设置选中的用户
+    setSelectedUser(user);
     setShowContextMenu(true);
   };
 
