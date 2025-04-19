@@ -6,67 +6,46 @@ import styles from '../../../css/dashboard/rbac/RoleList.module.css';
 
 const RoleList = ({
   roles,
-  onDragStart,
+  isDraggable,
   onSelectRole,
   onDropRole,
   selectedUserId,
-  isDraggable,
-  onAddUser,
-  isLayoutMode,
-  onShowRoleModal,
   onContextMenu
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
   const [showContextMenu, setShowContextMenu] = useState(false);
   const [selectedRole, setSelectedRole] = useState(null);
-
   const { handleDragStart } = useDragDrop();
 
+  // 过滤角色列表
   const filteredRoles = roles.filter(role =>
     role.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // 统一封装角色拖拽开始事件
-  const handleRoleDragStart = (e, role) => {
-    const data = { type: 'role', roleId: role.id };
-    console.log('拖拽数据:', JSON.stringify(data)); // 调试日志
-    handleDragStart(e, data); // ✅ 使用封装 hook
-    if (onDragStart) {
-      onDragStart(role); // ✅ 回调父组件
-    }
-    console.log('RoleList 拖拽开始，数据：', role.id);
-  };
-
+  // 右键菜单处理
   const handleContextMenu = (event, role) => {
-    event.preventDefault(); // 阻止默认的右键菜单
+    event.preventDefault();
     setContextMenuPosition({ x: event.clientX, y: event.clientY });
-    setSelectedRole(role); // 设置选中的角色
+    setSelectedRole(role);
     setShowContextMenu(true);
   };
 
-  const handleCloseContextMenu = () => {
-    setShowContextMenu(false);
-  };
-
-  const handleContextMenuAction = (action) => {
-    onContextMenu(action, selectedRole);
-  };
+  const handleCloseContextMenu = () => setShowContextMenu(false);
+  const handleContextMenuAction = action => onContextMenu(action, selectedRole);
 
   return (
     <div className={styles.roleListContainer} style={{ maxHeight: '600px', overflowY: 'auto' }}>
-      {/* 搜索框 */}
       <div className={styles.searchContainer}>
         <input
           type="text"
           placeholder="搜索角色..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={e => setSearchTerm(e.target.value)}
           className={styles.searchInput}
         />
       </div>
 
-      {/* 角色列表 */}
       <div className={styles.roleList} style={{ maxHeight: '400px', overflowY: 'auto' }}>
         <h4>Roles</h4>
         <div className={styles.roles}>
@@ -75,22 +54,37 @@ const RoleList = ({
               key={role.id}
               className={styles.role}
               draggable={isDraggable}
-              onDragStart={(e) => handleRoleDragStart(e, role)} // ✅ 使用封装逻辑
+              onDragStart={e => {
+                e.stopPropagation();
+                handleDragStart(e, {
+                  version: '2.0',
+                  type: 'role',
+                  id: role.id,
+                  timestamp: Date.now(),
+                  signature: Math.random().toString(36).slice(2)
+                });
+              }}
               onClick={() => onSelectRole && onSelectRole(role.id)}
-              onContextMenu={(event) => handleContextMenu(event, role)} // ✅ 使用正确的变量
+              onContextMenu={e => handleContextMenu(e, role)}
+              data-testid={`role-item-${role.id}`}
             >
-              {role.name}
+              <span className={styles.roleName}>{role.name}</span>
+              <span className={styles.roleBadge}>{role.permissions?.length || 0} 权限</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* 渲染 ContextMenu */}
       {showContextMenu && (
         <ContextMenu
           onClose={handleCloseContextMenu}
           onContextMenu={handleContextMenuAction}
-          contextMenuPosition={contextMenuPosition} // 传递 contextMenuPosition
+          contextMenuPosition={contextMenuPosition}
+          menuItems={[
+            { label: '编辑角色', action: 'edit' },
+            { label: '删除角色', action: 'delete' },
+            { label: '复制ID', action: 'copyId' }
+          ]}
         />
       )}
     </div>
@@ -98,16 +92,20 @@ const RoleList = ({
 };
 
 RoleList.propTypes = {
-  roles: PropTypes.array.isRequired,  // 角色数组
-  onDragStart: PropTypes.func,  // 拖拽开始时的回调
-  onSelectRole: PropTypes.func,  // 选中角色时的回调
-  onDropRole: PropTypes.func,  // 拖拽角色放下时的回调
-  isDraggable: PropTypes.bool.isRequired,  // 是否允许拖拽
-  onAddUser: PropTypes.func.isRequired,  // 添加用户的回调
-  onShowRoleModal: PropTypes.func.isRequired,  // 显示角色模态框的回调
-  onContextMenu: PropTypes.func.isRequired,  // 右键菜单的回调
-  selectedUserId: PropTypes.string, // 当前选中的用户ID
-  isLayoutMode: PropTypes.bool // 是否处于布局模式
+  roles: PropTypes.array.isRequired,
+  isDraggable: PropTypes.bool,
+  onSelectRole: PropTypes.func,
+  onDropRole: PropTypes.func,
+  selectedUserId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  onContextMenu: PropTypes.func
+};
+
+RoleList.defaultProps = {
+  isDraggable: false,
+  onSelectRole: null,
+  onDropRole: null,
+  selectedUserId: null,
+  onContextMenu: () => {}
 };
 
 export default RoleList;

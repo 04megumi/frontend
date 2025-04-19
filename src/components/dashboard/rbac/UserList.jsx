@@ -6,8 +6,6 @@ import styles from '../../../css/dashboard/rbac/UserList.module.css';
 const UserList = ({
   users,
   onSelectUser,
-  onAddUser,
-  onShowUserModal,
   onContextMenu
 }) => {
   const [searchTerm, setSearchTerm] = useState('');

@@ -12,92 +12,71 @@ import useRBACManagement from '../../../hooks/useRBACManagement';
 import styles from '../../../css/dashboard/rbac/RBACManagement.module.css';
 
 const RBACManagement = ({
-  users,
-  roles,
-  permissions,
-  onRoleAssign,
   onPermissionAssign,
-  onRoleRemove,
   onPermissionRemove,
   onShowUserModal,
   onShowRoleModal,
   onShowPermissionModal,
-  onUserContextMenu,
+  onUserContextMenu
 }) => {
-  const [layoutMode, setLayoutMode] = useState(true); // true: 用户视图；false: 角色视图
+  const { users, roles, permissions, addUserRole, removeUserRole, dropUserRole } = useRBACManagement();
+  const [layoutMode, setLayoutMode] = useState(true);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedRole, setSelectedRole] = useState(null);
   const [showDeleteZone, setShowDeleteZone] = useState(false);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [showAddRoleModal, setShowAddRoleModal] = useState(false);
   const [showAddPermissionModal, setShowAddPermissionModal] = useState(false);
-
-  const handleLayoutToggle = () => setLayoutMode(!layoutMode);
+  const [version, setVersion] = useState(0);
 
   useEffect(() => {
-    const toggleLayoutHandler = () => setLayoutMode(prev => !prev);
-    const toggleDeleteZoneHandler = () => setShowDeleteZone(prev => !prev);
-
-    window.addEventListener('toggleLayout', toggleLayoutHandler);
-    window.addEventListener('toggleDeleteZone', toggleDeleteZoneHandler);
-
+    if (selectedUser) {
+      const fresh = users.find(u => u.id === selectedUser.id);
+      if (fresh && fresh !== selectedUser) {
+        setSelectedUser(fresh);
+        setVersion(v => v + 1);
+      }
+    }
+    const toggleLayout = () => setLayoutMode(prev => !prev);
+    const toggleDelete = () => setShowDeleteZone(prev => !prev);
+    window.addEventListener('toggleLayout', toggleLayout);
+    window.addEventListener('toggleDeleteZone', toggleDelete);
     return () => {
-      window.removeEventListener('toggleLayout', toggleLayoutHandler);
-      window.removeEventListener('toggleDeleteZone', toggleDeleteZoneHandler);
+      window.removeEventListener('toggleLayout', toggleLayout);
+      window.removeEventListener('toggleDeleteZone', toggleDelete);
     };
-  }, []);
+  }, [users, selectedUser]);
 
   return (
     <div className={styles.rbacContainer}>
       <div className={styles.actions}>
-        <button
-          className={styles.actionButton}
-          onClick={() => setShowAddUserModal(true)}
-        >
-          + 用户
-        </button>
-        <button
-          className={styles.actionButton}
-          onClick={() => setShowAddRoleModal(true)}
-        >
-          + 角色
-        </button>
-        <button
-          className={styles.actionButton}
-          onClick={() => setShowAddPermissionModal(true)}
-        >
-          + 权限
-        </button>
+        <button className={styles.actionButton} onClick={() => setShowAddUserModal(true)}>+ 用户</button>
+        <button className={styles.actionButton} onClick={() => setShowAddRoleModal(true)}>+ 角色</button>
+        <button className={styles.actionButton} onClick={() => setShowAddPermissionModal(true)}>+ 权限</button>
       </div>
 
       {layoutMode ? (
         <div className={styles.layout}>
           <div className={styles.column}>
-            <UserList
-              users={users}
-              onSelectUser={setSelectedUser}
-              onContextMenu={onUserContextMenu}
-            />
+            <UserList users={users} onSelectUser={setSelectedUser} onContextMenu={onUserContextMenu} />
           </div>
           <div className={styles.column}>
             <UserDetails
-              user={selectedUser}
+              user={users.find(u => u.id === selectedUser?.id)}
               roles={roles}
               permissions={permissions}
-              onDropRole={(userId, roleId) => onRoleAssign(userId, roleId)}
-              onRemoveRole={(userId, roleId) => onRoleRemove(userId, roleId)}
+              onDropRole={dropUserRole}
+              onRemoveRole={removeUserRole}
+              key={`${selectedUser?.id}-${version}`}
             />
           </div>
           <div className={styles.column}>
             <RoleList
               roles={roles}
-              onDrop={roleId => {
-                if (selectedUser) {
-                  onRoleAssign(selectedUser.id, roleId);
-                }
-              }}
-              onSelectRole={() => { }}
-              isDraggable={true}
+              isDraggable
+              selectedUserId={selectedUser?.id}
+              onDropRole={roleId => selectedUser && addUserRole(selectedUser.id, roleId)}
+              onSelectRole={() => {}}
               onContextMenu={onUserContextMenu}
             />
           </div>
@@ -105,11 +84,7 @@ const RBACManagement = ({
       ) : (
         <div className={styles.layout}>
           <div className={styles.column}>
-            <RoleList
-              roles={roles}
-              onSelect={setSelectedRole}
-              onContextMenu={onUserContextMenu}
-            />
+            <RoleList roles={roles} onSelectRole={setSelectedRole} onContextMenu={onUserContextMenu} />
           </div>
           <div className={styles.column}>
             <RoleDetails
@@ -120,9 +95,7 @@ const RBACManagement = ({
             />
           </div>
           <div className={styles.column}>
-            <PermissionList permissions={permissions} 
-            onContextMenu={onUserContextMenu}
-            />
+            <PermissionList permissions={permissions} onContextMenu={onUserContextMenu} />
           </div>
         </div>
       )}
@@ -133,7 +106,7 @@ const RBACManagement = ({
           onDrop={e => {
             const data = JSON.parse(e.dataTransfer.getData('application/json'));
             if (data.type === 'role') {
-              onRoleRemove(data.id);
+              removeUserRole(data.userId, data.id || data.roleId);
             } else if (data.type === 'permission') {
               onPermissionRemove(data.id);
             }
@@ -144,45 +117,20 @@ const RBACManagement = ({
         </div>
       )}
 
-      {/* 渲染 AddUserModal */}
-      {showAddUserModal && (
-        <AddUserModal
-          onClose={() => setShowAddUserModal(false)}
-          onAddUser={onShowUserModal}
-        />
-      )}
-
-      {/* 渲染 AddRoleModal */}
-      {showAddRoleModal && (
-        <AddRoleModal
-          onClose={() => setShowAddRoleModal(false)}
-          onAddRole={onShowRoleModal}
-        />
-      )}
-
-      {/* 渲染 AddPermissionModal */}
-      {showAddPermissionModal && (
-        <AddPermissionModal
-          onClose={() => setShowAddPermissionModal(false)}
-          onAddPermission={onShowPermissionModal}
-        />
-      )}
+      {showAddUserModal && <AddUserModal onClose={() => setShowAddUserModal(false)} onAddUser={onShowUserModal} />}
+      {showAddRoleModal && <AddRoleModal onClose={() => setShowAddRoleModal(false)} onAddRole={onShowRoleModal} />}
+      {showAddPermissionModal && <AddPermissionModal onClose={() => setShowAddPermissionModal(false)} onAddPermission={onShowPermissionModal} />}
     </div>
   );
 };
 
 RBACManagement.propTypes = {
-  users: PropTypes.array.isRequired,
-  roles: PropTypes.array.isRequired,
-  permissions: PropTypes.array.isRequired,
-  onRoleAssign: PropTypes.func.isRequired,
   onPermissionAssign: PropTypes.func.isRequired,
-  onRoleRemove: PropTypes.func.isRequired,
   onPermissionRemove: PropTypes.func.isRequired,
   onShowUserModal: PropTypes.func.isRequired,
   onShowRoleModal: PropTypes.func.isRequired,
   onShowPermissionModal: PropTypes.func.isRequired,
-  onUserContextMenu: PropTypes.func.isRequired,
+  onUserContextMenu: PropTypes.func.isRequired
 };
 
 export default RBACManagement;

@@ -4,24 +4,56 @@ const useRBACManagement = () => {
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
   const [permissions, setPermissions] = useState([]);
-  const [selectedUserId, setSelectedUserId] = useState(null);
-  // 用户角色映射表（userId => Set of roleIds）
-  const [userRoleMap, setUserRoleMap] = useState({});
 
+  // 给用户添加角色
+  const addUserRole = useCallback((userId, roleId) => {
+    setUsers(prev => prev.map(user => {
+      if (user.id === userId && !user.roles.includes(roleId)) {
+        return {
+          ...user,
+          roles: [...user.roles, roleId]
+        };
+      }
+      return user;
+    }));
+  }, []);
+
+  // 从用户移除角色
+  const removeUserRole = useCallback((userId, roleId) => {
+    setUsers(prev => prev.map(user => {
+      if (user.id === userId) {
+        return {
+          ...user,
+          roles: user.roles.filter(id => id !== roleId)
+        };
+      }
+      return user;
+    }));
+  }, []);
+
+  // 拖放角色到用户
+  const dropUserRole = useCallback((userId, data) => {
+    if (data?.type === 'role') {
+      const roleId = data.version === '2.0' ? data.id : data.roleId;
+      addUserRole(userId, roleId);
+    }
+  }, [addUserRole]);
+
+  // 初始化示例数据
   useEffect(() => {
-    const dummyUsers = [
+    setUsers([
       { id: 'u1', name: 'Mori Lee', roles: ['r1'] },
       { id: 'u2', name: 'Seraphim Wei', roles: ['r2'] },
       { id: 'u3', name: 'wtz666', roles: ['r4'] },
       { id: 'u4', name: 'syz', roles: ['r3'] }
-    ];
-    const dummyRoles = [
-      { id: 'r1', name: '超管', permissions: ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8'] },
-      { id: 'r2', name: '管理员', permissions: ['p1', 'p2', 'p3', 'p4'] },
-      { id: 'r3', name: '历史管理员', permissions: ['p5', 'p6', 'p7'] },
-      { id: 'r4', name: '访客', permissions: ['p8'] },
-    ];
-    const dummyPermissions = [
+    ]);
+    setRoles([
+      { id: 'r1', name: '超管', permissions: ['p1','p2','p3','p4','p5','p6','p7','p8'] },
+      { id: 'r2', name: '管理员', permissions: ['p1','p2','p3','p4'] },
+      { id: 'r3', name: '历史管理员', permissions: ['p5','p6','p7'] },
+      { id: 'r4', name: '访客', permissions: ['p8'] }
+    ]);
+    setPermissions([
       { id: 'p1', name: 'rbac.login' },
       { id: 'p2', name: 'rbac.modifyPermission' },
       { id: 'p3', name: 'rbac.modifyRole' },
@@ -29,63 +61,17 @@ const useRBACManagement = () => {
       { id: 'p5', name: 'history.file' },
       { id: 'p6', name: 'history.login' },
       { id: 'p7', name: 'history.train' },
-      { id: 'p8', name: 'visit' },
-    ];
-    const dummyMap = {
-      u1: new Set(['r1']),
-      u2: new Set(['r2']),
-      u3: new Set(['r4']),
-      u4: new Set(['r3']),
-    };
-
-    setUsers(dummyUsers);
-    setRoles(dummyRoles);
-    setPermissions(dummyPermissions);
-    setUserRoleMap(dummyMap); // 初始化 userRoleMap
+      { id: 'p8', name: 'visit' }
+    ]);
   }, []);
-
-  const handleSelectUser = useCallback((userId) => {
-    setSelectedUserId(userId);
-  }, []);
-
-  // 分配角色给用户
-  const handleAssignRole = useCallback((userId, roleId) => {
-    setUserRoleMap((prevMap) => {
-      const updatedMap = { ...prevMap };
-      if (!updatedMap[userId]) {
-        updatedMap[userId] = new Set();
-      }
-      updatedMap[userId].add(roleId);
-      return { ...updatedMap };
-    });
-  }, []);
-
-  const removeRole = useCallback((userId, roleId) => {
-    setUserRoleMap(prev => {
-      const next = { ...prev };
-      if (next[userId]) {
-        next[userId].delete(roleId);
-      }
-      return next;
-    });
-  }, []);
-
-  const dropRole = useCallback((userId, data) => {
-    if (data?.type === 'role') {
-      handleAssignRole(userId, data.roleId); // 使用 handleAssignRole
-    }
-  }, [handleAssignRole]);
 
   return {
     users,
     roles,
     permissions,
-    selectedUserId,
-    userRoleMap,
-    handleSelectUser,
-    handleAssignRole,
-    removeRole,
-    dropRole,
+    addUserRole,
+    removeUserRole,
+    dropUserRole
   };
 };
 
