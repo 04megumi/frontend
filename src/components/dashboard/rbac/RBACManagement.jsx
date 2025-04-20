@@ -86,10 +86,6 @@ const RBACManagement = ({ onShowUserModal, onShowRoleModal, onShowPermissionModa
             <div className={styles.column}>
               <RoleDetails
                 roleId={selectedRole}
-                role={roles.find(r => r.id === selectedRole?.id)}
-                permissions={permissions}
-                onDropPermission={dropRolePermission}
-                onRemovePermission={removeRolePermission}
               />
             </div>
             <div className={styles.column}>
