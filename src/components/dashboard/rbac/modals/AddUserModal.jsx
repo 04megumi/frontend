@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { addUser } from '../../../../api/user'
 
-function AddUserModal({ onClose }) {
+function AddUserModal({ onClose, onSuccess}) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState(null) // 改为通用消息状态
@@ -36,6 +36,8 @@ function AddUserModal({ onClose }) {
         if (code === 100000) {
           setIsSuccess(true)
           setMessage(msg)
+          // 调用onSuccess回调，传递新用户名
+          onSuccess(username);  // 添加这行
           // 1秒后自动关闭
           setTimeout(() => {
             onClose()

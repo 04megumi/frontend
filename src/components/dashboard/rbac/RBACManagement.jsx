@@ -15,6 +15,7 @@ const RBACManagement = ({ onShowUserModal, onShowRoleModal, onShowPermissionModa
   const {
     users, roles, permissions,
     userNames, roleIds, permissionIds,
+    setuserNames,
     addUserRole, removeUserRole, dropUserRole,
     addRolePermission, removeRolePermission, dropRolePermission
   } = useRBACManagement();
@@ -115,7 +116,10 @@ const RBACManagement = ({ onShowUserModal, onShowRoleModal, onShowPermissionModa
       
       {/* 添加框 */}
       <section className={styles.modalArea}>
-        {showAddUserModal && <AddUserModal onClose={() => setShowAddUserModal(false)} onAddUser={onShowUserModal} />}
+        {showAddUserModal && <AddUserModal onClose={() => setShowAddUserModal(false)} 
+          onAddUser={onShowUserModal} 
+          onSuccess={(newUsername) => { setuserNames([...userNames, newUsername]);
+        }}/>}
         {showAddRoleModal && <AddRoleModal onClose={() => setShowAddRoleModal(false)} onAddRole={onShowRoleModal} />}
         {showAddPermissionModal && <AddPermissionModal onClose={() => setShowAddPermissionModal(false)} onAddPermission={onShowPermissionModal} />}
       </section>
