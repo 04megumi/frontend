@@ -25,7 +25,6 @@ const RBACManagement = ({ onShowUserModal, onShowRoleModal, onShowPermissionModa
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [showAddRoleModal, setShowAddRoleModal] = useState(false);
   const [showAddPermissionModal, setShowAddPermissionModal] = useState(false);
-  const [version, setVersion] = useState(0);
 
   useEffect(() => {
     const togLayout = () => setLayoutMode(prev => !prev);
@@ -39,63 +38,70 @@ const RBACManagement = ({ onShowUserModal, onShowRoleModal, onShowPermissionModa
   }, [users, selectedUser]);
 
   return (
-    <div className={styles.rbacContainer}>
-      <div className={styles.actions}>
+    <main className={styles.rbacContainer}>
+      {/* 操作按钮区域 */}
+      <section className={styles.actions}>
         <button className={styles.actionButton} onClick={() => setShowAddUserModal(true)}>+ 用户</button>
         <button className={styles.actionButton} onClick={() => setShowAddRoleModal(true)}>+ 角色</button>
         <button className={styles.actionButton} onClick={() => setShowAddPermissionModal(true)}>+ 权限</button>
-      </div>
+      </section>
 
-      {layoutMode ? (
-        <div className={styles.layout}>
-          <div className={styles.column}>
-            <UserList users={users} onSelectUser={setSelectedUser} onContextMenu={onUserContextMenu} />
+      {/* 主内容区域 */}
+      <section className={styles.contentArea}>
+        {layoutMode ? (
+          // 用户-角色布局模式
+          <div className={styles.layout}>
+            <div className={styles.column}>
+              <UserList users={users} onSelectUser={setSelectedUser} onContextMenu={onUserContextMenu} />
+            </div>
+            <div className={styles.column}>
+              <UserDetails
+                user={users.find(u => u.id === selectedUser?.id)}
+                roles={roles}
+                permissions={permissions}
+                onDropRole={dropUserRole}
+                onRemoveRole={removeUserRole}
+              />
+            </div>
+            <div className={styles.column}>
+              <RoleList
+                roles={roles}
+                isDraggable
+                onDropRole={rid => selectedUser && addUserRole(selectedUser.id, rid)}
+                onSelectRole={() => {}}
+                onContextMenu={onUserContextMenu}
+              />
+            </div>
           </div>
-          <div className={styles.column}>
-            <UserDetails
-              user={users.find(u => u.id === selectedUser?.id)}
-              roles={roles}
-              permissions={permissions}
-              onDropRole={dropUserRole}
-              onRemoveRole={removeUserRole}
-            />
+        ) : (
+          // 角色-权限布局模式
+          <div className={styles.layout}>
+            <div className={styles.column}>
+              <RoleList roles={roles} onSelectRole={setSelectedRole} onContextMenu={onUserContextMenu} />
+            </div>
+            <div className={styles.column}>
+              <RoleDetails
+                role={roles.find(r => r.id === selectedRole?.id)}
+                permissions={permissions}
+                onDropPermission={dropRolePermission}
+                onRemovePermission={removeRolePermission}
+              />
+            </div>
+            <div className={styles.column}>
+              <PermissionList
+                permissions={permissions}
+                isDraggable
+                onSelectPermission={() => {}}
+                onContextMenu={onUserContextMenu}
+              />
+            </div>
           </div>
-          <div className={styles.column}>
-            <RoleList
-              roles={roles}
-              isDraggable
-              onDropRole={rid => selectedUser && addUserRole(selectedUser.id, rid)}
-              onSelectRole={() => {} }
-              onContextMenu={onUserContextMenu}
-            />
-          </div>
-        </div>
-      ) : (
-        <div className={styles.layout}>
-          <div className={styles.column}>
-            <RoleList roles={roles} onSelectRole={setSelectedRole} onContextMenu={onUserContextMenu} />
-          </div>
-          <div className={styles.column}>
-            <RoleDetails
-              role={roles.find(r => r.id === selectedRole?.id)}
-              permissions={permissions}
-              onDropPermission={dropRolePermission}
-              onRemovePermission={removeRolePermission}
-            />
-          </div>
-          <div className={styles.column}>
-            <PermissionList
-              permissions={permissions}
-              isDraggable
-              onSelectPermission={() => {} }
-              onContextMenu={onUserContextMenu}
-            />
-          </div>
-        </div>
-      )}
+        )}
+      </section>
 
+      {/* 删除区域 */}
       {showDeleteZone && (
-        <div
+        <section
           className={styles.deleteZone}
           onDragOver={e => e.preventDefault()}
           onDrop={e => {
@@ -103,13 +109,17 @@ const RBACManagement = ({ onShowUserModal, onShowRoleModal, onShowPermissionModa
             if (data.type === 'role') removeUserRole(data.userId, data.id || data.roleId);
             if (data.type === 'permission') onShowPermissionModal(data.id);
           }}
-        >拖拽至此删除</div>
+        >拖拽至此删除</section>
       )}
+      
+      {/* 添加框 */}
+      <section className={styles.modalArea}>
+        {showAddUserModal && <AddUserModal onClose={() => setShowAddUserModal(false)} onAddUser={onShowUserModal} />}
+        {showAddRoleModal && <AddRoleModal onClose={() => setShowAddRoleModal(false)} onAddRole={onShowRoleModal} />}
+        {showAddPermissionModal && <AddPermissionModal onClose={() => setShowAddPermissionModal(false)} onAddPermission={onShowPermissionModal} />}
+      </section>
+    </main>
 
-      {showAddUserModal && <AddUserModal onClose={() => setShowAddUserModal(false)} onAddUser={onShowUserModal} />}
-      {showAddRoleModal && <AddRoleModal onClose={() => setShowAddRoleModal(false)} onAddRole={onShowRoleModal} />}
-      {showAddPermissionModal && <AddPermissionModal onClose={() => setShowAddPermissionModal(false)} onAddPermission={onShowPermissionModal} />}
-    </div>
   );
 };
 
