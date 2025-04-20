@@ -1,41 +1,94 @@
-import React, { useRef, useMemo, useCallback } from 'react';
+import React, { useRef, useMemo, useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Tree } from 'antd';
+import { Tree, Spin, message } from 'antd';
 import useDragDrop from '../../../hooks/useDragDrop.js';
 import styles from '../../../css/dashboard/rbac/UserDetails.module.css';
+import { loadUser } from "../../../api/user.js"
+import { loadRole } from "../../../api/role.js"
 
 const getSafeArray = value => (Array.isArray(value) ? value : []);
 const createNodeKey = (type, id) => `${type}-${id}`;
 
-const UserDetails = ({ user, roles, permissions, onDropRole, onRemoveRole }) => {
+const UserDetails = ({ userName, user, roles, permissions, onDropRole, onRemoveRole }) => {
   const containerRef = useRef(null);
-  const draggedRoleRef = useRef(null); // Track currently dragged role ID
+  const draggedRoleRef = useRef(null);
   const { handleDragStart, handleDragOver, handleDrop } = useDragDrop();
   const userRoles = useMemo(() => getSafeArray(user?.roles), [user]);
+  
+  // 新增状态管理
+  const [roleIds, setRoleIds] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [roleCache, setRoleCache] = useState({}); // 角色数据缓存
 
-  const roleNodes = useMemo(
-    () =>
-      roles
-        .filter(role => userRoles.includes(role.id))
-        .map(role => ({
-          title: role.name,
-          key: createNodeKey('role', role.id),
-          draggable: true,
-          data: { type: 'role', roleId: role.id },
-          children: getSafeArray(role.permissions)
-            .filter(pid => permissions.some(p => p.id === pid))
-            .map(pid => ({
-              title: permissions.find(p => p.id === pid)?.name || '',
-              key: createNodeKey('permission', pid)
-            }))
-        })),
-    [roles, userRoles, permissions]
-  );
+  // 加载用户角色数据
+  useEffect(() => {
+    if (!userName) return;
+    
+    const fetchUserRoles = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await loadUser(userName);
+        if (response.success) {
+          setRoleIds(getSafeArray(response.data.data?.roleIds));
+        } else {
+          throw new Error(response.data?.msg || 'Failed to load user roles');
+        }
+      } catch (err) {
+        setError(err.message);
+        message.error(`加载用户角色失败: ${err.message}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchUserRoles();
+  }, [userName]);
 
-  const treeData = useMemo(
-    () => (user ? [{ title: user.name, key: createNodeKey('user', user.id), children: roleNodes }] : []),
-    [user, roleNodes]
-  );
+  // 加载角色权限数据
+  useEffect(() => {
+    if (!roleIds.length) return;
+    
+    const fetchRoles = async () => {
+      const newCache = {...roleCache};
+      let hasNewData = false;
+      
+      try {
+        await Promise.all(roleIds.map(async roleId => {
+          if (!newCache[roleId]) {
+            const response = await loadRole(roleId);
+            if (response.data?.success) {
+              newCache[roleId] = getSafeArray(response.data.data?.permissionIds);
+              hasNewData = true;
+            }
+          }
+        }));
+        
+        if (hasNewData) {
+          setRoleCache(newCache);
+        }
+      } catch (err) {
+        message.error(`加载角色权限失败: ${err.message}`);
+      }
+    };
+    
+    fetchRoles();
+  }, [roleIds]);
+
+  // 生成树形数据
+  const treeData = useMemo(() => {
+    return roleIds.map(roleId => ({
+      title: roleId,
+      key: createNodeKey('role', roleId),
+      draggable: true,
+      data: { type: 'role', roleId: roleId },
+      children: getSafeArray(roleCache[roleId]).map(pid => ({
+        title: pid,
+        key: createNodeKey('permission', pid)
+      }))
+    }));
+  }, [roleIds, roleCache]);
 
   const handleDragEnd = useCallback(
     e => {
@@ -68,7 +121,10 @@ const UserDetails = ({ user, roles, permissions, onDropRole, onRemoveRole }) => 
     [handleDragOver, handleDrop, onDropRole, roles, userRoles, user]
   );
 
-  if (!user) return <div className={styles.noUserSelected}>请选择一个用户</div>;
+  if (!userName) return <div className={styles.noUserSelected}>请选择一个用户</div>;
+  
+  if (loading) return <Spin tip="加载中..." />;
+  if (error) return <div className={styles.error}>加载失败: {error}</div>;
 
   return (
     <div
@@ -77,10 +133,10 @@ const UserDetails = ({ user, roles, permissions, onDropRole, onRemoveRole }) => 
       onDragOver={handleDragOver}
       onDropCapture={handleContainerDropCapture}
     >
-      <h4>{user.name}'s Details</h4>
+      <h4>{userName}'s Details</h4>
       <Tree
         treeData={treeData}
-        key={`tree-${user.id}-${treeData.length}`}
+        key={`tree-${userName}-${treeData.length}`}
         draggable
         blockNode
         titleRender={nodeData => {

@@ -1,23 +1,55 @@
-import React, { useRef, useMemo, useCallback } from 'react';
+import React, { useRef, useMemo, useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Tree } from 'antd';
+import { Tree, Spin, message } from 'antd';
 import useDragDrop from '../../../hooks/useDragDrop';
 import styles from '../../../css/dashboard/rbac/RoleDetails.module.css';
+import { loadRole } from "../../../api/role.js";
 
 const getSafeArray = v => Array.isArray(v) ? v : [];
 const createNodeKey = (type, id) => `${type}-${id}`;
 
-const RoleDetails = ({ role, permissions, onDropPermission, onRemovePermission }) => {
+const RoleDetails = ({ roleId, role, permissions, onDropPermission, onRemovePermission }) => {
   const containerRef = useRef(null);
   const draggedPermRef = useRef(null);
   const { handleDragStart, handleDragOver, handleDrop } = useDragDrop();
-  const permIds = useMemo(() => getSafeArray(role?.permissions), [role]);
+  
+  // 新增状态管理
+  const [permIds, setPermIds] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [roleDetails, setRoleDetails] = useState(null);
+
+  // 加载角色权限数据
+  useEffect(() => {
+    if (!roleId) return;
+    
+    const fetchRolePermissions = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await loadRole(roleId);
+        if (response.success) {
+          setRoleDetails(response.data.data);
+          setPermIds(getSafeArray(response.data.data?.permissionIds));
+        } else {
+          throw new Error(response.data?.msg || 'Failed to load role permissions');
+        }
+      } catch (err) {
+        setError(err.message);
+        message.error(`加载角色权限失败: ${err.message}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchRolePermissions();
+  }, [roleId]);
 
   // 构建树形节点数据
   const treeData = useMemo(
-    () => role ? [{
-      title: role.name,
-      key: createNodeKey('role', role.id),
+    () => roleDetails ? [{
+      title: roleDetails.name,
+      key: createNodeKey('role', roleDetails.id),
       children: permIds.map(pid => ({
         title: permissions.find(p => p.id === pid)?.name || '',
         key: createNodeKey('permission', pid),
@@ -25,7 +57,7 @@ const RoleDetails = ({ role, permissions, onDropPermission, onRemovePermission }
         data: { type: 'permission', permissionId: pid }
       }))
     }] : [],
-    [role, permIds, permissions]
+    [roleDetails, permIds, permissions]
   );
 
   // 捕获外部 Drop 事件，添加新权限
@@ -36,11 +68,11 @@ const RoleDetails = ({ role, permissions, onDropPermission, onRemovePermission }
       if (data?.type === 'permission') {
         const pid = data.version === '2.0' ? data.id : data.permissionId;
         if (pid && !permIds.includes(pid)) {
-          onDropPermission(role.id, data);
+          onDropPermission(roleDetails.id, data);
         }
       }
     },
-    [handleDragOver, handleDrop, onDropPermission, permIds, role]
+    [handleDragOver, handleDrop, onDropPermission, permIds, roleDetails]
   );
 
   // 节点拖出容器触发删除
@@ -51,15 +83,17 @@ const RoleDetails = ({ role, permissions, onDropPermission, onRemovePermission }
       if (rect && (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom)) {
         const pid = draggedPermRef.current;
         if (pid) {
-          onRemovePermission(role.id, pid);
+          onRemovePermission(roleDetails.id, pid);
         }
       }
       draggedPermRef.current = null;
     },
-    [onRemovePermission, role]
+    [onRemovePermission, roleDetails]
   );
 
-  if (!role) return <div className={styles.noRoleSelected}>请选择一个角色</div>;
+  if (!roleId) return <div className={styles.noRoleSelected}>请选择一个角色</div>;
+  if (loading) return <Spin tip="加载中..." />;
+  if (error) return <div className={styles.error}>加载失败: {error}</div>;
 
   return (
     <div
@@ -68,7 +102,7 @@ const RoleDetails = ({ role, permissions, onDropPermission, onRemovePermission }
       onDragOver={handleDragOver}
       onDropCapture={handleContainerDropCapture}
     >
-      <h4>{role.name}'s Permissions</h4>
+      <h4>{roleId || '角色'}的权限</h4>
       <Tree
         treeData={treeData}
         draggable
@@ -98,6 +132,7 @@ const RoleDetails = ({ role, permissions, onDropPermission, onRemovePermission }
 };
 
 RoleDetails.propTypes = {
+  roleId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   role: PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     name: PropTypes.string.isRequired,
@@ -116,6 +151,7 @@ RoleDetails.propTypes = {
 };
 
 RoleDetails.defaultProps = {
+  roleId: null,
   role: null
 };
 
