@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { addPermission } from '../../../../api/permission'
 
-function AddPermissionModal({ onClose }) {
+function AddPermissionModal({ onClose, onSuccess }) {
   const [permissionId, setPermissionId] = useState('')
   const [permissionName, setPermissionName] = useState('')
   const [description, setDescription] = useState('')
@@ -34,6 +34,7 @@ function AddPermissionModal({ onClose }) {
           setIsSuccess(true)
           setMessage(msg)
           // 1秒后自动关闭
+          onSuccess(permissionId)
           setTimeout(() => {
             onClose()
           }, 1000)

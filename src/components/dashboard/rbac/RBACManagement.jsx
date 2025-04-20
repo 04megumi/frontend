@@ -91,7 +91,7 @@ const RBACManagement = ({ onShowUserModal, onShowRoleModal, onShowPermissionModa
             </div>
             <div className={styles.column}>
               <PermissionList
-                permissions={permissions}
+                permissionIds={permissionIds}
                 isDraggable
                 onSelectPermission={() => {}}
                 onContextMenu={onUserContextMenu}
@@ -124,7 +124,10 @@ const RBACManagement = ({ onShowUserModal, onShowRoleModal, onShowPermissionModa
           onAddRole={onShowRoleModal} 
           onSuccess={(newRoleId) => { setRoleIds([...roleIds, newRoleId]);}}
         />}
-        {showAddPermissionModal && <AddPermissionModal onClose={() => setShowAddPermissionModal(false)} onAddPermission={onShowPermissionModal} />}
+        {showAddPermissionModal && <AddPermissionModal onClose={() => setShowAddPermissionModal(false)} 
+          onAddPermission={onShowPermissionModal} 
+          onSuccess={(newPermissionId) => { setPermissionIds([...permissionIds, newPermissionId]);}}
+        />}
       </section>
     </main>
 

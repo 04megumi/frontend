@@ -4,14 +4,14 @@ import ContextMenu from '../contextMenu/ContextMenu.jsx';
 import useDragDrop from '../../../hooks/useDragDrop';
 import styles from '../../../css/dashboard/rbac/PermissionList.module.css';
 
-const PermissionList = ({ permissions, isDraggable, onSelectPermission, onContextMenu }) => {
+const PermissionList = ({ permissionIds, isDraggable, onSelectPermission, onContextMenu }) => {
   const [term, setTerm]=useState('');
   const [ctxPos, setCtxPos]=useState({x:0,y:0});
   const [showCtx, setShowCtx]=useState(false);
   const [selPerm, setSelPerm]=useState(null);
   const { handleDragStart } = useDragDrop();
 
-  const filtered = permissions.filter(p => p.name.toLowerCase().includes(term.toLowerCase()));
+  const filtered = permissionIds.filter(p => p.toLowerCase().includes(term.toLowerCase()));
   const onCtx = (e,p)=>{e.preventDefault();setCtxPos({x:e.clientX,y:e.clientY});setSelPerm(p);setShowCtx(true);};
 
   return (
@@ -21,7 +21,7 @@ const PermissionList = ({ permissions, isDraggable, onSelectPermission, onContex
         <h4>Permissions</h4>
         <div className={styles.permissions}>
           {filtered.map(p=>(
-            <div key={p.id} className={styles.permission} draggable={isDraggable} onDragStart={e=>{e.stopPropagation();handleDragStart(e,{version:'2.0',type:'permission',id:p.id,timestamp:Date.now(),signature:Math.random().toString(36).slice(2)})}} onClick={()=>onSelectPermission&&onSelectPermission(p)} onContextMenu={e=>onCtx(e,p)} data-testid={`perm-item-${p.id}`}>{p.name}</div>
+            <div key={p} className={styles.permission} draggable={isDraggable} onDragStart={e=>{e.stopPropagation();handleDragStart(e,{version:'2.0',type:'permission',id:p,timestamp:Date.now(),signature:Math.random().toString(36).slice(2)})}} onClick={()=>onSelectPermission&&onSelectPermission(p)} onContextMenu={e=>onCtx(e,p)} data-testid={`perm-item-${p}`}>{p}</div>
           ))}
         </div>
       </div>
