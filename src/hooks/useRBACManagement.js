@@ -121,6 +121,8 @@ const useRBACManagement = () => {
     roleIds,
     permissionIds,
     setuserNames,
+    setRoleIds,
+    setPermissionIds,
     addUserRole,
     removeUserRole,
     dropUserRole,

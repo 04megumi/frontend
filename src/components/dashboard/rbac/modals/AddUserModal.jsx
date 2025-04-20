@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { addUser } from '../../../../api/user'
 
-function AddUserModal({ onClose, onSuccess}) {
+function AddUserModal({ onClose, onSuccess }) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState(null) // 改为通用消息状态

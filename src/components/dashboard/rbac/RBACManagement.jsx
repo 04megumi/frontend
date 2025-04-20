@@ -15,7 +15,7 @@ const RBACManagement = ({ onShowUserModal, onShowRoleModal, onShowPermissionModa
   const {
     users, roles, permissions,
     userNames, roleIds, permissionIds,
-    setuserNames,
+    setuserNames, setRoleIds, setPermissionIds,
     addUserRole, removeUserRole, dropUserRole,
     addRolePermission, removeRolePermission, dropRolePermission
   } = useRBACManagement();
@@ -67,7 +67,7 @@ const RBACManagement = ({ onShowUserModal, onShowRoleModal, onShowPermissionModa
             </div>
             <div className={styles.column}>
               <RoleList
-                roles={roles}
+                roleIds={roleIds}
                 isDraggable
                 onDropRole={rid => selectedUser && addUserRole(selectedUser.id, rid)}
                 onSelectRole={() => {}}
@@ -79,7 +79,7 @@ const RBACManagement = ({ onShowUserModal, onShowRoleModal, onShowPermissionModa
           // 角色-权限布局模式
           <div className={styles.layout}>
             <div className={styles.column}>
-              <RoleList roles={roles} onSelectRole={setSelectedRole} onContextMenu={onUserContextMenu} />
+              <RoleList roleIds={roleIds} onSelectRole={setSelectedRole} onContextMenu={onUserContextMenu} />
             </div>
             <div className={styles.column}>
               <RoleDetails
@@ -118,9 +118,12 @@ const RBACManagement = ({ onShowUserModal, onShowRoleModal, onShowPermissionModa
       <section className={styles.modalArea}>
         {showAddUserModal && <AddUserModal onClose={() => setShowAddUserModal(false)} 
           onAddUser={onShowUserModal} 
-          onSuccess={(newUsername) => { setuserNames([...userNames, newUsername]);
-        }}/>}
-        {showAddRoleModal && <AddRoleModal onClose={() => setShowAddRoleModal(false)} onAddRole={onShowRoleModal} />}
+          onSuccess={(newUsername) => { setuserNames([...userNames, newUsername]);}}
+        />}
+        {showAddRoleModal && <AddRoleModal onClose={() => setShowAddRoleModal(false)} 
+          onAddRole={onShowRoleModal} 
+          onSuccess={(newRoleId) => { setRoleIds([...roleIds, newRoleId]);}}
+        />}
         {showAddPermissionModal && <AddPermissionModal onClose={() => setShowAddPermissionModal(false)} onAddPermission={onShowPermissionModal} />}
       </section>
     </main>

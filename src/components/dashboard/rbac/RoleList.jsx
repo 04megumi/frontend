@@ -5,7 +5,7 @@ import useDragDrop from '../../../hooks/useDragDrop';
 import styles from '../../../css/dashboard/rbac/RoleList.module.css';
 
 const RoleList = ({
-  roles,
+  roleIds,
   isDraggable,
   onSelectRole,
   onDropRole,
@@ -18,8 +18,8 @@ const RoleList = ({
   const [selectedRole, setSelectedRole] = useState(null);
   const { handleDragStart } = useDragDrop();
 
-  const filteredRoles = roles.filter(role =>
-    role.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredRoles = roleIds.filter(role =>
+    role.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleContextMenu = (event, role) => {
@@ -49,7 +49,7 @@ const RoleList = ({
         <div className={styles.roles}>
           {filteredRoles.map(role => (
             <div
-              key={role.id}
+              key={role}
               className={styles.role}
               draggable={isDraggable}
               onDragStart={e => {
@@ -57,17 +57,16 @@ const RoleList = ({
                 handleDragStart(e, {
                   version: '2.0',
                   type: 'role',
-                  id: role.id,
+                  id: role,
                   timestamp: Date.now(),
                   signature: Math.random().toString(36).slice(2)
                 });
               }}
               onClick={() => onSelectRole && onSelectRole(role)}
               onContextMenu={e => handleContextMenu(e, role)}
-              data-testid={`role-item-${role.id}`}
+              data-testid={`role-item-${role}`}
             >
-              <span className={styles.roleName}>{role.name}</span>
-              <span className={styles.roleBadge}>{role.permissions?.length || 0} 权限</span>
+              <span className={styles.roleName}>{role}</span>
             </div>
           ))}
         </div>
@@ -90,7 +89,7 @@ const RoleList = ({
 };
 
 RoleList.propTypes = {
-  roles: PropTypes.array.isRequired,
+  roleIds: PropTypes.array.isRequired,
   isDraggable: PropTypes.bool,
   onSelectRole: PropTypes.func,
   onDropRole: PropTypes.func,

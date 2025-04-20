@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { addRole } from '../../../../api/role'
 
-function AddRoleModal({ onClose }) {
+function AddRoleModal({ onClose, onSuccess }) {
   const [roleId, setRoleId] = useState('')
   const [roleName, setRoleName] = useState('')
   const [description, setDescription] = useState('')
@@ -34,6 +34,7 @@ function AddRoleModal({ onClose }) {
             setIsSuccess(true)
             setMessage(msg)
             // 1秒后自动关闭
+            onSuccess(roleId)
             setTimeout(() => {
               onClose()
             }, 1000)
