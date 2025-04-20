@@ -11,7 +11,7 @@ export const me = async (userNameDTO) => {
 };
 
 // 用户加载信息接口
-export const load = async (userNameDTO) => {
+export const loadUser = async (userNameDTO) => {
   return await sendRequest('/admin/users/load', 'post', userNameDTO);
 };
 

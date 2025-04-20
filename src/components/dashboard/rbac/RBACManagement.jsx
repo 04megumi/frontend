@@ -14,6 +14,7 @@ import styles from '../../../css/dashboard/rbac/RBACManagement.module.css';
 const RBACManagement = ({ onShowUserModal, onShowRoleModal, onShowPermissionModal, onUserContextMenu }) => {
   const {
     users, roles, permissions,
+    userNames, roleIds, permissionIds,
     addUserRole, removeUserRole, dropUserRole,
     addRolePermission, removeRolePermission, dropRolePermission
   } = useRBACManagement();
@@ -52,11 +53,11 @@ const RBACManagement = ({ onShowUserModal, onShowRoleModal, onShowPermissionModa
           // 用户-角色布局模式
           <div className={styles.layout}>
             <div className={styles.column}>
-              <UserList users={users} onSelectUser={setSelectedUser} onContextMenu={onUserContextMenu} />
+              <UserList userNames={userNames} onSelectUser={setSelectedUser} onContextMenu={onUserContextMenu} />
             </div>
             <div className={styles.column}>
               <UserDetails
-                user={users.find(u => u.id === selectedUser?.id)}
+                userName={selectedUser}
                 roles={roles}
                 permissions={permissions}
                 onDropRole={dropUserRole}

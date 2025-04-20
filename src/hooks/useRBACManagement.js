@@ -1,9 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
+import { loadAllUserNames } from '../api/user'
+import { loadAllRoleIds } from '../api/role'
+import { loadAllPermissionIds } from '../api/permission'
 
 const useRBACManagement = () => {
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
   const [permissions, setPermissions] = useState([]);
+  const [userNames, setuserNames] = useState([]);
+  const [roleIds, setRoleIds] = useState([]);
+  const [permissionIds, setPermissionIds] = useState([]);
 
   // 用户角色管理
   const addUserRole = useCallback((userId, roleId) => {
@@ -49,8 +55,8 @@ const useRBACManagement = () => {
     }
   }, [addRolePermission]);
 
-  // 初始化模拟数据
   useEffect(() => {
+    // 初始化模拟数据（同步部分）
     setUsers([
       { id: 'u1', name: 'Mori Lee', roles: ['r1'] },
       { id: 'u2', name: 'Seraphim Wei', roles: ['r2'] },
@@ -73,12 +79,47 @@ const useRBACManagement = () => {
       { id: 'p7', name: 'history.train' },
       { id: 'p8', name: 'visit' }
     ]);
+  
+    const loadUsers = async () => {
+      try {
+        const userNamesResponse = await loadAllUserNames(); // 使用await等待异步操作完成
+        setuserNames(userNamesResponse.data.data);
+      } catch (error) {
+        console.error('加载用户名失败:', error);
+      }
+    };
+
+    const loadRoles = async () => {
+      try {
+        const RoleIdsR = await loadAllRoleIds(); 
+        setRoleIds(RoleIdsR.data.data);
+      } catch (error) {
+        console.error('加载角色名失败:', error);
+      }
+    };
+
+    const loadPermissions = async () => {
+      try {
+        const PermissionIdsR = await loadAllPermissionIds(); 
+        setPermissionIds(PermissionIdsR.data.data);
+      } catch (error) {
+        console.error('加载用户名失败:', error);
+      }
+    };
+  
+    loadUsers(); 
+    loadRoles();
+    loadPermissions();
   }, []);
+  
 
   return {
     users,
     roles,
     permissions,
+    userNames,
+    roleIds,
+    permissionIds,
     addUserRole,
     removeUserRole,
     dropUserRole,

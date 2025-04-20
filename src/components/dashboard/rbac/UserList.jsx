@@ -4,7 +4,7 @@ import ContextMenu from '../contextMenu/ContextMenu.jsx';
 import styles from '../../../css/dashboard/rbac/UserList.module.css';
 
 const UserList = ({
-  users,
+  userNames,
   onSelectUser,
   onContextMenu
 }) => {
@@ -13,8 +13,8 @@ const UserList = ({
   const [showContextMenu, setShowContextMenu] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = userNames.filter(user =>
+    user.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleContextMenu = (event, user) => {
@@ -48,12 +48,12 @@ const UserList = ({
         <div className={styles.users}>
           {filteredUsers.map(user => (
             <div
-              key={user.id}
+              key={user}
               className={styles.user}
               onClick={() => onSelectUser && onSelectUser(user)}
               onContextMenu={(event) => handleContextMenu(event, user)}
             >
-              {user.name}
+              {user}
             </div>
           ))}
         </div>
@@ -72,7 +72,7 @@ const UserList = ({
 };
 
 UserList.propTypes = {
-  users: PropTypes.array.isRequired,
+  userNames: PropTypes.array.isRequired,
   onSelectUser: PropTypes.func,
   onContextMenu: PropTypes.func.isRequired,
 };
