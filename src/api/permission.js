@@ -2,17 +2,17 @@ import { sendRequest } from '../axiosConfig';
 
 // 新增权限
 export const addPermission = async (loginDTO) => {
-  return await sendRequest('/api/v1/admin/permissions/add', 'post', loginDTO);
+  return await sendRequest('/admin/permissions/add', 'post', loginDTO);
 };
 
 // 删除权限
 export const deletePermission = async (idDTO) => {
-  return await sendRequest('/api/v1/admin/permissions/delete', 'post', idDTO);
+  return await sendRequest('/admin/permissions/delete', 'post', idDTO);
 };
 
 // 加载权限
 export const loadPermission = async (idDTO) => {
-  return await sendRequest('/api/v1/admin/permissions/load', 'post', idDTO);
+  return await sendRequest('/admin/permissions/load', 'post', idDTO);
 };
 
 // 获取全部
