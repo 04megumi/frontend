@@ -8,6 +8,9 @@ import RoleDetails from './RoleDetails.jsx';
 import AddUserModal from './modals/AddUserModal.jsx';
 import AddRoleModal from './modals/AddRoleModal.jsx';
 import AddPermissionModal from './modals/AddPermissionModal.jsx';
+import EditUserModal from './modals/AddUserModal.jsx';
+import EditRoleModal from './modals/AddRoleModal.jsx';
+import EditPermissionModal from './modals/AddPermissionModal.jsx';
 import useRBACManagement from '../../../hooks/useRBACManagement';
 import styles from '../../../css/dashboard/rbac/RBACManagement.module.css';
 
@@ -27,6 +30,9 @@ const RBACManagement = ({ onShowUserModal, onShowRoleModal, onShowPermissionModa
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [showAddRoleModal, setShowAddRoleModal] = useState(false);
   const [showAddPermissionModal, setShowAddPermissionModal] = useState(false);
+  const [showEditUserModal, setShowEditUserModal] = useState(false);
+  const [showEditRoleModal, setShowEditRoleModal] = useState(false);
+  const [showEditPermissionModal, setShowEditPermissionModal] = useState(false);
 
   useEffect(() => {
     const togLayout = () => setLayoutMode(prev => !prev);
@@ -126,6 +132,14 @@ const RBACManagement = ({ onShowUserModal, onShowRoleModal, onShowPermissionModa
           onSuccess={(newPermissionId) => { setPermissionIds([...permissionIds, newPermissionId]);}}
         />}
       </section>
+
+      {/* 编辑框 */}
+      <section className={styles.modalArea}>
+        {showEditUserModal && <EditUserModal onClose={() => setShowEditUserModal(false)} onEditUser={onShowEditUserModal} />}
+        {showEditRoleModal && <EditRoleModal onClose={() => setShowEditRoleModal(false)} onEditRole={onShowEditRoleModal} />}
+        {showEditPermissionModal && <EditPermissionModal onClose={() => setShowEditPermissionModal(false)} onEditPermission={onShowEditPermissionModal} />}
+      </section>
+
     </main>
 
   );

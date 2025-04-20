@@ -4,6 +4,7 @@ import styles from './ContextMenu.module.css';
 const ContextMenu = ({ onClose, onContextMenu, contextMenuPosition }) => {
   const handleEdit = () => {
     onContextMenu('edit');
+    onclick
     onClose();
   };
 

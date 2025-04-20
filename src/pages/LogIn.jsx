@@ -44,7 +44,7 @@ function LogIn() {
         let code = response.data.code;
         let msg = response.data.msg;
         if (code===100000) {
-          navigate("/imageCarousel");
+          navigate("/dashboard");
         } else {
           setError(msg);
         }
