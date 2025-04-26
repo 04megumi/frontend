@@ -54,7 +54,6 @@ const RoleList = ({
               draggable={isDraggable}
               onDragStart={e => {
                 handleDragStart(e, {
-                  version: '2.0',
                   type: 'role',
                   id: role,
                   timestamp: Date.now(),

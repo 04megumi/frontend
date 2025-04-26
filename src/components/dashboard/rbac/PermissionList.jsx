@@ -36,7 +36,6 @@ const PermissionList = ({ permissionIds, isDraggable, onSelectPermission, onCont
               onDragStart={e => {
                 e.stopPropagation();
                 handleDragStart(e, {
-                  version: '2.0',
                   type: 'permission',
                   id: p,
                   timestamp: Date.now(),

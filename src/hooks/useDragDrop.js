@@ -3,6 +3,10 @@ import { useCallback } from 'react';
 const useDragDrop = () => {
   // 封装拖拽开始事件
   const handleDragStart = useCallback((e, data) => {
+    if (!e.dataTransfer) {
+      console.error('拖拽事件无效: dataTransfer 不存在');
+      return;
+    }
     e.dataTransfer.setData('application/json', JSON.stringify(data));  // 存储数据
     e.dataTransfer.effectAllowed = 'move';  // 设置允许的拖拽操作类型
   }, []);

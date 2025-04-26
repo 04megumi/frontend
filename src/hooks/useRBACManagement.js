@@ -30,7 +30,7 @@ const useRBACManagement = () => {
   
   const dropUserRole = useCallback((userId, data) => {
     if (data?.type === 'role') {
-      const roleId = data.version === '2.0' ? data.id : data.roleId;
+      const roleId = data.id;
       addUserRole(userId, roleId);
     }
   }, [addUserRole]);
