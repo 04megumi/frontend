@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# 忽略 src 目录下的 axiosConfig.js
+src/axiosConfig.js
