@@ -91,17 +91,20 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
         if (data?.type === 'permission' && data.id && roleId) {
           const pid = data.id;
           if (!permissions.some(p => p.title === pid)) {
-
-            // 调用添加API
-            await addRolePermission({
+            // 调用添加权限的 API
+            const response = await addRolePermission({
               roleId: roleId,
               permissionId: pid
             });
-            // 更新前端状态
-            onAddPermission(pid);
-            setPermissions(prev => [...prev, { title: pid, key: `perm-${pid}` }]);
-            // message.success('权限添加成功');
-            // 因为antd v5版本原因不支持静态方法的message，后续可以改成useMessage
+            if (response.success) {
+              // 更新前端状态
+              onAddPermission(pid);
+              setPermissions(prev => [...prev, { title: pid, key: `perm-${pid}` }]);
+              // message.success('权限添加成功');
+              // 因为antd v5版本原因不支持静态方法的message，后续可以改成useMessage
+            }else {
+              message.error(`添加失败: ${response.data?.msg || '未知错误'}`);
+            }
           }
         }
       } catch (err) {
