@@ -54,7 +54,7 @@ const useRBACManagement = () => {
 
   const dropRolePermission = useCallback((roleId, data) => {
     if (data?.type === 'permission') {
-      const permissionId = data.version === '2.0' ? data.id : data.permissionId;
+      const permissionId = data.id; 
       addRolePermission(roleId, permissionId);
     }
   }, [addRolePermission]);
