@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { loadAllUserNames } from '../api/user'
-import { loadAllRoleIds } from '../api/role'
-import { loadAllPermissionIds } from '../api/permission'
+import { loadAllUserNames } from '../api/user';
+import { loadAllRoleIds } from '../api/role';
+import { loadAllPermissionIds } from '../api/permission';
 
 const useRBACManagement = () => {
   const [users, setUsers] = useState([]);
@@ -19,6 +19,7 @@ const useRBACManagement = () => {
         : u
     ));
   }, []);
+  
   const removeUserRole = useCallback((userId, roleId) => {
     setUsers(prev => prev.map(u =>
       u.id === userId
@@ -26,6 +27,7 @@ const useRBACManagement = () => {
         : u
     ));
   }, []);
+  
   const dropUserRole = useCallback((userId, data) => {
     if (data?.type === 'role') {
       const roleId = data.version === '2.0' ? data.id : data.roleId;
@@ -41,6 +43,7 @@ const useRBACManagement = () => {
         : r
     ));
   }, []);
+
   const removeRolePermission = useCallback((roleId, permissionId) => {
     setRoles(prev => prev.map(r =>
       r.id === roleId
@@ -48,6 +51,7 @@ const useRBACManagement = () => {
         : r
     ));
   }, []);
+
   const dropRolePermission = useCallback((roleId, data) => {
     if (data?.type === 'permission') {
       const permissionId = data.version === '2.0' ? data.id : data.permissionId;
@@ -56,7 +60,7 @@ const useRBACManagement = () => {
   }, [addRolePermission]);
 
   useEffect(() => {
-    // 初始化模拟数据（同步部分）
+    // 加载模拟数据
     setUsers([
       { id: 'u1', name: 'Mori Lee', roles: ['r1'] },
       { id: 'u2', name: 'Seraphim Wei', roles: ['r2'] },
@@ -79,10 +83,10 @@ const useRBACManagement = () => {
       { id: 'p7', name: 'history.train' },
       { id: 'p8', name: 'visit' }
     ]);
-  
+
     const loadUsers = async () => {
       try {
-        const userNamesResponse = await loadAllUserNames(); // 使用await等待异步操作完成
+        const userNamesResponse = await loadAllUserNames();
         setuserNames(userNamesResponse.data.data);
       } catch (error) {
         console.error('加载用户名失败:', error);
@@ -103,15 +107,14 @@ const useRBACManagement = () => {
         const PermissionIdsR = await loadAllPermissionIds(); 
         setPermissionIds(PermissionIdsR.data.data);
       } catch (error) {
-        console.error('加载用户名失败:', error);
+        console.error('加载权限失败:', error);
       }
     };
-  
+
     loadUsers(); 
     loadRoles();
     loadPermissions();
   }, []);
-  
 
   return {
     users,

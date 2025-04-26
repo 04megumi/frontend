@@ -53,7 +53,6 @@ const RoleList = ({
               className={styles.role}
               draggable={isDraggable}
               onDragStart={e => {
-                e.stopPropagation();
                 handleDragStart(e, {
                   version: '2.0',
                   type: 'role',

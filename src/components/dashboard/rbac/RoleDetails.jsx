@@ -10,7 +10,6 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
   const [error, setError] = useState(null);
   const { handleDragStart, handleDragOver, handleDrop } = useDragDrop();
 
-
   // 加载角色权限数据
   useEffect(() => {
     if (!roleId) return;
@@ -41,7 +40,8 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
   }, [roleId]);
 
   // 统一拖过与放下处理：根容器既能 “接收添加”，也能 “接收删除”
-  const onContainerDrop = useCallback(e => {
+  const onContainerDrop = useCallback((e) => {
+    e.preventDefault();
     const data = handleDrop(e);
     if (!data || data.type !== 'permission') return;
 
@@ -86,17 +86,15 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
         draggable
         blockNode
         treeData={permissions}
-        //onDragEnter={onDragEnter}
-        //onDrop={onDrop}
         onDragStart={(e, node) => {
           handleDragStart(e, {
-            version:   '2.0',
-            type:      'permission',
-            id:        node.title,   // 节点 title 就是权限 ID
+            version: '2.0',
+            type: 'permission',
+            id: node.title,   // 节点 title 就是权限 ID
             timestamp: Date.now(),
             signature: Math.random().toString(36).slice(2)
           });
-        }}
+        }}        
         allowDrop={false}
       />
       {/* 还可以在这加“回收站”图标引导用户 */}
