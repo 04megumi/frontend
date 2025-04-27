@@ -3,12 +3,27 @@ import { useCallback } from 'react';
 const useDragDrop = () => {
   // 封装拖拽开始事件
   const handleDragStart = useCallback((e, data) => {
-    if (!e.dataTransfer) {
-      console.error('拖拽事件无效: dataTransfer 不存在');
-      return;
-    }
-    e.dataTransfer.setData('application/json', JSON.stringify(data));  // 存储数据
-    e.dataTransfer.effectAllowed = 'move';  // 设置允许的拖拽操作类型
+    // 手动创建 DataTransfer 对象
+    const dataTransfer = {
+      data: {},
+      setData(type, value) {
+        this.data[type] = value;
+      },
+      getData(type) {
+        return this.data[type] || '';
+      },
+      effectAllowed: 'move',
+      dropEffect: 'move',
+    };
+
+    // 将 DataTransfer 对象赋值给事件对象
+    e.dataTransfer = dataTransfer;
+
+    // 设置拖拽数据
+    e.dataTransfer.setData('application/json', JSON.stringify(data));
+
+    // 设置允许的拖拽操作类型
+    e.dataTransfer.effectAllowed = 'move';
   }, []);
 
   // 拖拽经过：允许放置

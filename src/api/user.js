@@ -44,3 +44,8 @@ export const modifyUser = async (userLogInDTO) => {
 export const loadAllUserNames = async () => {
   return await sendRequest('/admin/users/loadAll', 'get');
 };
+
+// 服务器监控
+export const monitor = async () => {
+  return await sendRequest('/admin/users/monitor', 'get');
+};

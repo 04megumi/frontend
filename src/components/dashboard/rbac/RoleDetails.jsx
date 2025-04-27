@@ -29,7 +29,7 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
             .map(pid => ({
               title: String(pid),
               key: `perm-${pid}`
-            })) || [];
+            }));
           setPermissions(permissionNodes);
           console.log('权限节点数据:', permissionNodes);
         } else {
@@ -54,23 +54,28 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
       const rect = containerRef.current?.getBoundingClientRect();
       const pid = draggedPermRef.current;
 
+      if (!pid) {
+        console.error('未找到拖拽的权限 ID');
+        return;
+      }
+
       // 判断是否拖出容器边界
       if (rect && pid && roleId && (
-        clientX < rect.left || 
-        clientX > rect.right || 
-        clientY < rect.top || 
+        clientX < rect.left ||
+        clientX > rect.right ||
+        clientY < rect.top ||
         clientY > rect.bottom
       )) {
         try {
           // 调用删除API
           await deleteRolePermission({
-            roleId: roleId,
+            roleId,
             permissionId: pid
           });
-          
+
           // 更新前端状态
           onRemovePermission(pid);
-          setPermissions(prev => prev.filter(p => p.title !== pid));
+          setPermissions((prev) => prev.filter((p) => p.title !== pid));
           message.success('权限删除成功');
         } catch (err) {
           message.error(`删除失败: ${err.message}`);
@@ -80,6 +85,14 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
     },
     [onRemovePermission, roleId]
   );
+
+  {/*const onDragStart = async (info) => {
+    // 假设这里有异步操作
+    await someAsyncFunction();
+    
+    // 打印当前拖拽的节点
+    console.log("Drag started on node:", info.node);
+  };*/}
 
   const handleContainerDrop = useCallback(
     async (e) => {
@@ -101,7 +114,7 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
               setPermissions(prev => [...prev, { title: pid, key: `perm-${pid}` }]);
               // message.success('权限添加成功');
               // 因为antd v5版本原因（目前是v5.24.8，应该是支持的，但是不知道为啥报错）不支持静态方法的message，后续可以改成useMessage
-            }else {
+            } else {
               message.error(`添加失败: ${response.data?.msg || '未知错误'}`);
             }
           }
@@ -141,36 +154,22 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
         draggable
         blockNode
         treeData={permissions}
-        onDragStart={(e, node) => {
-          console.log('被拖拽了');
-          console.log('节点数据格式：', node);
-          // 1. 检查事件对象和节点数据的有效性 
-          if (!e || !e.dataTransfer || !node || !node.title) {
-            console.error('事件或节点数据无效，拖拽已阻止', { e, node});
-            return;
+        onDragStart={(event) => {
+          const node = event.node;
+          if (node) {
+            draggedPermRef.current = node.title;
+            handleDragStart(event, {
+              type: 'permission',
+              id: node.title,
+              timestamp: Date.now(),
+              signature: Math.random().toString(36).slice(2),
+            });
+          } else {
+            console.error('拖拽节点无效');
           }
-
-          // 2. 设置拖拽效果
-          try {
-            e.dataTransfer.effectAllowed = 'move';
-          } catch (err) {
-            console.error('设置拖拽效果失败:', err);
-            return;
-          }
-
-          // 3. 记录拖拽的权限ID
-          draggedPermRef.current = node.title;
-
-          // 4. 调用拖拽处理函数
-          handleDragStart(e, {
-            type: 'permission',
-            id: node.title,
-            timestamp: Date.now(),
-            signature: Math.random().toString(36).slice(2)
-          });
         }}
         onDragEnd={handleDragEnd}
-        //allowDrop={false}
+        allowDrop={false}
       />
     </div>
   );
