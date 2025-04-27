@@ -13,11 +13,7 @@ import { useNavigate } from 'react-router-dom';
 const Dashboard = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [activeSection, setActiveSection] = useState('rbac');
-  const [modals, setModals] = useState({
-    user: false,
-    role: false,
-    permission: false
-  });
+  const [userName, setUserName] = useState();
 
   const navigate = useNavigate();
 
@@ -31,7 +27,8 @@ const Dashboard = () => {
           jwtR.data.data.policies &&
           jwtR.data.data.policies['rbac.login'])) {
           navigate("/login");
-        } 
+        }
+        setUserName(jwtR.data.data.name);
       };
       checkJwt();
     }, []);
@@ -42,7 +39,7 @@ const Dashboard = () => {
   return (
     <div className={styles.dashboardRoot}>
       {/* Sidebar */}
-      <Sidebar collapsed={sidebarCollapsed} onSectionChange={setActiveSection}/>
+      <Sidebar collapsed={sidebarCollapsed} onSectionChange={setActiveSection} userName={userName}/>
       {/* Main content area */}
       <main className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-0' : 'ml-[280px]'}`}>
         {/* Navbar Component */}

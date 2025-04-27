@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function Sidebar({ collapsed, onSectionChange }) {
+function Sidebar({ collapsed, onSectionChange, userName }) {
   // 控制各个子菜单的显示状态
   const [submenu, setSubmenu] = useState({
     rbac: false,
@@ -110,7 +110,7 @@ function Sidebar({ collapsed, onSectionChange }) {
               className="w-10 h-10 rounded-full"
             />
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-700">Mori Lee</p>
+              <p className="text-sm font-medium text-gray-700">{userName}</p>
               <p className="text-xs text-gray-500">Admin</p>
             </div>
           </div>
