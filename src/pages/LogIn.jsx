@@ -25,17 +25,10 @@ function LogIn() {
 
   const checkJwt = async () => {
     const jwtToken = localStorage.getItem("jwt");
-    const jwtR = await jwt(jwtToken);  
-    if (!(
-      jwtR.success &&
-      jwtR.data.data &&
-      jwtR.data.data.policies &&
-      jwtR.data.data.policies['rbac.login'])) {
-      navigate("/imageCarousel");
-    } else {
-      navigate("/dashboard");
-    }
+    const jwtR = await jwt(jwtToken);
+    return jwtR.data.data;  
   };
+
   // 处理表单提交
   const handleSubmit = async (e) => {
     e.preventDefault(); // 阻止默认提交行为
@@ -58,7 +51,12 @@ function LogIn() {
         let msg = response.data.msg;
         if (code===100000) {
           localStorage.setItem("jwt", response.data.data);
-          checkJwt();
+          const data = await checkJwt();  
+          if (data.policies !== null && data.policies['rbac.login']) {
+            navigate("/dashboard");
+          } else {
+            navigate("/imageCarousel");
+          }
         } else {
           setError(msg);
         }
@@ -72,20 +70,25 @@ function LogIn() {
 
   // 动态设置页面标题和图标
   useEffect(() => {
+    const fetchPolicies = async () => {
+        const data = await checkJwt();  
+        if (data.policies !== null && data.policies['rbac.login']) {
+            navigate("/dashboard");
+        }
+    };
 
-  
-    checkJwt();
-  
+    fetchPolicies();
+
     document.title = '登录 - Your Consultant';
     const link = document.querySelector("link[rel='icon']");
     link.href = '/xiaoba.svg';
-  
+
     // 组件卸载时恢复默认设置（可选）
     return () => {
-      document.title = 'Default Title';
-      link.href = '/xiaoba.svg';
+        document.title = 'Default Title';
+        link.href = '/xiaoba.svg';
     };
-  }, []);
+  }, [navigate]);  // 依赖项中包括 navigate，确保导航功能正常
 
   return (
     <main className={styles.loginContainer}>

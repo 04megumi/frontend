@@ -25,6 +25,7 @@ const Dashboard = () => {
       const checkJwt = async () => {
         const jwtToken = localStorage.getItem("jwt");
         const jwtR = await jwt(jwtToken);  
+        console.log(jwtR)
         if (!(
           jwtR.success &&
           jwtR.data.data &&
@@ -33,7 +34,7 @@ const Dashboard = () => {
           navigate("/login");
         } 
       };
-      checkJwt();
+      //checkJwt();
     }, []);
 
   const rbac = useRBACManagement();
