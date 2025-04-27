@@ -15,6 +15,11 @@ export const loadUser = async (userNameDTO) => {
   return await sendRequest('/admin/users/load', 'post', userNameDTO);
 };
 
+// jwt加载信息接口
+export const jwt = async (jwtToken) => {
+  return await sendRequest('/admin/users/jwt', 'post', jwtToken);
+};
+
 // 用户注册接口
 export const register = async (userLogInDTO) => {
   return await sendRequest('/admin/users/register', 'post', userLogInDTO);
