@@ -11,7 +11,7 @@ import { jwt } from "../api/user.js";
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [activeSection, setActiveSection] = useState('rbac');
   const [userName, setUserName] = useState();
 

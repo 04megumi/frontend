@@ -2,8 +2,8 @@ import { useCallback } from 'react';
 
 const useDragDrop = () => {
   const handleDragStart = useCallback((e, data) => {
-    if (!e.dataTransfer) {
-      console.error('拖拽事件无效: dataTransfer 不存在');
+    if (!e || !e.dataTransfer) {
+      console.error('无效的拖拽事件对象');
       return;
     }
     e.dataTransfer.setData('application/json', JSON.stringify(data));

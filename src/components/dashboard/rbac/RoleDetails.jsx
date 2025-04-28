@@ -45,21 +45,20 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
 
   const handleDragEnd = useCallback(
     async (e) => {
-      const { clientX, clientY } = e;
+      const nativeEvent = e.event; // 获取 AntD 传递的原生事件
+      const { clientX, clientY } = nativeEvent;
       const rect = containerRef.current?.getBoundingClientRect();
       const pid = draggedPermRef.current;
 
-      if (!pid) {
-        console.error('未找到拖拽的权限 ID');
-        return;
-      }
+      if (!pid || !rect) return;
 
-      if (rect && pid && roleId && (
-        clientX < rect.left ||
-        clientX > rect.right ||
-        clientY < rect.top ||
-        clientY > rect.bottom
-      )) {
+      const isOutside =
+        clientX < rect.left - 10 ||
+        clientX > rect.right + 10 ||
+        clientY < rect.top - 10 ||
+        clientY > rect.bottom + 10;
+        
+      if (isOutside) {
         try {
           await deleteRolePermission({ roleId, permissionId: pid });
           onRemovePermission(pid);
@@ -124,10 +123,11 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
         blockNode
         treeData={permissions}
         onDragStart={(event) => {
+          const nativeEvent = event.event; // 获取 AntD 传递的原生事件
           const node = event.node;
-          if (node) {
+          if (node && nativeEvent.dataTransfer) {
             draggedPermRef.current = node.title;
-            handleDragStart(event, {
+            handleDragStart(nativeEvent, { // 传递原生事件
               type: 'permission',
               id: node.title,
               timestamp: Date.now(),
