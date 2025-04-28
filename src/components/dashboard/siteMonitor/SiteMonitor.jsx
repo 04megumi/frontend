@@ -23,53 +23,40 @@ ChartJS.register(
 );
 
 function SiteMonitor() {
-  const [cpuUsage, setCpuUsage] = useState(0); // 设置默认值为0
-  const [memoryUsage, setMemoryUsage] = useState(0); // 设置默认值为0
-  const [diskUsage, setDiskUsage] = useState(0); // 设置默认值为0
-  const [responseTime, setResponseTime] = useState({ avg: 0, max: 0 });
-  const [errors, setErrors] = useState([]);
-  const [responseTimeHistory, setResponseTimeHistory] = useState([]); // 用于存储响应时间历史数据
-  const [loading, setLoading] = useState(true); // 添加加载状态
+  const [cpuUsage, setCpuUsage] = useState(0); // CPU使用率
+  const [memoryUsage, setMemoryUsage] = useState(0); // 内存使用率
+  const [diskUsage, setDiskUsage] = useState(0); // 磁盘使用率
+  const [loading, setLoading] = useState(true); // 加载状态
 
-  // 每五秒钟调用接口更新数据
+
+  // 每2秒调用接口更新数据
   useEffect(() => {
-    const interval = setInterval(async () => {
+    // 初始加载
+    const fetchData = async () => {
       const response = await monitor();
       if (response.success) {
-        setCpuUsage(response.data.data.cpuUsage);
-        setMemoryUsage(response.data.data.memoryUsage);
-        setDiskUsage(response.data.data.diskUsage);
-        setResponseTime({
-          avg: response.data.data.avgResponseTime,
-          max: response.data.data.maxResponseTime,
-        });
+        const data = response.data.data;
+        //console.log(data);
+        setCpuUsage(data.cpuUsage);
+        setMemoryUsage(data.memoryUsage);
+        setDiskUsage(data.diskUsage);
 
-        // 保存响应时间历史记录
-        setResponseTimeHistory(prev => [...prev, response.data.data.avgResponseTime]);
-        setLoading(false); // 数据加载完成，设置为false
+        setLoading(false);
       } else {
         setErrors(prevErrors => [...prevErrors, response.message]);
-        setLoading(false); // 错误发生时也设置为false
+        setLoading(false);
       }
-    }, 1000);
+    };
+
+    // 初始加载数据
+    fetchData();
+
+    // 每2秒更新一次数据
+    const interval = setInterval(fetchData, 2000);
 
     // 清理定时器
     return () => clearInterval(interval);
   }, []);
-
-  // 响应时间图表数据
-  const chartData = {
-    labels: responseTimeHistory.map((_, index) => `数据点 ${index + 1}`),
-    datasets: [
-      {
-        label: '平均响应时间',
-        data: responseTimeHistory,
-        fill: false,
-        borderColor: 'rgba(75, 192, 192, 1)',
-        tension: 0.1,
-      },
-    ],
-  };
 
   return (
     <div id="monitor-content" className="dashboard-content bg-white rounded-lg mt-4">
@@ -110,23 +97,6 @@ function SiteMonitor() {
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${loading ? 0 : diskUsage}%` }}></div>
             </div>
-          </div>
-        </div>
-
-        {/* Response Times */}
-        <div className="bg-white p-6 rounded-lg border border-gray-200">
-          <h2 className="text-lg font-semibold mb-4">响应时间</h2>
-          <div className="h-40">
-            {/* 绘制响应时间图表 */}
-            {loading ? (
-              <div className="flex justify-center items-center h-full text-gray-500">加载中...</div>
-            ) : (
-              <Line data={chartData} />
-            )}
-          </div>
-          <div className="mt-4 text-sm text-gray-600">
-            <p>平均: {loading ? '加载中...' : `${responseTime.avg}ms`} <span className="text-green-600">↓2%</span></p>
-            <p>最大: {loading ? '加载中...' : `${responseTime.max}ms`} <span className="text-red-600">↑5%</span></p>
           </div>
         </div>
       </div>

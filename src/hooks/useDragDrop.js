@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 
 const useDragDrop = () => {
-  // 封装拖拽开始事件
   const handleDragStart = useCallback((e, data) => {
     // 手动创建 DataTransfer 对象
     const dataTransfer = {
@@ -29,7 +28,7 @@ const useDragDrop = () => {
   // 拖拽经过：允许放置
   const handleDragOver = useCallback((e) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';  // 允许移动
+    e.dataTransfer.dropEffect = 'move';
   }, []);
 
   // 拖拽释放：提取数据
