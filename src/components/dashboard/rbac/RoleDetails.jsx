@@ -16,6 +16,7 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
   useEffect(() => {
     if (!roleId) return;
     setLoading(true);
+
     const fetchRolePermissions = async () => {
       try {
         const response = await loadRole(roleId);
@@ -38,18 +39,21 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
         setLoading(false);
       }
     };
+
     fetchRolePermissions();
   }, [roleId]);
 
   const handleDragEnd = useCallback(
     async (e) => {
-      const { clientX, clientY } = e.nativeEvent;
+      const { clientX, clientY } = e;
       const rect = containerRef.current?.getBoundingClientRect();
       const pid = draggedPermRef.current;
+
       if (!pid) {
         console.error('未找到拖拽的权限 ID');
         return;
       }
+
       if (rect && pid && roleId && (
         clientX < rect.left ||
         clientX > rect.right ||
@@ -59,7 +63,7 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
         try {
           await deleteRolePermission({ roleId, permissionId: pid });
           onRemovePermission(pid);
-          setPermissions((prev) => prev.filter((p) => p.title !== pid));
+          setPermissions(prev => prev.filter(p => p.title !== pid));
           message.success('权限删除成功');
         } catch (err) {
           message.error(`删除失败: ${err.message}`);
@@ -109,10 +113,8 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
       className={styles.roleDetails}
       onDragOver={handleDragOver}
       onDrop={handleContainerDrop}
-      style={{
-        position: 'relative',
-        minHeight: '300px',
-      }}
+      ref={containerRef}
+      style={{ position: 'relative', minHeight: '300px' }}
     >
       <h4>{roleId}的权限</h4>
       <Tree
