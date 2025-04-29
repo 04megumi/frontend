@@ -76,12 +76,14 @@ const UserDetails = ({ userName, onAddRole, onRemoveRole }) => {
 
       if (isOutside) {
         try {
-          console.log("userName: "+userName);
-          console.log("RoleId: "+roleId);
-          await deleteUserRole({ userName, roleId });
-          onRemoveRole(roleId);
-          setRoleIds(prev => prev.filter(role => role.roleId !== roleId));
-          message.success('角色删除成功');
+          const response = await deleteUserRole({ "name": userName, "roleId": roleId });
+          if (response.success && response.data.code===100000) {
+            onRemoveRole(roleId);
+            setRoleIds(prev => prev.filter(role => role.roleId !== roleId));
+            message.success('角色删除成功');
+          } else {
+            message.error('角色删除失败');
+          }
         } catch (err) {
           message.error(`删除失败: ${err.message}`);
         }
@@ -100,8 +102,8 @@ const UserDetails = ({ userName, onAddRole, onRemoveRole }) => {
         // 检查是否已存在该角色
         if (!roleIds.some(role => role.roleId === roleId)) {
           try {
-            const response = await addUserRole({ userName, roleId });
-            if (response.success) {
+            const response = await addUserRole({ "name": userName, "roleId": roleId });
+            if (response.success && response.data.code===100000) {
               onAddRole(roleId);
               setRoleIds(prev => [
                 ...prev,

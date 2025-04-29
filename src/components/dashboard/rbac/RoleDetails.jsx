@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Tree, Spin, message } from 'antd';
-import useDragDrop from '../../../hooks/useDragDrop';
+import useDragDrop from '../../../hooks/useDragDrop.js';
 import styles from '../../../css/dashboard/rbac/RoleDetails.module.css';
 import { loadRole } from "../../../api/role.js";
 import { addRolePermission, deleteRolePermission } from "../../../api/rolePermission.js";
@@ -25,7 +25,7 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
     const fetchRolePermissions = async () => {
       try {
         const response = await loadRole(roleId);
-        if (response.success) {
+        if (response.success && response.data.code===100000) {
           const permissionIds = response.data.data?.permissionIds || [];
           const permissionNodes = permissionIds
             .filter(pid => pid != null)
@@ -68,10 +68,14 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
 
       if (isOutside) {
         try {
-          await deleteRolePermission({ roleId, permissionId: pid });
-          onRemovePermission(pid);
-          setPermissions(prev => prev.filter(p => p.title !== pid));
-          message.success('权限删除成功');
+          const response = await deleteRolePermission({ roleId, permissionId: pid });
+          if (response.success && response.data.code===100000) {
+            onRemovePermission(pid);
+            setPermissions(prev => prev.filter(p => p.title !== pid));
+            message.success('权限删除成功');
+          } else {
+            message.error(`删除失败`);
+          }
         } catch (err) {
           message.error(`删除失败: ${err.message}`);
         }
@@ -90,7 +94,7 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
         if (!permissions.some(p => p.title === pid)) {
           try {
             const response = await addRolePermission({ roleId, permissionId: pid });
-            if (response.success) {
+            if (response.success && response.data.code===100000) {
               onAddPermission(pid);
               setPermissions(prev => [...prev, { title: pid, key: `perm-${pid}` }]);
             } else {
