@@ -13,11 +13,11 @@ export default defineConfig({
   ],
   server: {
     host: '0.0.0.0', // 允许外部访问
-    port: 5173, // 指定端口
-    strictPort: true, // 如果 5173 端口被占用，则直接报错，而不是尝试其他端口
+    port: 5173,
+    strictPort: true,
     proxy: {
       '/api': {
-        //target: 'http://:9999',
+        target: 'http://175.27.157.20:9999',
         changeOrigin: true,
         secure: false,
       },

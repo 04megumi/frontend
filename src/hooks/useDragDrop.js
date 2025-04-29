@@ -12,7 +12,10 @@ const useDragDrop = () => {
 
   const handleDragOver = useCallback((e) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
+    if (e.dataTransfer) {
+      e.dataTransfer.dropEffect = 'move';
+      e.dataTransfer.effectAllowed = 'move'; // 保持效果一致性
+    }
   }, []);
 
   const handleDrop = useCallback((e) => {

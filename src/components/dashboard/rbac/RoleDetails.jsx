@@ -17,6 +17,13 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
     if (!roleId) return;
     setLoading(true);
 
+    const handleGlobalDragOver = (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+    };
+
+
+
     const fetchRolePermissions = async () => {
       try {
         const response = await loadRole(roleId);
@@ -41,11 +48,14 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
     };
 
     fetchRolePermissions();
+    document.addEventListener('dragover', handleGlobalDragOver);
+    return () => document.removeEventListener('dragover', handleGlobalDragOver);
   }, [roleId]);
 
   const handleDragEnd = useCallback(
     async (e) => {
       const nativeEvent = e.event; // 获取 AntD 传递的原生事件
+      nativeEvent.dataTransfer.dropEffect = "move";
       const { clientX, clientY } = nativeEvent;
       const rect = containerRef.current?.getBoundingClientRect();
       const pid = draggedPermRef.current;
@@ -57,7 +67,7 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
         clientX > rect.right + 10 ||
         clientY < rect.top - 10 ||
         clientY > rect.bottom + 10;
-        
+
       if (isOutside) {
         try {
           await deleteRolePermission({ roleId, permissionId: pid });
