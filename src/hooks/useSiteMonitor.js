@@ -14,9 +14,9 @@ const useSiteMonitor = () => {
   const fetchData = async () => {
     try {
       const [memoryUsage, diskUsage, responseTime,] = await Promise.all([
-        axios.get('/api/memoryUsage'),
-        axios.get('/api/diskUsage'),
-        axios.get('/api/responseTime'),
+        //axios.get('/api/memoryUsage'),
+        //axios.get('/api/diskUsage'),
+        //axios.get('/api/responseTime'),
       ]);
 
       setData({

@@ -4,6 +4,12 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
   padding: 1.5rem;
   margin-bottom: 2rem;
+  transition: border-color 0.3s;
+  border: 2px dashed transparent;
+}
+
+.roleListContainer.dragover {
+  border-color: #1890ff;
 }
 
 .searchContainer {
@@ -61,4 +67,9 @@
 
 .role:hover {
   background: #e6f7ff;
+}
+
+.role:active {
+  cursor: grabbing;
+  transform: scale(0.98);
 }

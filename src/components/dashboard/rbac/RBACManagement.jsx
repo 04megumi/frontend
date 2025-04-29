@@ -65,6 +65,14 @@ const RBACManagement = ({ onShowUserModal, onShowRoleModal, onShowPermissionModa
             <div className={styles.column}>
               <UserDetails
                 userName={selectedUser}
+                onAddRole={(roleId) => {
+                  console.log('添加权限:', roleId); // 调试日志
+                  dropUserRole(selectedUser, { type: 'role', id: roleId });
+                }}  
+                onRemoveRole={(roleId) => {
+                  console.log('删除权限:', roleId); // 调试日志
+                  removeUserRole(selectedUser, userId);
+                }}
               />
             </div>
             <div className={styles.column}>

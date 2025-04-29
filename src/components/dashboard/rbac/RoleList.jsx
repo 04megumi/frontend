@@ -1,17 +1,10 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ContextMenu from '../contextMenu/ContextMenu.jsx';
-import useDragDrop from '../../../hooks/useDragDrop';
+import useDragDrop from '../../../hooks/useDragDrop.js';
 import styles from '../../../css/dashboard/rbac/RoleList.module.css';
 
-const RoleList = ({
-  roleIds,
-  isDraggable,
-  onSelectRole,
-  onDropRole,
-  selectedUserId,
-  onContextMenu
-}) => {
+const RoleList = ({ roleIds, isDraggable, onSelectRole, onContextMenu}) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
   const [showContextMenu, setShowContextMenu] = useState(false);
@@ -53,8 +46,9 @@ const RoleList = ({
               className={styles.role}
               draggable={isDraggable}
               onDragStart={e => {
+                e.stopPropagation();
                 handleDragStart(e, {
-                  type: 'role',
+                  type: 'roleId',
                   id: role,
                   timestamp: Date.now(),
                   signature: Math.random().toString(36).slice(2)
@@ -69,19 +63,7 @@ const RoleList = ({
           ))}
         </div>
       </div>
-
-      {showContextMenu && (
-        <ContextMenu
-          onClose={handleCloseContextMenu}
-          onContextMenu={handleContextMenuAction}
-          contextMenuPosition={contextMenuPosition}
-          menuItems={[
-            { label: '编辑角色', action: 'edit' },
-            { label: '删除角色', action: 'delete' },
-            { label: '复制ID', action: 'copyId' }
-          ]}
-        />
-      )}
+      {showContextMenu && <ContextMenu onClose={handleCloseContextMenu} onContextMenu={handleContextMenuAction} contextMenuPosition={contextMenuPosition} menuItems={[{ label: '编辑角色', action: 'edit' }, { label: '删除角色', action: 'delete' }, { label: '复制ID', action: 'copyId' }]} />}
     </div>
   );
 };

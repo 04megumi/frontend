@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { loadAllUserNames } from '../api/user';
-import { loadAllRoleIds } from '../api/role';
-import { loadAllPermissionIds } from '../api/permission';
+import { loadAllUserNames } from '../api/user.js';
+import { loadAllRoleIds } from '../api/role.js';
+import { loadAllPermissionIds } from '../api/permission.js';
 
 const useRBACManagement = () => {
   const [users, setUsers] = useState([]);
@@ -12,26 +12,26 @@ const useRBACManagement = () => {
   const [permissionIds, setPermissionIds] = useState([]);
 
   // 用户角色管理
-  const addUserRole = useCallback((userId, roleId) => {
+  const addUserRole = useCallback((userName, roleId) => {
     setUsers(prev => prev.map(u =>
-      u.id === userId && !u.roles.includes(roleId)
+      u.name === userName && !u.roles.includes(roleId)
         ? { ...u, roles: [...u.roles, roleId] }
         : u
     ));
   }, []);
-  
-  const removeUserRole = useCallback((userId, roleId) => {
+
+  const removeUserRole = useCallback((userName, roleId) => {
     setUsers(prev => prev.map(u =>
-      u.id === userId
+      u.name === userName
         ? { ...u, roles: u.roles.filter(rid => rid !== roleId) }
         : u
     ));
   }, []);
-  
-  const dropUserRole = useCallback((userId, data) => {
+
+  const dropUserRole = useCallback((userName, data) => {
     if (data?.type === 'role') {
       const roleId = data.id;
-      addUserRole(userId, roleId);
+      addUserRole(userName, roleId);
     }
   }, [addUserRole]);
 
@@ -54,35 +54,12 @@ const useRBACManagement = () => {
 
   const dropRolePermission = useCallback((roleId, data) => {
     if (data?.type === 'permission') {
-      const permissionId = data.id; 
+      const permissionId = data.id;
       addRolePermission(roleId, permissionId);
     }
   }, [addRolePermission]);
 
   useEffect(() => {
-    // 加载模拟数据
-    setUsers([
-      { id: 'u1', name: 'Mori Lee', roles: ['r1'] },
-      { id: 'u2', name: 'Seraphim Wei', roles: ['r2'] },
-      { id: 'u3', name: 'wtz666', roles: ['r4'] },
-      { id: 'u4', name: 'syz', roles: ['r3'] }
-    ]);
-    setRoles([
-      { id: 'r1', name: '超管', permissions: ['p1','p2','p3','p4','p5','p6','p7','p8'] },
-      { id: 'r2', name: '管理员', permissions: ['p1','p2','p3','p4'] },
-      { id: 'r3', name: '历史管理员', permissions: ['p5','p6','p7'] },
-      { id: 'r4', name: '访客', permissions: ['p8'] }
-    ]);
-    setPermissions([
-      { id: 'p1', name: 'rbac.login' },
-      { id: 'p2', name: 'rbac.modifyPermission' },
-      { id: 'p3', name: 'rbac.modifyRole' },
-      { id: 'p4', name: 'rbac.modifyUser' },
-      { id: 'p5', name: 'history.file' },
-      { id: 'p6', name: 'history.login' },
-      { id: 'p7', name: 'history.train' },
-      { id: 'p8', name: 'visit' }
-    ]);
 
     const loadUsers = async () => {
       try {
@@ -95,7 +72,7 @@ const useRBACManagement = () => {
 
     const loadRoles = async () => {
       try {
-        const RoleIdsR = await loadAllRoleIds(); 
+        const RoleIdsR = await loadAllRoleIds();
         setRoleIds(RoleIdsR.data.data);
       } catch (error) {
         console.error('加载角色名失败:', error);
@@ -104,14 +81,14 @@ const useRBACManagement = () => {
 
     const loadPermissions = async () => {
       try {
-        const PermissionIdsR = await loadAllPermissionIds(); 
+        const PermissionIdsR = await loadAllPermissionIds();
         setPermissionIds(PermissionIdsR.data.data);
       } catch (error) {
         console.error('加载权限失败:', error);
       }
     };
 
-    loadUsers(); 
+    loadUsers();
     loadRoles();
     loadPermissions();
   }, []);

@@ -22,8 +22,6 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
       e.dataTransfer.dropEffect = "move";
     };
 
-
-
     const fetchRolePermissions = async () => {
       try {
         const response = await loadRole(roleId);
