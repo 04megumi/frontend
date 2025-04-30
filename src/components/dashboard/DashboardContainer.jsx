@@ -19,12 +19,6 @@ const DashboardContainer = ({ children, activeSection }) => {
             >
               View
             </button>
-            <button
-              className={styles.controlButton}
-              onClick={() => window.dispatchEvent(new CustomEvent('toggleDeleteZone'))}
-            >
-              Delete
-            </button>
           </div>
         )}
       </div>

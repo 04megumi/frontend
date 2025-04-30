@@ -41,7 +41,6 @@ const RBACManagement = ({
   const [layoutMode, setLayoutMode] = useState(true);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedRole, setSelectedRole] = useState(null);
-  const [showDeleteZone, setShowDeleteZone] = useState(false);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [showAddRoleModal, setShowAddRoleModal] = useState(false);
   const [showAddPermissionModal, setShowAddPermissionModal] = useState(false);
@@ -51,12 +50,9 @@ const RBACManagement = ({
 
   useEffect(() => {
     const togLayout = () => setLayoutMode((prev) => !prev);
-    const togDelete = () => setShowDeleteZone((prev) => !prev);
     window.addEventListener('toggleLayout', togLayout);
-    window.addEventListener('toggleDeleteZone', togDelete);
     return () => {
       window.removeEventListener('toggleLayout', togLayout);
-      window.removeEventListener('toggleDeleteZone', togDelete);
     };
   }, [users, selectedUser]);
 
@@ -147,21 +143,6 @@ const RBACManagement = ({
           </div>
         )}
       </section>
-
-      {/* 删除区域 */}
-      {showDeleteZone && (
-        <section
-          className={styles.deleteZone}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => {
-            const data = JSON.parse(e.dataTransfer.getData('application/json'));
-            if (data.type === 'role') removeUserRole(data.userId, data.id || data.roleId);
-            if (data.type === 'permission') onShowPermissionModal(data.id);
-          }}
-        >
-          拖拽至此删除
-        </section>
-      )}
 
       {/* 添加框 */}
       <section className={styles.modalArea}>
