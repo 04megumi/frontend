@@ -1,4 +1,5 @@
 import React from 'react';
+import style from './Navbar.module.css';
 
 function Navbar({ toggleSidebar }) {
   return (
@@ -14,6 +15,13 @@ function Navbar({ toggleSidebar }) {
           <span className="breadcrumb-item">RBAC</span>
           <span className="mx-2 text-gray-400">/</span>
           <span className="breadcrumb-item">User Management</span>
+        </div>
+        <div className={style.avatar}>
+          <img
+            src="../../../../public/xiaoba.svg"
+            alt="Profile"
+            //onClick={}
+          />
         </div>
       </div>
     </nav>

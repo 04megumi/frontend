@@ -19,6 +19,9 @@ const RBACManagement = ({
   onShowRoleModal,
   onShowPermissionModal,
   onUserContextMenu,
+  onShowEditUserModal,
+  onShowEditRoleModal,
+  onShowEditPermissionModal,
 }) => {
   const {
     users,
@@ -27,7 +30,7 @@ const RBACManagement = ({
     userNames,
     roleIds,
     permissionIds,
-    setuserNames,
+    setUserNames,
     setRoleIds,
     setPermissionIds,
     addUserRole,
@@ -79,6 +82,7 @@ const RBACManagement = ({
             <div className={styles.column}>
               <UserList
                 userNames={userNames}
+                setUserNames={setUserNames}
                 onSelectUser={setSelectedUser}
                 onContextMenu={onUserContextMenu}
               />
@@ -99,6 +103,7 @@ const RBACManagement = ({
             <div className={styles.column}>
               <RoleList
                 roleIds={roleIds}
+                setRoleIds={setRoleIds}
                 isDraggable
                 onDropRole={(rid) => selectedUser && addUserRole(selectedUser.id, rid)}
                 onSelectRole={() => {}}

@@ -1,0 +1,13 @@
+.avatar {
+  background-color: var(--avatar-bgColor);
+  border-radius: var(--borderRadius-medium);
+  box-shadow: 0 0 0 1px var(--avatar-borderColor);
+  size: 32;
+  height: 32px;
+  width: 32px;
+  display: inline-block;
+  flex-shrink: 0;
+  line-height: 1;
+  overflow: hidden;
+  vertical-align: middle;
+}

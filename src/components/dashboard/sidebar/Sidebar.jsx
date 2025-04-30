@@ -136,7 +136,7 @@ function Sidebar({ collapsed, onSectionChange, userName }) {
             <img
               src="../../../../public/xiaoba.svg"
               alt="Profile"
-              className="w-10 h-10 rounded-full"
+              className="w-10 h-10 rounded-full shadow-2xs"
             />
             <div className="ml-3">
               <p className="text-sm font-medium text-gray-700">{userName}</p>

@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ContextMenu from '../contextMenu/ContextMenu.jsx';
+import EditUserModal from './modals/EditUserModal.jsx';
 import styles from '../../../css/dashboard/rbac/UserList.module.css';
 
-const UserList = ({ userNames, onSelectUser, onContextMenu }) => {
+const UserList = ({ userNames, setUserNames, onSelectUser, onContextMenu }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [contextMenuPosition, setContextMenuPosition] = useState({
-    x: 0,
-    y: 0,
-  });
+  const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
   const [showContextMenu, setShowContextMenu] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-
+  const [showEditModal, setShowEditModal] = useState(false);
+  
   const filteredUsers = userNames.filter((user) =>
     user.toLowerCase().includes(searchTerm.toLowerCase()),
   );
@@ -27,8 +26,20 @@ const UserList = ({ userNames, onSelectUser, onContextMenu }) => {
     setShowContextMenu(false);
   };
 
-  const handleContextMenuAction = (action) => {
+  const handleDeleteUser = () => {
+    onContextMenu('delete', selectedUser);
+  };
+
+  const handleEditSuccess = () => {
+    setShowEditModal(false);
+    onContextMenu('refresh');
+  };
+  
+  const handleContextMenuAction = (action, actionType) => {
     onContextMenu(action, selectedUser);
+    if (actionType === 'edit') {
+      setShowEditModal(true); // 显示模态框
+    }
   };
 
   return (
@@ -61,9 +72,26 @@ const UserList = ({ userNames, onSelectUser, onContextMenu }) => {
       {/* 渲染 ContextMenu */}
       {showContextMenu && (
         <ContextMenu
+          userName={selectedUser}
+          userNames={userNames}
+          setuserNames={setUserNames}
+          which={"user"}
           onClose={handleCloseContextMenu}
           onContextMenu={handleContextMenuAction}
-          contextMenuPosition={contextMenuPosition} // 传递 contextMenuPosition
+          contextMenuPosition={contextMenuPosition}
+          onEditClick={() => {
+            setShowEditModal(true);
+            onContextMenu('edit', selectedUser); // 如果需要通知父组件
+          }}
+          onDeleteClick={handleDeleteUser}
+        />
+      )}
+
+      {showEditModal && (
+        <EditUserModal
+          user={selectedUser} // 传递当前用户数据
+          onClose={() => setShowEditModal(false)}
+          onEditSuccess={handleEditSuccess} // 编辑成功后的回调
         />
       )}
     </div>
@@ -74,6 +102,7 @@ UserList.propTypes = {
   userNames: PropTypes.array.isRequired,
   onSelectUser: PropTypes.func,
   onContextMenu: PropTypes.func.isRequired,
+  onEditClick: PropTypes.func.isRequired,
 };
 
 export default UserList;

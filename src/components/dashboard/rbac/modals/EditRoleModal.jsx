@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { editRole } from '../../../../api/role';
 
-function EditRoleModal({ onClose, onSuccess }) {
+function EditRoleModal({ roleId, onClose, onEditSuccess }) {
   const [roleId, setRoleId] = useState('');
   const [roleName, setRoleName] = useState('');
   const [description, setDescription] = useState('');
   const [message, setMessage] = useState(null); // 改为通用消息状态
   const [isSuccess, setIsSuccess] = useState(false); // 新增成功状态标识
+
+  useEffect(() => {
+      if (roleId) {
+        setRoleId(role.roleId);
+        setDescription(role.description);
+      }
+    }, [roleId]);
 
   const handleEditRole = () => {};
 

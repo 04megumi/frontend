@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { editPermission } from '../../../../api/permission';
 
-function EditPermissionModal({ onClose, onSuccess }) {
+function EditPermissionModal({ permissionId, onClose, onEditSuccess }) {
   const [permissionId, setPermissionId] = useState('');
   const [permissionName, setPermissionName] = useState('');
   const [description, setDescription] = useState('');
