@@ -7,7 +7,7 @@ import SiteMonitor from '../components/dashboard/siteMonitor/SiteMonitor.jsx';
 import useRBACManagement from '../hooks/useRBACManagement.js';
 import useSiteMonitor from '../hooks/useSiteMonitor.js';
 import styles from '../css/dashboard/Dashboard.module.css';
-import { jwt } from "../api/user.js";
+import { jwt } from '../api/user.js';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
@@ -18,20 +18,23 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-      const checkJwt = async () => {
-        const jwtToken = localStorage.getItem("jwt");
-        const jwtR = await jwt(jwtToken);  
-        if (!(
+    const checkJwt = async () => {
+      const jwtToken = localStorage.getItem('jwt');
+      const jwtR = await jwt(jwtToken);
+      if (
+        !(
           jwtR.success &&
           jwtR.data.data &&
           jwtR.data.data.policies &&
-          jwtR.data.data.policies['rbac.login'])) {
-          navigate("/login");
-        }
-        setUserName(jwtR.data.data.name);
-      };
-      checkJwt();
-    }, []);
+          jwtR.data.data.policies['rbac.login']
+        )
+      ) {
+        navigate('/login');
+      }
+      setUserName(jwtR.data.data.name);
+    };
+    checkJwt();
+  }, []);
 
   const rbac = useRBACManagement();
   const monitoring = useSiteMonitor();
@@ -39,34 +42,40 @@ const Dashboard = () => {
   return (
     <div className={styles.dashboardRoot}>
       {/* Sidebar */}
-      <Sidebar collapsed={sidebarCollapsed} onSectionChange={setActiveSection} userName={userName}/>
+      <Sidebar
+        collapsed={sidebarCollapsed}
+        onSectionChange={setActiveSection}
+        userName={userName}
+      />
       {/* Main content area */}
-      <main className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-0' : 'ml-[280px]'}`}>
+      <main
+        className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-0' : 'ml-[280px]'}`}
+      >
         {/* Navbar Component */}
-        <Navbar toggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}/>
+        <Navbar toggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} />
         {/* DashboardContainer that holds the active section and modals */}
         <DashboardContainer
           activeSection={activeSection}
-          onShowUserModal={() => setModals({ ...modals, user: true })} 
+          onShowUserModal={() => setModals({ ...modals, user: true })}
           onShowRoleModal={() => setModals({ ...modals, role: true })}
-          onShowPermissionModal={() => setModals({ ...modals, permission: true })} 
+          onShowPermissionModal={() => setModals({ ...modals, permission: true })}
         >
           {/* DashBoard内容 */}
           <section className={styles.dashboardContent}>
             {/* RBAC */}
             {activeSection === 'rbac' && (
               <RBACManagement
-                users={rbac.users} 
+                users={rbac.users}
                 roles={rbac.roles}
-                permissions={rbac.permissions} 
-                onRoleAssign={rbac.handleRoleAssign} 
-                onPermissionAssign={rbac.handlePermissionAssign} 
-                onRoleRemove={rbac.handleRoleRemove} 
+                permissions={rbac.permissions}
+                onRoleAssign={rbac.handleRoleAssign}
+                onPermissionAssign={rbac.handlePermissionAssign}
+                onRoleRemove={rbac.handleRoleRemove}
                 onPermissionRemove={rbac.handlePermissionRemove}
               />
             )}
             {/* 站点监控 */}
-            {activeSection === 'monitoring' && ( <SiteMonitor /> )}
+            {activeSection === 'monitoring' && <SiteMonitor />}
           </section>
         </DashboardContainer>
       </main>

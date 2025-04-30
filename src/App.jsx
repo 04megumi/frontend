@@ -2,7 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import LogIn from './pages/LogIn';
 import Register from './pages/Register';
-import Dashboard from "./pages/Dashboard";
+import Dashboard from './pages/Dashboard';
 import ImageCarousel from './pages/ImageCarousel';
 
 function App() {

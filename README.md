@@ -6,15 +6,8 @@
 
 ## 一 环境说明
 
-OS: Windows 10
-npm version: 10.9.2
-yarn version: 1.22.22
-node version: v22.14.0
-vite version: 6.2.6
-react 19
-react-dom: ^19.0.0
-axios: ^1.8.4
-tailwindcss: v4.1.3
+OS: Windows 10 npm version: 10.9.2 yarn version: 1.22.22 node version: v22.14.0 vite version: 6.2.6
+react 19 react-dom: ^19.0.0 axios: ^1.8.4 tailwindcss: v4.1.3
 
 prop-types: 15.8.1
 
@@ -22,15 +15,13 @@ antd: npm install antd --save
 
 ## 二 开发组件说明
 
-SpringBoot: 3.4.3
-组件:Lombok
+SpringBoot: 3.4.3组件:Lombok
 
 ## 三 启动流程
 
 ### 本地
 
-npm install
-npm run dev
+npm install npm run dev
 
 ### 服务器
 
@@ -44,7 +35,9 @@ TODO
 
 在需要的地方直接使用相对路径引入编译后的模块，例如：
 
-</button></span></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="!whitespace-pre language-javascript"><span><span>import</span><span> </span><span>MyComponent</span><span> </span><span>from</span><span> </span><span>'./lib/MyComponent'</span><span>;</span></span></code></div></div></pre>
+</button></span></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="!whitespace-pre language-javascript"><span><span>import</span><span>
+</span><span>MyComponent</span><span> </span><span>from</span><span>
+</span><span>'./lib/MyComponent'</span><span>;</span></span></code></div></div></pre>
 
 ![1743487063820](images/README/1743487063820.png)
 
@@ -56,8 +49,7 @@ npm create vite@latest
 
 ### 2、Typescript 依赖安装：
 
-node -v
-npm -v
+node -v npm -v
 
 npm install --save-dev typescript @types/react @types/react-dom
 
@@ -71,19 +63,17 @@ https://tailwindcss.com/docs/installation/using-vite
 
 2.tailwind css 3：
 
-node -v
-npm -v
+node -v npm -v
 
 npm install -D tailwindcss@3.4.17 postcss autoprefixernpm install tailwindcss postcss autoprefixer
 npx tailwindcss init -p
 
 或手动添加配置文件 tailwind.config.js, postcss.config.js
 
-创建css文件，确保在项目中有一个主 CSS 文件（例如 `src/input.css`），并在其中包含 Tailwind CSS 的指令：
+创建css文件，确保在项目中有一个主 CSS 文件（例如 `src/input.css`），并在其中包含 Tailwind
+CSS 的指令：
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@tailwind base; @tailwind components; @tailwind utilities;
 
 3、升级到tailwind css 4：
 

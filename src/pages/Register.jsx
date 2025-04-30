@@ -1,38 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import styles from '../css/Register.module.css';
-import { register } from '../api/user'
-  
+import { register } from '../api/user';
+
 function Register() {
-  const [formData, setFormData] = useState({ 
-    name: "", 
-    password: "",
-    confirmPassword: ""
+  const [formData, setFormData] = useState({
+    name: '',
+    password: '',
+    confirmPassword: '',
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-  const [passwordStrength, setPasswordStrength] = useState("");
+  const [error, setError] = useState('');
+  const [passwordStrength, setPasswordStrength] = useState('');
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    setError(null)
+    setError(null);
     // 密码强度检查
-    if (name === "password") {
+    if (name === 'password') {
       if (value.length < 8) {
-        setPasswordStrength("Weak ❌");
+        setPasswordStrength('Weak ❌');
       } else if (value.match(/[A-Z]/) && value.match(/[0-9]/)) {
-        setPasswordStrength("Strong ✅");
+        setPasswordStrength('Strong ✅');
       } else {
-        setPasswordStrength("Medium ⚠️");
+        setPasswordStrength('Medium ⚠️');
       }
     }
 
     // 密码一致性检查
-    if (name === "confirmPassword") {
+    if (name === 'confirmPassword') {
       const isValid = value === formData.password;
-      setError(isValid ? "" : "密码不一致");
+      setError(isValid ? '' : '密码不一致');
     }
   };
 
@@ -40,24 +40,24 @@ function Register() {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      setError("密码不一致");
+      setError('密码不一致');
       return;
     }
-    if (passwordStrength !== "Strong ✅") {
-      setError("密码强度不够, 请重新设置密码");
+    if (passwordStrength !== 'Strong ✅') {
+      setError('密码强度不够, 请重新设置密码');
       return;
     }
 
     try {
       const response = await register({
-        "name": formData.name,     
-        "password": formData.password 
+        name: formData.name,
+        password: formData.password,
       });
       if (response.success) {
         let code = response.data.code;
         let msg = response.data.msg;
-        if (code===100000) {
-          navigate("/LogIn");
+        if (code === 100000) {
+          navigate('/LogIn');
         } else {
           setError(msg);
         }
@@ -73,7 +73,7 @@ function Register() {
   useEffect(() => {
     document.title = '注册 - Your Consultant';
     const link = document.querySelector("link[rel='icon']");
-    link.href = '/xiaoba.svg'; 
+    link.href = '/xiaoba.svg';
 
     // 组件卸载时恢复默认设置（可选）
     return () => {
@@ -107,10 +107,7 @@ function Register() {
               value={formData.password}
               onChange={handleChange}
             />
-            <button
-              type="button"
-              onClick={() => setShowPassword((prev) => !prev)}
-            >
+            <button type="button" onClick={() => setShowPassword((prev) => !prev)}>
               {showPassword ? '🙈' : '👁️'}
             </button>
           </div>

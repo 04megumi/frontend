@@ -12,7 +12,7 @@ body {
 
 /* 左侧白色区域 */
 .loginLeftSection {
-  flex :2;
+  flex: 2;
   padding: 12em;
   background-color: white;
   display: flex;
@@ -22,12 +22,11 @@ body {
 
 /* 右侧彩色背景区域 */
 .loginRightSection {
-  flex :8;
+  flex: 8;
   background: radial-gradient(circle, #f4ba90d7, #ffffff);
   height: 100%; /* 确保背景能够正常填充 */
-   /*border: 2px solid red; 用于调试 */
+  /*border: 2px solid red; 用于调试 */
 }
-
 
 /* 标题样式 */
 .loginH1 {

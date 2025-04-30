@@ -23,9 +23,9 @@
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  transition: 
-      background-color 0.2s ease,
-      transform 0.1s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
 }
 
 .actionButton:hover {
@@ -74,36 +74,36 @@
 /* 响应式布局 */
 @media (max-width: 1024px) {
   .layout {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  
+
   .layout > .column:last-child {
-      grid-column: span 2;
+    grid-column: span 2;
   }
 }
 
 @media (max-width: 768px) {
   .layout {
-      grid-template-columns: 1fr;
+    grid-template-columns: 1fr;
   }
-  
+
   .layout > .column:last-child {
-      grid-column: auto;
+    grid-column: auto;
   }
 
   .controls {
-      flex-direction: column;
+    flex-direction: column;
   }
 }
 
 @media (max-width: 480px) {
   .column {
-      padding: 1rem;
+    padding: 1rem;
   }
 
   .controlButton {
-      width: 100%;
-      justify-content: center;
+    width: 100%;
+    justify-content: center;
   }
 }
 

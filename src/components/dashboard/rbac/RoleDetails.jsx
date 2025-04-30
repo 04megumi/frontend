@@ -2,8 +2,8 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Tree, Spin, message } from 'antd';
 import useDragDrop from '../../../hooks/useDragDrop.js';
 import styles from '../../../css/dashboard/rbac/RoleDetails.module.css';
-import { loadRole } from "../../../api/role.js";
-import { addRolePermission, deleteRolePermission } from "../../../api/rolePermission.js";
+import { loadRole } from '../../../api/role.js';
+import { addRolePermission, deleteRolePermission } from '../../../api/rolePermission.js';
 
 const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
   const [permissions, setPermissions] = useState([]);
@@ -19,19 +19,19 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
 
     const handleGlobalDragOver = (e) => {
       e.preventDefault();
-      e.dataTransfer.dropEffect = "move";
+      e.dataTransfer.dropEffect = 'move';
     };
 
     const fetchRolePermissions = async () => {
       try {
         const response = await loadRole(roleId);
-        if (response.success && response.data.code===100000) {
+        if (response.success && response.data.code === 100000) {
           const permissionIds = response.data.data?.permissionIds || [];
           const permissionNodes = permissionIds
-            .filter(pid => pid != null)
-            .map(pid => ({
+            .filter((pid) => pid != null)
+            .map((pid) => ({
               title: String(pid),
-              key: `perm-${pid}`
+              key: `perm-${pid}`,
             }));
           setPermissions(permissionNodes);
         } else {
@@ -53,7 +53,7 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
   const handleDragEnd = useCallback(
     async (e) => {
       const nativeEvent = e.event; // 获取 AntD 传递的原生事件
-      nativeEvent.dataTransfer.dropEffect = "move";
+      nativeEvent.dataTransfer.dropEffect = 'move';
       const { clientX, clientY } = nativeEvent;
       const rect = containerRef.current?.getBoundingClientRect();
       const pid = draggedPermRef.current;
@@ -68,10 +68,13 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
 
       if (isOutside) {
         try {
-          const response = await deleteRolePermission({ roleId, permissionId: pid });
-          if (response.success && response.data.code===100000) {
+          const response = await deleteRolePermission({
+            roleId,
+            permissionId: pid,
+          });
+          if (response.success && response.data.code === 100000) {
             onRemovePermission(pid);
-            setPermissions(prev => prev.filter(p => p.title !== pid));
+            setPermissions((prev) => prev.filter((p) => p.title !== pid));
             message.success('权限删除成功');
           } else {
             message.error(`删除失败`);
@@ -82,7 +85,7 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
       }
       draggedPermRef.current = null;
     },
-    [onRemovePermission, roleId]
+    [onRemovePermission, roleId],
   );
 
   const handleContainerDrop = useCallback(
@@ -91,12 +94,15 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
       const data = handleDrop(e);
       if (data?.type === 'permission' && data.id && roleId) {
         const pid = data.id;
-        if (!permissions.some(p => p.title === pid)) {
+        if (!permissions.some((p) => p.title === pid)) {
           try {
-            const response = await addRolePermission({ roleId, permissionId: pid });
-            if (response.success && response.data.code===100000) {
+            const response = await addRolePermission({
+              roleId,
+              permissionId: pid,
+            });
+            if (response.success && response.data.code === 100000) {
               onAddPermission(pid);
-              setPermissions(prev => [...prev, { title: pid, key: `perm-${pid}` }]);
+              setPermissions((prev) => [...prev, { title: pid, key: `perm-${pid}` }]);
             } else {
               message.error(`添加失败: ${response.data?.msg || '未知错误'}`);
             }
@@ -106,7 +112,7 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
         }
       }
     },
-    [handleDrop, onAddPermission, permissions, roleId]
+    [handleDrop, onAddPermission, permissions, roleId],
   );
 
   if (!roleId) return <div className={styles.noRoleSelected}>请选择一个角色</div>;
@@ -139,7 +145,8 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
           const node = event.node;
           if (node && nativeEvent.dataTransfer) {
             draggedPermRef.current = node.title;
-            handleDragStart(nativeEvent, { // 传递原生事件
+            handleDragStart(nativeEvent, {
+              // 传递原生事件
               type: 'permission',
               id: node.title,
               timestamp: Date.now(),

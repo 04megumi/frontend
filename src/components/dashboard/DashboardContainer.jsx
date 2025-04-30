@@ -2,10 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from '../../css/dashboard/DashboardContainer.module.css';
 
-const DashboardContainer = ({
-  children,
-  activeSection,
-}) => {
+const DashboardContainer = ({ children, activeSection }) => {
   return (
     <div className={styles.container}>
       <div className={styles.contentHeader}>
@@ -31,9 +28,7 @@ const DashboardContainer = ({
           </div>
         )}
       </div>
-      <div className={styles.contentBody}>
-        {children}
-      </div>
+      <div className={styles.contentBody}>{children}</div>
     </div>
   );
 };
@@ -43,7 +38,7 @@ DashboardContainer.propTypes = {
   children: PropTypes.node.isRequired,
   onShowUserModal: PropTypes.func.isRequired,
   onShowRoleModal: PropTypes.func.isRequired,
-  onShowPermissionModal: PropTypes.func.isRequired
+  onShowPermissionModal: PropTypes.func.isRequired,
 };
 
 export default DashboardContainer;

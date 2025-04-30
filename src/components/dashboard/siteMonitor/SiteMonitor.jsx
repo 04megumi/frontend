@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { monitor } from '../../../api/user'
+import { monitor } from '../../../api/user';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -12,22 +12,13 @@ import {
   Legend,
 } from 'chart.js';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 function SiteMonitor() {
   const [cpuUsage, setCpuUsage] = useState(0); // CPU使用率
   const [memoryUsage, setMemoryUsage] = useState(0); // 内存使用率
   const [diskUsage, setDiskUsage] = useState(0); // 磁盘使用率
   const [loading, setLoading] = useState(true); // 加载状态
-
 
   // 每2秒调用接口更新数据
   useEffect(() => {
@@ -43,7 +34,7 @@ function SiteMonitor() {
 
         setLoading(false);
       } else {
-        setErrors(prevErrors => [...prevErrors, response.message]);
+        setErrors((prevErrors) => [...prevErrors, response.message]);
         setLoading(false);
       }
     };
@@ -77,7 +68,10 @@ function SiteMonitor() {
               <span>{loading ? '加载中...' : `${cpuUsage}%`}</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
-              <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${loading ? 0 : cpuUsage}%` }}></div>
+              <div
+                className="bg-blue-600 h-2 rounded-full"
+                style={{ width: `${loading ? 0 : cpuUsage}%` }}
+              ></div>
             </div>
           </div>
           <div className="mt-4">
@@ -86,7 +80,10 @@ function SiteMonitor() {
               <span>{loading ? '加载中...' : `${memoryUsage}%`}</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
-              <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${loading ? 0 : memoryUsage}%` }}></div>
+              <div
+                className="bg-blue-600 h-2 rounded-full"
+                style={{ width: `${loading ? 0 : memoryUsage}%` }}
+              ></div>
             </div>
           </div>
           <div className="mt-4">
@@ -95,7 +92,10 @@ function SiteMonitor() {
               <span>{loading ? '加载中...' : `${diskUsage}%`}</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
-              <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${loading ? 0 : diskUsage}%` }}></div>
+              <div
+                className="bg-blue-600 h-2 rounded-full"
+                style={{ width: `${loading ? 0 : diskUsage}%` }}
+              ></div>
             </div>
           </div>
         </div>

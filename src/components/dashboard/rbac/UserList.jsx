@@ -3,18 +3,17 @@ import PropTypes from 'prop-types';
 import ContextMenu from '../contextMenu/ContextMenu.jsx';
 import styles from '../../../css/dashboard/rbac/UserList.module.css';
 
-const UserList = ({
-  userNames,
-  onSelectUser,
-  onContextMenu
-}) => {
+const UserList = ({ userNames, onSelectUser, onContextMenu }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
+  const [contextMenuPosition, setContextMenuPosition] = useState({
+    x: 0,
+    y: 0,
+  });
   const [showContextMenu, setShowContextMenu] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
-  const filteredUsers = userNames.filter(user =>
-    user.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = userNames.filter((user) =>
+    user.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const handleContextMenu = (event, user) => {
@@ -46,7 +45,7 @@ const UserList = ({
       <div className={styles.userList} style={{ maxHeight: '400px', overflowY: 'auto' }}>
         <h4>Users</h4>
         <div className={styles.users}>
-          {filteredUsers.map(user => (
+          {filteredUsers.map((user) => (
             <div
               key={user}
               className={styles.user}

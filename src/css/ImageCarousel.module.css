@@ -1,27 +1,27 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @utility centerChild {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-@utility activeImage{    
-    opacity: 1;
-    z-index: 1;
+@utility activeImage {
+  opacity: 1;
+  z-index: 1;
 }
 
-@utility inactiveImage{
-    opacity: 0.5;
-    z-index: -1;
+@utility inactiveImage {
+  opacity: 0.5;
+  z-index: -1;
 }
 
-@utility activeDesc{
-    opacity: 1;
-    visibility: visible;
+@utility activeDesc {
+  opacity: 1;
+  visibility: visible;
 }
 
-@utility inactiveDesc{
-    opacity: 0;
-    visibility: hidden;
+@utility inactiveDesc {
+  opacity: 0;
+  visibility: hidden;
 }

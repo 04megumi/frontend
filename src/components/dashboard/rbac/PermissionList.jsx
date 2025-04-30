@@ -11,39 +11,47 @@ const PermissionList = ({ permissionIds, isDraggable, onSelectPermission, onCont
   const [selPerm, setSelPerm] = useState(null);
   const { handleDragStart } = useDragDrop();
 
-  const filtered = permissionIds.filter(p => p.toLowerCase().includes(term.toLowerCase()));
-  const onCtx = (e, p) => { e.preventDefault(); setCtxPos({ x: e.clientX, y: e.clientY }); setSelPerm(p); setShowCtx(true); };
+  const filtered = permissionIds.filter((p) => p.toLowerCase().includes(term.toLowerCase()));
+  const onCtx = (e, p) => {
+    e.preventDefault();
+    setCtxPos({ x: e.clientX, y: e.clientY });
+    setSelPerm(p);
+    setShowCtx(true);
+  };
 
   return (
-    <div className={styles.permissionListContainer} style={{ maxHeight: '600px', overflowY: 'auto' }}>
+    <div
+      className={styles.permissionListContainer}
+      style={{ maxHeight: '600px', overflowY: 'auto' }}
+    >
       <div className={styles.searchContainer}>
         <input
           type="text"
           placeholder="搜索权限..."
           value={term}
-          onChange={e => setTerm(e.target.value)}
+          onChange={(e) => setTerm(e.target.value)}
           className={styles.searchInput}
         />
       </div>
       <div className={styles.permissionList} style={{ maxHeight: '400px', overflowY: 'auto' }}>
         <h4>Permissions</h4>
         <div className={styles.permissions}>
-          {filtered.map(p => (
+          {filtered.map((p) => (
             <div
               key={p}
               className={styles.permission}
               draggable={isDraggable}
-              onDragStart={e => {
+              onDragStart={(e) => {
                 e.stopPropagation();
                 handleDragStart(e, {
                   type: 'permission',
                   id: p,
                   timestamp: Date.now(),
-                  signature: Math.random().toString(36).slice(2)
+                  signature: Math.random().toString(36).slice(2),
                 });
               }}
               onClick={() => onSelectPermission && onSelectPermission(p)}
-              onContextMenu={e => onCtx(e, p)}
+              onContextMenu={(e) => onCtx(e, p)}
               data-testid={`perm-item-${p}`}
             >
               {p}
@@ -51,7 +59,18 @@ const PermissionList = ({ permissionIds, isDraggable, onSelectPermission, onCont
           ))}
         </div>
       </div>
-      {showCtx && <ContextMenu onClose={() => setShowCtx(false)} onContextMenu={action => onContextMenu(action, selPerm)} contextMenuPosition={ctxPos} menuItems={[{ label: '编辑权限', action: 'edit' }, { label: '删除权限', action: 'delete' }, { label: '复制ID', action: 'copyId' }]} />}
+      {showCtx && (
+        <ContextMenu
+          onClose={() => setShowCtx(false)}
+          onContextMenu={(action) => onContextMenu(action, selPerm)}
+          contextMenuPosition={ctxPos}
+          menuItems={[
+            { label: '编辑权限', action: 'edit' },
+            { label: '删除权限', action: 'delete' },
+            { label: '复制ID', action: 'copyId' },
+          ]}
+        />
+      )}
     </div>
   );
 };
@@ -60,13 +79,13 @@ PermissionList.propTypes = {
   permissionIds: PropTypes.array.isRequired,
   isDraggable: PropTypes.bool,
   onSelectPermission: PropTypes.func,
-  onContextMenu: PropTypes.func
+  onContextMenu: PropTypes.func,
 };
 
 PermissionList.defaultProps = {
   isDraggable: false,
   onSelectPermission: null,
-  onContextMenu: () => { }
+  onContextMenu: () => {},
 };
 
 export default PermissionList;

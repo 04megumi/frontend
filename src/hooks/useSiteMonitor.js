@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-
 const useSiteMonitor = () => {
   const [data, setData] = useState({
     memoryUsage: [],
@@ -13,7 +12,7 @@ const useSiteMonitor = () => {
 
   const fetchData = async () => {
     try {
-      const [memoryUsage, diskUsage, responseTime,] = await Promise.all([
+      const [memoryUsage, diskUsage, responseTime] = await Promise.all([
         //axios.get('/api/memoryUsage'),
         //axios.get('/api/diskUsage'),
         //axios.get('/api/responseTime'),
@@ -24,13 +23,13 @@ const useSiteMonitor = () => {
         diskUsage: diskUsage.data,
         responseTime: responseTime.data,
         loading: false,
-        error: null
+        error: null,
       });
     } catch (error) {
-      setData(prev => ({
+      setData((prev) => ({
         ...prev,
         loading: false,
-        error: error.message
+        error: error.message,
       }));
     }
   };

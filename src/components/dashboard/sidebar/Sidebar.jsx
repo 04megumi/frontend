@@ -9,7 +9,7 @@ function Sidebar({ collapsed, onSectionChange, userName }) {
   });
 
   const toggleSubmenu = (menu) => {
-    setSubmenu(prev => ({ ...prev, [menu]: !prev[menu] }));
+    setSubmenu((prev) => ({ ...prev, [menu]: !prev[menu] }));
   };
 
   // 点击菜单项后调用传入的回调 onSectionChange
@@ -42,10 +42,15 @@ function Sidebar({ collapsed, onSectionChange, userName }) {
           <div className="mb-4">
             <div
               className="flex justify-between items-center cursor-pointer group"
-              onClick={() => { toggleSubmenu('rbac'); handleMenuClick('rbac'); }}
+              onClick={() => {
+                toggleSubmenu('rbac');
+                handleMenuClick('rbac');
+              }}
             >
               <span className="font-medium text-gray-700 group-hover:text-blue-600">RBAC</span>
-              <i className={`fas ${submenu.rbac ? 'fa-minus' : 'fa-plus'} text-gray-400 group-hover:text-blue-600`}></i>
+              <i
+                className={`fas ${submenu.rbac ? 'fa-minus' : 'fa-plus'} text-gray-400 group-hover:text-blue-600`}
+              ></i>
             </div>
             {submenu.rbac && (
               <div className="pl-4 mt-2">
@@ -70,16 +75,29 @@ function Sidebar({ collapsed, onSectionChange, userName }) {
           <div className="mb-4">
             <div
               className="flex justify-between items-center cursor-pointer group"
-              onClick={() => { toggleSubmenu('monitoring'); handleMenuClick('monitoring'); }}
+              onClick={() => {
+                toggleSubmenu('monitoring');
+                handleMenuClick('monitoring');
+              }}
             >
-              <span className="font-medium text-gray-700 group-hover:text-blue-600">Site Monitoring</span>
-              <i className={`fas ${submenu.monitoring ? 'fa-minus' : 'fa-plus'} text-gray-400 group-hover:text-blue-600`}></i>
+              <span className="font-medium text-gray-700 group-hover:text-blue-600">
+                Site Monitoring
+              </span>
+              <i
+                className={`fas ${submenu.monitoring ? 'fa-minus' : 'fa-plus'} text-gray-400 group-hover:text-blue-600`}
+              ></i>
             </div>
             {submenu.monitoring && (
               <div className="pl-4 mt-2">
-                <a href="#!" className="block py-2 text-gray-600 hover:text-blue-600">Dashboard</a>
-                <a href="#!" className="block py-2 text-gray-600 hover:text-blue-600">Alerts</a>
-                <a href="#!" className="block py-2 text-gray-600 hover:text-blue-600">Logs</a>
+                <a href="#!" className="block py-2 text-gray-600 hover:text-blue-600">
+                  Dashboard
+                </a>
+                <a href="#!" className="block py-2 text-gray-600 hover:text-blue-600">
+                  Alerts
+                </a>
+                <a href="#!" className="block py-2 text-gray-600 hover:text-blue-600">
+                  Logs
+                </a>
               </div>
             )}
           </div>
@@ -87,16 +105,27 @@ function Sidebar({ collapsed, onSectionChange, userName }) {
           <div className="mb-4">
             <div
               className="flex justify-between items-center cursor-pointer group"
-              onClick={() => { toggleSubmenu('history'); handleMenuClick('history'); }}
+              onClick={() => {
+                toggleSubmenu('history');
+                handleMenuClick('history');
+              }}
             >
               <span className="font-medium text-gray-700 group-hover:text-blue-600">History</span>
-              <i className={`fas ${submenu.history ? 'fa-minus' : 'fa-plus'} text-gray-400 group-hover:text-blue-600`}></i>
+              <i
+                className={`fas ${submenu.history ? 'fa-minus' : 'fa-plus'} text-gray-400 group-hover:text-blue-600`}
+              ></i>
             </div>
             {submenu.history && (
               <div className="pl-4 mt-2">
-                <a href="#!" className="block py-2 text-gray-600 hover:text-blue-600">Documents</a>
-                <a href="#!" className="block py-2 text-gray-600 hover:text-blue-600">Archives</a>
-                <a href="#!" className="block py-2 text-gray-600 hover:text-blue-600">Reports</a>
+                <a href="#!" className="block py-2 text-gray-600 hover:text-blue-600">
+                  Documents
+                </a>
+                <a href="#!" className="block py-2 text-gray-600 hover:text-blue-600">
+                  Archives
+                </a>
+                <a href="#!" className="block py-2 text-gray-600 hover:text-blue-600">
+                  Reports
+                </a>
               </div>
             )}
           </div>

@@ -1,57 +1,57 @@
-import React, { useState } from 'react'
-import { addUser } from '../../../../api/user'
+import React, { useState } from 'react';
+import { addUser } from '../../../../api/user';
 
 function AddUserModal({ onClose, onSuccess }) {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [message, setMessage] = useState(null) // 改为通用消息状态
-  const [isSuccess, setIsSuccess] = useState(false) // 新增成功状态标识
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState(null); // 改为通用消息状态
+  const [isSuccess, setIsSuccess] = useState(false); // 新增成功状态标识
 
   const handleAddUser = async () => {
     try {
       // 清空之前的状态
-      setMessage(null)
-      setIsSuccess(false)
-      
+      setMessage(null);
+      setIsSuccess(false);
+
       // 基础验证
-      if(!username.trim()) {
-        setMessage('用户名不能为空')
-        return
+      if (!username.trim()) {
+        setMessage('用户名不能为空');
+        return;
       }
-      
-      if(!password.trim()) {
-        setMessage('密码不能为空')
-        return
+
+      if (!password.trim()) {
+        setMessage('密码不能为空');
+        return;
       }
 
       const response = await addUser({
-        "name": username,
-        "password": password
+        name: username,
+        password: password,
       });
 
       if (response.success) {
         const code = response.data?.code;
         const msg = response.data?.msg || '用户添加成功';
-        
+
         if (code === 100000) {
-          setIsSuccess(true)
-          setMessage(msg)
+          setIsSuccess(true);
+          setMessage(msg);
           // 调用onSuccess回调，传递新用户名
-          onSuccess(username);  // 添加这行
+          onSuccess(username); // 添加这行
           // 1秒后自动关闭
           setTimeout(() => {
-            onClose()
-          }, 1000)
+            onClose();
+          }, 1000);
         } else {
-          setMessage(msg || '操作失败')
+          setMessage(msg || '操作失败');
         }
       } else {
-        setMessage(response.error?.message || '请求失败，请稍后再试')
+        setMessage(response.error?.message || '请求失败，请稍后再试');
       }
     } catch (err) {
-      setMessage('系统错误: ' + (err.message || '未知错误'))
+      setMessage('系统错误: ' + (err.message || '未知错误'));
     }
-  }
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -62,48 +62,50 @@ function AddUserModal({ onClose, onSuccess }) {
             <i className="fas fa-times"></i>
           </button>
         </div>
-        
+
         {/* 消息提示区 - 根据状态显示不同样式 */}
         {message && (
-          <div className={`mb-4 p-3 border rounded ${
-            isSuccess 
-              ? 'bg-green-100 border-green-400 text-green-700' 
-              : 'bg-red-100 border-red-400 text-red-700'
-          }`}>
+          <div
+            className={`mb-4 p-3 border rounded ${
+              isSuccess
+                ? 'bg-green-100 border-green-400 text-green-700'
+                : 'bg-red-100 border-red-400 text-red-700'
+            }`}
+          >
             {message}
           </div>
         )}
-        
+
         <form className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
-            <input 
-              type="text" 
-              value={username} 
-              onChange={(e)=> setUsername(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" 
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input 
+            <input
               type="password"
-              value={password} 
-              onChange={(e)=> setPassword(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
           <div className="flex justify-end space-x-3 pt-4">
-            <button 
-              type="button" 
-              onClick={onClose} 
+            <button
+              type="button"
+              onClick={onClose}
               className="px-4 py-2 border rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
             >
               Cancel
             </button>
-            <button 
-              type="button" 
-              onClick={handleAddUser} 
+            <button
+              type="button"
+              onClick={handleAddUser}
               className="px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
             >
               Add User
@@ -112,7 +114,7 @@ function AddUserModal({ onClose, onSuccess }) {
         </form>
       </div>
     </div>
-  )
+  );
 }
 
-export default AddUserModal
+export default AddUserModal;

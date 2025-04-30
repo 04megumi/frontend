@@ -13,54 +13,68 @@ const useRBACManagement = () => {
 
   // 用户角色管理
   const addUserRole = useCallback((userName, roleId) => {
-    setUsers(prev => prev.map(u =>
-      u.name === userName && !u.roles.includes(roleId)
-        ? { ...u, roles: [...u.roles, roleId] }
-        : u
-    ));
+    setUsers((prev) =>
+      prev.map((u) =>
+        u.name === userName && !u.roles.includes(roleId)
+          ? { ...u, roles: [...u.roles, roleId] }
+          : u,
+      ),
+    );
   }, []);
 
   const removeUserRole = useCallback((userName, roleId) => {
-    setUsers(prev => prev.map(u =>
-      u.name === userName
-        ? { ...u, roles: u.roles.filter(rid => rid !== roleId) }
-        : u
-    ));
+    setUsers((prev) =>
+      prev.map((u) =>
+        u.name === userName ? { ...u, roles: u.roles.filter((rid) => rid !== roleId) } : u,
+      ),
+    );
   }, []);
 
-  const dropUserRole = useCallback((userName, data) => {
-    if (data?.type === 'role') {
-      const roleId = data.id;
-      addUserRole(userName, roleId);
-    }
-  }, [addUserRole]);
+  const dropUserRole = useCallback(
+    (userName, data) => {
+      if (data?.type === 'role') {
+        const roleId = data.id;
+        addUserRole(userName, roleId);
+      }
+    },
+    [addUserRole],
+  );
 
   // 角色权限管理
   const addRolePermission = useCallback((roleId, permissionId) => {
-    setRoles(prev => prev.map(r =>
-      r.id === roleId && !r.permissions.includes(permissionId)
-        ? { ...r, permissions: [...r.permissions, permissionId] }
-        : r
-    ));
+    setRoles((prev) =>
+      prev.map((r) =>
+        r.id === roleId && !r.permissions.includes(permissionId)
+          ? { ...r, permissions: [...r.permissions, permissionId] }
+          : r,
+      ),
+    );
   }, []);
 
   const removeRolePermission = useCallback((roleId, permissionId) => {
-    setRoles(prev => prev.map(r =>
-      r.id === roleId
-        ? { ...r, permissions: r.permissions.filter(pid => pid !== permissionId) }
-        : r
-    ));
+    setRoles((prev) =>
+      prev.map((r) =>
+        r.id === roleId
+          ? {
+              ...r,
+              permissions: r.permissions.filter((pid) => pid !== permissionId),
+            }
+          : r,
+      ),
+    );
   }, []);
 
-  const dropRolePermission = useCallback((roleId, data) => {
-    if (data?.type === 'permission') {
-      const permissionId = data.id;
-      addRolePermission(roleId, permissionId);
-    }
-  }, [addRolePermission]);
+  const dropRolePermission = useCallback(
+    (roleId, data) => {
+      if (data?.type === 'permission') {
+        const permissionId = data.id;
+        addRolePermission(roleId, permissionId);
+      }
+    },
+    [addRolePermission],
+  );
 
   useEffect(() => {
-
     const loadUsers = async () => {
       try {
         const userNamesResponse = await loadAllUserNames();
@@ -108,7 +122,7 @@ const useRBACManagement = () => {
     dropUserRole,
     addRolePermission,
     removeRolePermission,
-    dropRolePermission
+    dropRolePermission,
   };
 };
 

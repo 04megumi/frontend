@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 function Navbar({ toggleSidebar }) {
   return (
@@ -17,7 +17,7 @@ function Navbar({ toggleSidebar }) {
         </div>
       </div>
     </nav>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;

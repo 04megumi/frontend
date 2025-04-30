@@ -4,7 +4,7 @@ import styles from './ContextMenu.module.css';
 const ContextMenu = ({ onClose, onContextMenu, contextMenuPosition }) => {
   const handleEdit = () => {
     onContextMenu('edit');
-    onclick
+    onclick;
     onClose();
   };
 
@@ -16,7 +16,7 @@ const ContextMenu = ({ onClose, onContextMenu, contextMenuPosition }) => {
   };
 
   return (
-    <div 
+    <div
       className={styles.contextMenu}
       style={{ top: contextMenuPosition.y, left: contextMenuPosition.x }}
       onMouseLeave={onClose}
@@ -29,6 +29,6 @@ const ContextMenu = ({ onClose, onContextMenu, contextMenuPosition }) => {
       </div>
     </div>
   );
-}
+};
 
 export default ContextMenu;

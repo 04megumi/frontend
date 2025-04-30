@@ -2,9 +2,9 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Tree, Spin, message } from 'antd';
 import useDragDrop from '../../../hooks/useDragDrop.js';
 import styles from '../../../css/dashboard/rbac/UserDetails.module.css';
-import { loadUser } from "../../../api/user.js";
-import { loadRole } from "../../../api/role.js";
-import { addUserRole, deleteUserRole } from "../../../api/userRole.js";
+import { loadUser } from '../../../api/user.js';
+import { loadRole } from '../../../api/role.js';
+import { addUserRole, deleteUserRole } from '../../../api/userRole.js';
 
 const UserDetails = ({ userName, onAddRole, onRemoveRole }) => {
   const [roleIds, setRoleIds] = useState([]);
@@ -20,7 +20,7 @@ const UserDetails = ({ userName, onAddRole, onRemoveRole }) => {
 
     const handleGlobalDragOver = (e) => {
       e.preventDefault();
-      e.dataTransfer.dropEffect = "move";
+      e.dataTransfer.dropEffect = 'move';
     };
 
     const fetchUserRoles = async () => {
@@ -34,12 +34,13 @@ const UserDetails = ({ userName, onAddRole, onRemoveRole }) => {
                 title: `角色: ${roleId}`, // 显示友好名称
                 key: `role-${roleId}`,
                 roleId: roleId, // 存储原始ID用于逻辑操作
-                children: roleResponse.data.data?.permissionIds?.map(permissionId => ({
-                  title: `权限: ${permissionId}`,
-                  key: `perm-${roleId}-${permissionId}`
-                })) || []
+                children:
+                  roleResponse.data.data?.permissionIds?.map((permissionId) => ({
+                    title: `权限: ${permissionId}`,
+                    key: `perm-${roleId}-${permissionId}`,
+                  })) || [],
               };
-            })
+            }),
           );
           setRoleIds(rolesWithPermissions);
         } else {
@@ -64,22 +65,25 @@ const UserDetails = ({ userName, onAddRole, onRemoveRole }) => {
       const { clientX, clientY } = nativeEvent;
       const rect = containerRef.current?.getBoundingClientRect();
       const roleId = draggedRoleIdRef.current; // 使用存储的纯角色ID
-      
+
       if (!roleId || !rect) return;
-      
+
       // 计算是否在容器外（含10px缓冲）
-      const isOutside = 
-        clientX < rect.left - 10 || 
+      const isOutside =
+        clientX < rect.left - 10 ||
         clientX > rect.right + 10 ||
         clientY < rect.top - 10 ||
         clientY > rect.bottom + 10;
 
       if (isOutside) {
         try {
-          const response = await deleteUserRole({ "name": userName, "roleId": roleId });
-          if (response.success && response.data.code===100000) {
+          const response = await deleteUserRole({
+            name: userName,
+            roleId: roleId,
+          });
+          if (response.success && response.data.code === 100000) {
             onRemoveRole(roleId);
-            setRoleIds(prev => prev.filter(role => role.roleId !== roleId));
+            setRoleIds((prev) => prev.filter((role) => role.roleId !== roleId));
             message.success('角色删除成功');
           } else {
             message.error('角色删除失败');
@@ -90,7 +94,7 @@ const UserDetails = ({ userName, onAddRole, onRemoveRole }) => {
       }
       draggedRoleIdRef.current = null;
     },
-    [onRemoveRole, userName]
+    [onRemoveRole, userName],
   );
 
   const handleContainerDrop = useCallback(
@@ -100,19 +104,22 @@ const UserDetails = ({ userName, onAddRole, onRemoveRole }) => {
       if (data?.type === 'roleId' && data.id && userName) {
         const roleId = data.id;
         // 检查是否已存在该角色
-        if (!roleIds.some(role => role.roleId === roleId)) {
+        if (!roleIds.some((role) => role.roleId === roleId)) {
           try {
-            const response = await addUserRole({ "name": userName, "roleId": roleId });
-            if (response.success && response.data.code===100000) {
+            const response = await addUserRole({
+              name: userName,
+              roleId: roleId,
+            });
+            if (response.success && response.data.code === 100000) {
               onAddRole(roleId);
-              setRoleIds(prev => [
+              setRoleIds((prev) => [
                 ...prev,
                 {
                   title: `角色: ${roleId}`,
                   key: `role-${roleId}`,
                   roleId: roleId,
-                  children: [] // 初始无子节点，实际可按需加载
-                }
+                  children: [], // 初始无子节点，实际可按需加载
+                },
               ]);
               message.success('角色添加成功');
             } else {
@@ -124,7 +131,7 @@ const UserDetails = ({ userName, onAddRole, onRemoveRole }) => {
         }
       }
     },
-    [handleDrop, roleIds, onAddRole, userName]
+    [handleDrop, roleIds, onAddRole, userName],
   );
 
   if (!userName) return <div className={styles.noUserSelected}>请选择一个用户</div>;

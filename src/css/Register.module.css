@@ -1,88 +1,84 @@
 /* 全局基本样式 */
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-  }
-  
-  /* 整体容器直接为 Flex 布局 */
-  .registerContainer {
-    display: flex;
-    height: 100vh; /* 确保占满视口高度 */
-  }
-  
-  /* 左侧白色区域 */
-  .registerLeftSection {
-    flex: 2;
-    padding: 12em;
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  
-  /* 右侧彩色背景区域 */
-  .registerRightSection {
-    flex: 8;
-    background: radial-gradient(circle, #73d6bad7, #ffffff);
-    height: 100%; /* 确保背景能够正常填充 */
-     /*border: 2px solid red; 用于调试 */
-  }
-  
-  
-  /* 标题样式 */
-  .registerH1 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-  }
-  
-  /* 表单样式 */
-  .registerForm {
-    max-width: 400px;
-  }
-  
-  /* 输入框组 */
-  .registerInputGroup {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    background-color: #e0e0e0;
-    padding: 10px;
-    border-radius: 5px;
-  }
-  
-  /* 输入框居中并无边框 */
-  .registerInputGroup input {
-    border: none;
-    background: none;
-    flex: 1;
-    font-size: 1rem;
-    outline: none;
-  }
-  
-  /* 图标样式 */
-  .registerInputGroup .icon {
-    margin-left: 10px;
-    color: #707070;
-    font-size: 1.2rem;
-  }
-  
-  
-  /* 按钮统一样式 */
-  .registerButton {
-    width: 100%;
-    padding: 10px;
-    font-size: 1rem;
-    background-color: #e0e0e0;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  
-  .registerText .register {
-    color: black;
-    text-decoration: underline;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* 整体容器直接为 Flex 布局 */
+.registerContainer {
+  display: flex;
+  height: 100vh; /* 确保占满视口高度 */
+}
+
+/* 左侧白色区域 */
+.registerLeftSection {
+  flex: 2;
+  padding: 12em;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* 右侧彩色背景区域 */
+.registerRightSection {
+  flex: 8;
+  background: radial-gradient(circle, #73d6bad7, #ffffff);
+  height: 100%; /* 确保背景能够正常填充 */
+  /*border: 2px solid red; 用于调试 */
+}
+
+/* 标题样式 */
+.registerH1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+/* 表单样式 */
+.registerForm {
+  max-width: 400px;
+}
+
+/* 输入框组 */
+.registerInputGroup {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  background-color: #e0e0e0;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+/* 输入框居中并无边框 */
+.registerInputGroup input {
+  border: none;
+  background: none;
+  flex: 1;
+  font-size: 1rem;
+  outline: none;
+}
+
+/* 图标样式 */
+.registerInputGroup .icon {
+  margin-left: 10px;
+  color: #707070;
+  font-size: 1.2rem;
+}
+
+/* 按钮统一样式 */
+.registerButton {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  background-color: #e0e0e0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.registerText .register {
+  color: black;
+  text-decoration: underline;
+  font-weight: bold;
+  cursor: pointer;
+}

@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../css/LogIn.module.css';
-import { login, jwt } from "../api/user.js";
-
+import { login, jwt } from '../api/user.js';
 
 function LogIn() {
   // 声明useLogInDTO && 绑定setFormData函数
   const [userLogInDTO, setUserLogInData] = useState({
-    name: "",
-    password: "",
+    name: '',
+    password: '',
   });
   // 声明error && 绑定setError函数
   const [error, setError] = useState(null);
@@ -24,9 +23,9 @@ function LogIn() {
   };
 
   const checkJwt = async () => {
-    const jwtToken = localStorage.getItem("jwt");
+    const jwtToken = localStorage.getItem('jwt');
     const jwtR = await jwt(jwtToken);
-    return jwtR.data.data;  
+    return jwtR.data.data;
   };
 
   // 处理表单提交
@@ -36,26 +35,26 @@ function LogIn() {
 
     // 前端基本错误处理
     if (!userLogInDTO.name) {
-      setError("用户名不能为空!");
+      setError('用户名不能为空!');
       return;
     }
     if (!userLogInDTO.password) {
-      setError("密码不能为空!")
+      setError('密码不能为空!');
       return;
     }
-    
+
     try {
       const response = await login(userLogInDTO);
       if (response.success) {
         let code = response.data.code;
         let msg = response.data.msg;
-        if (code===100000) {
-          localStorage.setItem("jwt", response.data.data);
-          const data = await checkJwt();  
+        if (code === 100000) {
+          localStorage.setItem('jwt', response.data.data);
+          const data = await checkJwt();
           if (data.policies !== null && data.policies['rbac.login']) {
-            navigate("/dashboard");
+            navigate('/dashboard');
           } else {
-            navigate("/imageCarousel");
+            navigate('/imageCarousel');
           }
         } else {
           setError(msg);
@@ -71,10 +70,10 @@ function LogIn() {
   // 动态设置页面标题和图标
   useEffect(() => {
     const fetchPolicies = async () => {
-        const data = await checkJwt();  
-        if (data.policies !== null && data.policies['rbac.login']) {
-            navigate("/dashboard");
-        }
+      const data = await checkJwt();
+      if (data.policies !== null && data.policies['rbac.login']) {
+        navigate('/dashboard');
+      }
     };
 
     fetchPolicies();
@@ -85,10 +84,10 @@ function LogIn() {
 
     // 组件卸载时恢复默认设置（可选）
     return () => {
-        document.title = 'Default Title';
-        link.href = '/xiaoba.svg';
+      document.title = 'Default Title';
+      link.href = '/xiaoba.svg';
     };
-  }, [navigate]);  // 依赖项中包括 navigate，确保导航功能正常
+  }, [navigate]); // 依赖项中包括 navigate，确保导航功能正常
 
   return (
     <main className={styles.loginContainer}>
@@ -124,17 +123,21 @@ function LogIn() {
           {/* 忘记密码链接 */}
           <div className={styles.forgotPassword}>Forgot password?</div>
           {/* 登录按钮 */}
-          <button className={styles.loginButton} type="submit">Log In</button>
+          <button className={styles.loginButton} type="submit">
+            Log In
+          </button>
           {/* 注册新账号的提示 */}
           <div className={styles.registerText}>
-            Don't have an account?{" "}
-            <a className={styles.register} href="/Register">Register</a>
+            Don't have an account?{' '}
+            <a className={styles.register} href="/Register">
+              Register
+            </a>
           </div>
         </form>
       </section>
-    {/* 右侧区域 (可以用于展示其他内容，如广告、提示等) */}
-    <aside className={styles.loginRightSection}></aside>
-  </main>
+      {/* 右侧区域 (可以用于展示其他内容，如广告、提示等) */}
+      <aside className={styles.loginRightSection}></aside>
+    </main>
   );
 }
 
