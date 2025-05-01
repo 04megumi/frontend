@@ -1,6 +1,6 @@
 // src/App.js
 import React from 'react';
-import Try from '../components/Try'; // 无需文件扩展名
+import Try from '../components/Try'; 
 
 const App = () => {
   return (
