@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { editRole } from '../../../../api/role';
+//import { editRole } from '../../../../api/role';
 
-function EditRoleModal({ roleId, onClose, onEditSuccess }) {
+function EditRoleModal({ onClose, onEditSuccess }) {
   const [roleId, setRoleId] = useState('');
   const [roleName, setRoleName] = useState('');
   const [description, setDescription] = useState('');
@@ -9,13 +9,14 @@ function EditRoleModal({ roleId, onClose, onEditSuccess }) {
   const [isSuccess, setIsSuccess] = useState(false); // 新增成功状态标识
 
   useEffect(() => {
-      if (roleId) {
-        setRoleId(role.roleId);
-        setDescription(role.description);
-      }
-    }, [roleId]);
+    if (roleId) {
+      setRoleId(role.roleId);
+      setDescription(role.description);
+    }
+  }, [roleId]);
 
-  const handleEditRole = () => {};
+  //@wzy改改
+  const handleEditRole = () => { };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -30,11 +31,10 @@ function EditRoleModal({ roleId, onClose, onEditSuccess }) {
         {/* 消息提示区 - 根据状态显示不同样式 */}
         {message && (
           <div
-            className={`mb-4 p-3 border rounded ${
-              isSuccess
+            className={`mb-4 p-3 border rounded ${isSuccess
                 ? 'bg-green-100 border-green-400 text-green-700'
                 : 'bg-red-100 border-red-400 text-red-700'
-            }`}
+              }`}
           >
             {message}
           </div>

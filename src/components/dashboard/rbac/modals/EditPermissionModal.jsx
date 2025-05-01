@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { editPermission } from '../../../../api/permission';
+//import { editPermission } from '../../../../api/permission';
 
-function EditPermissionModal({ permissionId, onClose, onEditSuccess }) {
+function EditPermissionModal({ onClose, onEditSuccess }) {
   const [permissionId, setPermissionId] = useState('');
   const [permissionName, setPermissionName] = useState('');
   const [description, setDescription] = useState('');
   const [message, setMessage] = useState(null); // 改为通用消息状态
   const [isSuccess, setIsSuccess] = useState(false); // 新增成功状态标识
 
-  const handleEditPermission = () => {};
+  const handleEditPermission = () => { };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -23,11 +23,10 @@ function EditPermissionModal({ permissionId, onClose, onEditSuccess }) {
         {/* 消息提示区 - 根据状态显示不同样式 */}
         {message && (
           <div
-            className={`mb-4 p-3 border rounded ${
-              isSuccess
+            className={`mb-4 p-3 border rounded ${isSuccess
                 ? 'bg-green-100 border-green-400 text-green-700'
                 : 'bg-red-100 border-red-400 text-red-700'
-            }`}
+              }`}
           >
             {message}
           </div>
@@ -83,4 +82,4 @@ function EditPermissionModal({ permissionId, onClose, onEditSuccess }) {
   );
 }
 
-export default AddPermissionModal;
+export default EditPermissionModal;

@@ -38,7 +38,7 @@ const UserList = ({ userNames, setUserNames, onSelectUser, onContextMenu }) => {
   const handleContextMenuAction = (action, actionType) => {
     onContextMenu(action, selectedUser);
     if (actionType === 'edit') {
-      setShowEditModal(true); // 显示模态框
+      setShowEditModal(true);
     }
   };
 
@@ -69,7 +69,6 @@ const UserList = ({ userNames, setUserNames, onSelectUser, onContextMenu }) => {
         </div>
       </div>
 
-      {/* 渲染 ContextMenu */}
       {showContextMenu && (
         <ContextMenu
           userName={selectedUser}
@@ -103,6 +102,7 @@ UserList.propTypes = {
   onSelectUser: PropTypes.func,
   onContextMenu: PropTypes.func.isRequired,
   onEditClick: PropTypes.func.isRequired,
+  onDeleteClick: PropTypes.func.isRequired,
 };
 
 export default UserList;
