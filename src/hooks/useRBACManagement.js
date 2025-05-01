@@ -7,7 +7,7 @@ const useRBACManagement = () => {
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
   const [permissions, setPermissions] = useState([]);
-  const [userNames, setuserNames] = useState([]);
+  const [userNames, setUserNames] = useState([]);
   const [roleIds, setRoleIds] = useState([]);
   const [permissionIds, setPermissionIds] = useState([]);
 
@@ -78,7 +78,7 @@ const useRBACManagement = () => {
     const loadUsers = async () => {
       try {
         const userNamesResponse = await loadAllUserNames();
-        setuserNames(userNamesResponse.data.data);
+        setUserNames(userNamesResponse.data.data);
       } catch (error) {
         console.error('加载用户名失败:', error);
       }
@@ -114,7 +114,7 @@ const useRBACManagement = () => {
     userNames,
     roleIds,
     permissionIds,
-    setuserNames,
+    setUserNames,
     setRoleIds,
     setPermissionIds,
     addUserRole,

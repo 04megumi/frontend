@@ -156,7 +156,7 @@ const RBACManagement = ({
             onClose={() => setShowAddUserModal(false)}
             onAddUser={onShowUserModal}
             onSuccess={(newUsername) => {
-              setuserNames([...userNames, newUsername]);
+              setUserNames([...userNames, newUsername]);
             }}
           />
         )}
