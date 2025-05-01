@@ -1,22 +1,44 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ContextMenu from '../contextMenu/ContextMenu.jsx';
+import EditPermissionModal from './modals/EditPermissionModal.jsx'
 import useDragDrop from '../../../hooks/useDragDrop';
 import styles from '../../../css/dashboard/rbac/PermissionList.module.css';
 
-const PermissionList = ({ permissionIds, isDraggable, onSelectPermission, onContextMenu }) => {
+const PermissionList = ({ permissionIds, setPermissionIds, isDraggable, onSelectPermission, onContextMenu }) => {
   const [term, setTerm] = useState('');
-  const [ctxPos, setCtxPos] = useState({ x: 0, y: 0 });
-  const [showCtx, setShowCtx] = useState(false);
-  const [selPerm, setSelPerm] = useState(null);
+  const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
+  const [showContextMenu, setShowContextMenu] = useState(false);
+  const [selectedPermission, setSelectedPermission] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
   const { handleDragStart } = useDragDrop();
 
   const filtered = permissionIds.filter((p) => p.toLowerCase().includes(term.toLowerCase()));
-  const onCtx = (e, p) => {
+  const handleContextMenu = (e, p) => {
     e.preventDefault();
-    setCtxPos({ x: e.clientX, y: e.clientY });
-    setSelPerm(p);
-    setShowCtx(true);
+    setContextMenuPosition({ x: e.clientX, y: e.clientY });
+    setSelectedPermission(p);
+    setShowContextMenu(true);
+  };
+
+  const handleCloseContextMenu = () => {
+    setShowContextMenu(false);
+  };
+
+  const handleDeletePermission = () => {
+    onContextMenu('delete', selectedPermission);
+  };
+
+  const handleEditSuccess = () => {
+    setShowEditModal(false);
+    onContextMenu('refresh');
+  };
+
+  const handleContextMenuAction = (action, actionType) => {
+    onContextMenu(action, selectedPermission);
+    if (actionType === 'edit') {
+      setShowEditModal(true);
+    }
   };
 
   return (
@@ -51,7 +73,7 @@ const PermissionList = ({ permissionIds, isDraggable, onSelectPermission, onCont
                 });
               }}
               onClick={() => onSelectPermission && onSelectPermission(p)}
-              onContextMenu={(e) => onCtx(e, p)}
+              onContextMenu={(e) => handleContextMenu(e, p)}
               data-testid={`perm-item-${p}`}
             >
               {p}
@@ -59,16 +81,32 @@ const PermissionList = ({ permissionIds, isDraggable, onSelectPermission, onCont
           ))}
         </div>
       </div>
-      {showCtx && (
+      {showContextMenu && (
         <ContextMenu
-          onClose={() => setShowCtx(false)}
-          onContextMenu={(action) => onContextMenu(action, selPerm)}
-          contextMenuPosition={ctxPos}
+          permissionId={selectedPermission}
+          permissionIds={permissionIds}
+          setPermissionIds={setPermissionIds}
+          which="permission"
+          onClose={() => setShowContextMenu(false)}
+          onContextMenu={(action) => onContextMenu(action, selectedPermission)}
+          contextMenuPosition={contextMenuPosition}
+          onEditClick={() => {
+            setShowEditModal(true);
+            onContextMenu('edit', selectedPermission);
+          }}
+          onDeleteClick={handleDeletePermission}
           menuItems={[
             { label: '编辑权限', action: 'edit' },
             { label: '删除权限', action: 'delete' },
             { label: '复制ID', action: 'copyId' },
           ]}
+        />
+      )}
+      {showEditModal && (
+        <EditPermissionModal
+          permission={selectedPermission}
+          onClose={() => setShowEditModal(false)}
+          onEditSuccess={handleEditSuccess}
         />
       )}
     </div>
@@ -80,12 +118,14 @@ PermissionList.propTypes = {
   isDraggable: PropTypes.bool,
   onSelectPermission: PropTypes.func,
   onContextMenu: PropTypes.func,
+  onEditClick: PropTypes.func.isRequired,
+  onDeleteClick: PropTypes.func.isRequired,
 };
 
 PermissionList.defaultProps = {
   isDraggable: false,
   onSelectPermission: null,
-  onContextMenu: () => {},
+  onContextMenu: () => { },
 };
 
 export default PermissionList;

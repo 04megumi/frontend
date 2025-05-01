@@ -17,7 +17,7 @@ function EditUserModal({ onClose, onEditSuccess }) {
 
   //@wzy改改
   const handleEditUser = () => {
-    
+
   };
 
   return (
@@ -33,11 +33,10 @@ function EditUserModal({ onClose, onEditSuccess }) {
         {/* 消息提示区 - 根据状态显示不同样式 */}
         {message && (
           <div
-            className={`mb-4 p-3 border rounded ${
-              isSuccess
+            className={`mb-4 p-3 border rounded ${isSuccess
                 ? 'bg-green-100 border-green-400 text-green-700'
                 : 'bg-red-100 border-red-400 text-red-700'
-            }`}
+              }`}
           >
             {message}
           </div>

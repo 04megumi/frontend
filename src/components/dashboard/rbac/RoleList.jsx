@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ContextMenu from '../contextMenu/ContextMenu.jsx';
+import EditRoleModal from './modals/EditRoleModal.jsx';
 import useDragDrop from '../../../hooks/useDragDrop.js';
 import styles from '../../../css/dashboard/rbac/RoleList.module.css';
 
 const RoleList = ({ roleIds, setRoleIds, isDraggable, onSelectRole, onContextMenu }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [contextMenuPosition, setContextMenuPosition] = useState({
-    x: 0,
-    y: 0,
-  });
+  const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
   const [showContextMenu, setShowContextMenu] = useState(false);
   const [selectedRole, setSelectedRole] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
   const { handleDragStart } = useDragDrop();
 
   const filteredRoles = roleIds.filter((role) =>
@@ -26,7 +25,22 @@ const RoleList = ({ roleIds, setRoleIds, isDraggable, onSelectRole, onContextMen
   };
 
   const handleCloseContextMenu = () => setShowContextMenu(false);
-  const handleContextMenuAction = (action) => onContextMenu(action, selectedRole);
+
+  const handleDeleteRole = () => {
+    onContextMenu('delete', selectedRole);
+  };
+
+  const handleEditSuccess = () => {
+    setShowEditModal(false);
+    onContextMenu('refresh');
+  };
+
+  const handleContextMenuAction = (action, actionType) => {
+    onContextMenu(action, selectedRole);
+    if (actionType === 'edit') {
+      setShowEditModal(true);
+    }
+  };
 
   return (
     <div className={styles.roleListContainer} style={{ maxHeight: '600px', overflowY: 'auto' }}>
@@ -68,17 +82,30 @@ const RoleList = ({ roleIds, setRoleIds, isDraggable, onSelectRole, onContextMen
       </div>
       {showContextMenu && (
         <ContextMenu
+          roleId={selectedRole}
+          roleIds={roleIds}
+          setRoleIds={setRoleIds}
+          which={"role"}
           onClose={handleCloseContextMenu}
           onContextMenu={handleContextMenuAction}
           contextMenuPosition={contextMenuPosition}
-          which={"role"}
-          roleIds={roleIds}
-          setRoleIds={setRoleIds}
+          onEditClick={() => {
+            setShowEditModal(true);
+            onContextMenu('edit', selectedRole);
+          }}
+          onDeleteClick={handleDeleteRole}
           menuItems={[
             { label: '编辑角色', action: 'edit' },
             { label: '删除角色', action: 'delete' },
             { label: '复制ID', action: 'copyId' },
           ]}
+        />
+      )}
+      {showEditModal && (
+        <EditRoleModal
+          role={selectedRole}
+          onClose={() => setShowEditModal(false)}
+          onEditSuccess={handleEditSuccess}
         />
       )}
     </div>
@@ -92,6 +119,8 @@ RoleList.propTypes = {
   onDropRole: PropTypes.func,
   selectedUserId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onContextMenu: PropTypes.func,
+  onEditClick: PropTypes.func.isRequired,
+  onDeleteClick: PropTypes.func.isRequired,
 };
 
 RoleList.defaultProps = {
@@ -99,7 +128,7 @@ RoleList.defaultProps = {
   onSelectRole: null,
   onDropRole: null,
   selectedUserId: null,
-  onContextMenu: () => {},
+  onContextMenu: () => { },
 };
 
 export default RoleList;
