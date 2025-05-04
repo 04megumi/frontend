@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../css/LogIn.module.css';
-import { login, jwt } from '../api/user.js';
+import { login, me } from '../api/user.js';
 
 function LogIn() {
   const [userLogInDTO, setUserLogInData] = useState({
     name: '',
     password: '',
   });
- 
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-
   const handleChange = (e) => {
     setUserLogInData({
       ...userLogInDTO,
@@ -19,16 +17,9 @@ function LogIn() {
     });
   };
 
-  const checkJwt = async () => {
-    const jwtToken = localStorage.getItem('jwt');
-    const jwtR = await jwt(jwtToken);
-    return jwtR.data.data;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault(); 
     setError(null);
-
     if (!userLogInDTO.name) {
       setError('用户名不能为空!');
       return;
@@ -37,25 +28,19 @@ function LogIn() {
       setError('密码不能为空!');
       return;
     }
-
     try {
       const response = await login(userLogInDTO);
+      console.log(response);
       if (response.success) {
-        let code = response.data.code;
-        let msg = response.data.msg;
-        if (code === 100000) {
-          localStorage.setItem('jwt', response.data.data);
-          const data = await checkJwt();
-          if (data.policies !== null && data.policies['rbac.login']) {
-            navigate('/dashboard');
-          } else {
-            navigate('/imageCarousel');
-          }
+        localStorage.setItem('jwt', response.data);
+        const policies = (await me()).data.polices;
+        if (policies['rbac.login']) {
+          navigate('/dashboard');
         } else {
-          setError(msg);
+          navigate('/imageCarousel');
         }
       } else {
-        setError(error?.message || '登录请求失败，请稍后再试');
+        setError(response.message || '登录请求失败，请稍后再试');
       }
     } catch (error) {
       setError(error);
@@ -64,18 +49,17 @@ function LogIn() {
 
   useEffect(() => {
     const fetchPolicies = async () => {
-      const data = await checkJwt();
-      if (data.policies !== null && data.policies['rbac.login']) {
+      const response = await me();
+      if (response.success && response.data.policies['rbac.login']) {
         navigate('/dashboard');
       }
     };
-
-    fetchPolicies();
-
+    if(localStorage.getItem("jwt")!==null) {
+      fetchPolicies();
+    }
     document.title = '登录 - Your Consultant';
     const link = document.querySelector("link[rel='icon']");
     link.href = '/xiaoba.svg';
-
     return () => {
       document.title = 'Default Title';
       link.href = '/xiaoba.svg';

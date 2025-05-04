@@ -7,7 +7,7 @@ import SiteMonitor from '../components/dashboard/siteMonitor/SiteMonitor.jsx';
 import useRBACManagement from '../hooks/useRBACManagement.js';
 import useSiteMonitor from '../hooks/useSiteMonitor.js';
 import styles from '../css/dashboard/Dashboard.module.css';
-import { jwt } from '../api/user.js';
+import { me } from '../api/user.js';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
