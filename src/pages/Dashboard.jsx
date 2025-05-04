@@ -10,7 +10,7 @@ import useSiteMonitor from '../hooks/useSiteMonitor.js';
 import styles from '../css/dashboard/Dashboard.module.css';
 import { jwt } from '../api/user.js';
 import { useNavigate } from 'react-router-dom';
-import { AppSidebar } from '../components/app-sidebar.tsx';
+import { AppSidebar } from '../components/app-sidebar1.tsx';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '../components/ui/sidebar';
 
 const Dashboard = () => {
@@ -61,10 +61,11 @@ const Dashboard = () => {
         className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-0' : 'ml-[280px]'}`}
       >
         {/* Navbar Component */}
-        <Navbar 
-        toggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} 
-        toggleAvatarSidebar={() => setAvatarSidebarCollapsed(!avatarSidebarCollapsed)}
+        <Navbar
+          toggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+          toggleAvatarSidebar={() => setAvatarSidebarCollapsed(!avatarSidebarCollapsed)}
         />
+
         {/* DashboardContainer that holds the active section and modals */}
         <DashboardContainer
           activeSection={activeSection}
