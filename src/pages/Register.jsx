@@ -8,12 +8,12 @@ function Register() {
     name: '',
     password: '',
     confirmPassword: '',
+    email: '',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [passwordStrength, setPasswordStrength] = useState('');
   const navigate = useNavigate();
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -28,14 +28,12 @@ function Register() {
         setPasswordStrength('Medium ⚠️');
       }
     }
-
     // 密码一致性检查
     if (name === 'confirmPassword') {
       const isValid = value === formData.password;
       setError(isValid ? '' : '密码不一致');
     }
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -47,35 +45,27 @@ function Register() {
       setError('密码强度不够, 请重新设置密码');
       return;
     }
-
     try {
       const response = await register({
         name: formData.name,
         password: formData.password,
+        email: formData.email
       });
       if (response.success) {
-        let code = response.data.code;
-        let msg = response.data.msg;
-        if (code === 100000) {
-          navigate('/LogIn');
-        } else {
-          setError(msg);
-        }
+        localStorage.removeItem("jwt");
+        navigate('/LogIn');
       } else {
-        setError(error?.message || '注册请求失败，请稍后再试');
+        setError(response.message || '注册请求失败，请稍后再试');
       }
     } catch (error) {
       setError(error);
     }
   };
-
   // 动态设置页面标题和图标
   useEffect(() => {
     document.title = '注册 - Your Consultant';
     const link = document.querySelector("link[rel='icon']");
     link.href = '/xiaoba.svg';
-
-    // 组件卸载时恢复默认设置（可选）
     return () => {
       document.title = 'Default Title';
       link.href = '/xiaoba.svg';
@@ -118,6 +108,17 @@ function Register() {
               name="confirmPassword"
               placeholder="Confirm Password"
               value={formData.confirmPassword}
+              onChange={handleChange}
+            />
+            <span className={styles.icon}>🔒</span>
+          </div>
+          {/* 邮箱输入框 */}
+          <div className={styles.registerInputGroup}>
+            <input
+              type={'text'}
+              name="email"
+              placeholder="email"
+              value={formData.email}
               onChange={handleChange}
             />
             <span className={styles.icon}>🔒</span>
