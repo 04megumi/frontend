@@ -25,11 +25,15 @@ const sendRequest = async (url, method = 'post', data = null) => {
   try {
     const response = await api[method](url, data);
     if (response.status === 200) {
-      return { success: true, data: response.data };
+      if (response.data.code === 100000) {
+        return { success: true, data: response.data.data };
+      } else {
+        return { success: false, message: response.data.msg }
+      }
     } else if (response.status === 401) {
-      return { success: false, message: '未授权' };
+      return { success: false, message: '未授权, 请先登录' };
     } else if (response.status === 403) {
-      return { success: false, message: '无权限' };  
+      return { success: false, message: '无权限, 您没有此权限' };  
     } else if (response.status === 404) {
       return { success: false, message: '请求的资源未找到' };
     } else {
