@@ -18,18 +18,18 @@ const Dashboard = () => {
   const [avatarSidebarCollapsed, setAvatarSidebarCollapsed] = useState(true);
   const [activeSection, setActiveSection] = useState('rbac');
   const [userName, setUserName] = useState();
-
   const navigate = useNavigate();
-
+  const rbac = useRBACManagement();
+  const monitoring = useSiteMonitor();
   useEffect(() => {
     const checkJwt = async () => {
       const response = await me();
+      if (!response.success || !response.data.policies['rbac.login']) {
+        navigate('/imageCarousel');
+      }
     };
     checkJwt();
   }, []);
-
-  const rbac = useRBACManagement();
-  const monitoring = useSiteMonitor();
 
   return (
     <div className={styles.dashboardRoot}>

@@ -30,7 +30,6 @@ function LogIn() {
     }
     try {
       const response = await login(userLogInDTO);
-      console.log(response);
       if (response.success) {
         localStorage.setItem('jwt', response.data);
         const policies = (await me()).data.polices;
