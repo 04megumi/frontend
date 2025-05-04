@@ -19,19 +19,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const checkJwt = async () => {
-      const jwtToken = localStorage.getItem('jwt');
-      const jwtR = await jwt(jwtToken);
-      if (
-        !(
-          jwtR.success &&
-          jwtR.data.data &&
-          jwtR.data.data.policies &&
-          jwtR.data.data.policies['rbac.login']
-        )
-      ) {
-        navigate('/login');
-      }
-      setUserName(jwtR.data.data.name);
+      const response = await me();
     };
     checkJwt();
   }, []);
