@@ -9,6 +9,18 @@ const api = axios.create({
   },
 });
 
+// 请求拦截器 —— 动态添加 token
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('jwt');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 const sendRequest = async (url, method = 'post', data = null) => {
   try {
     const response = await api[method](url, data);
@@ -16,6 +28,8 @@ const sendRequest = async (url, method = 'post', data = null) => {
       return { success: true, data: response.data };
     } else if (response.status === 401) {
       return { success: false, message: '未授权' };
+    } else if (response.status === 403) {
+      return { success: false, message: '无权限' };  
     } else if (response.status === 404) {
       return { success: false, message: '请求的资源未找到' };
     } else {
