@@ -33,10 +33,14 @@ function LogIn() {
       if (response.success) {
         localStorage.setItem('jwt', response.data);
         const meResponse = await me();
-        if (!meResponse.success || !meResponse.data.policies['rbac.login']) {
-          navigate('/imageCarousel');
+        if (meResponse.success) {
+          if (!meResponse.data.policies['rbac.login']) {
+            navigate('/imageCarousel');
+          } else {
+            navigate('/dashboard');
+          }
         } else {
-          navigate('/dashboard');
+          setError(meResponse.message);
         }
       } else {
         setError(response.message || '登录请求失败，请稍后再试');
