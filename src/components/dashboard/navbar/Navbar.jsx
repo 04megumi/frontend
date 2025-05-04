@@ -1,7 +1,7 @@
 import React from 'react';
 import style from './Navbar.module.css';
 
-function Navbar({ toggleSidebar }) {
+function Navbar({ toggleSidebar, toggleAvatarSidebar }) {
   return (
     <nav className="bg-white shadow-sm">
       <div className="px-6 py-4 flex items-center">
@@ -23,6 +23,9 @@ function Navbar({ toggleSidebar }) {
             //onClick={}
           />
         </div>
+        <button onClick={toggleAvatarSidebar} className="mr-4 text-gray-600 hover:text-blue-600">
+          <i className="fas fa-bars text-xl"></i>
+        </button>
       </div>
     </nav>
   );

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DashboardContainer from '../components/dashboard/DashboardContainer.jsx';
 import RBACManagement from '../components/dashboard/rbac/RBACManagement.jsx';
 import Sidebar from '../components/dashboard/sidebar/Sidebar.jsx';
+import AvatarSidebar from '../components/dashboard/sidebar/AvatarSidebar.jsx';
 import Navbar from '../components/dashboard/navbar/Navbar.jsx';
 import SiteMonitor from '../components/dashboard/siteMonitor/SiteMonitor.jsx';
 import useRBACManagement from '../hooks/useRBACManagement.js';
@@ -9,9 +10,12 @@ import useSiteMonitor from '../hooks/useSiteMonitor.js';
 import styles from '../css/dashboard/Dashboard.module.css';
 import { me } from '../api/user.js';
 import { useNavigate } from 'react-router-dom';
+import { AppSidebar } from '../components/app-sidebar1.tsx';
+import { SidebarInset, SidebarProvider, SidebarTrigger } from '../components/ui/sidebar';
 
 const Dashboard = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  const [avatarSidebarCollapsed, setAvatarSidebarCollapsed] = useState(true);
   const [activeSection, setActiveSection] = useState('rbac');
   const [userName, setUserName] = useState();
 
@@ -47,12 +51,21 @@ const Dashboard = () => {
         onSectionChange={setActiveSection}
         userName={userName}
       />
+      {/* AvatarSidebar */}
+      <AvatarSidebar
+        collapsed={avatarSidebarCollapsed}
+        userName={userName}
+      />
       {/* Main content area */}
       <main
         className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-0' : 'ml-[280px]'}`}
       >
         {/* Navbar Component */}
-        <Navbar toggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} />
+        <Navbar
+          toggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+          toggleAvatarSidebar={() => setAvatarSidebarCollapsed(!avatarSidebarCollapsed)}
+        />
+
         {/* DashboardContainer that holds the active section and modals */}
         <DashboardContainer
           activeSection={activeSection}
