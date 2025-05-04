@@ -30,14 +30,17 @@ function LogIn() {
     }
     try {
       const response = await login(userLogInDTO);
-      console.log(response);
       if (response.success) {
         localStorage.setItem('jwt', response.data);
-        const policies = (await me()).data.polices;
-        if (policies['rbac.login']) {
-          navigate('/dashboard');
+        const meResponse = await me();
+        if (meResponse.success) {
+          if (!meResponse.data.policies['rbac.login']) {
+            navigate('/imageCarousel');
+          } else {
+            navigate('/dashboard');
+          }
         } else {
-          navigate('/imageCarousel');
+          setError(meResponse.message);
         }
       } else {
         setError(response.message || '登录请求失败，请稍后再试');

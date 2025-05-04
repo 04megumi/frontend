@@ -10,8 +10,6 @@ const useRBACManagement = () => {
   const [userNames, setUserNames] = useState([]);
   const [roleIds, setRoleIds] = useState([]);
   const [permissionIds, setPermissionIds] = useState([]);
-
-  // 用户角色管理
   const addUserRole = useCallback((userName, roleId) => {
     setUsers((prev) =>
       prev.map((u) =>
@@ -21,7 +19,6 @@ const useRBACManagement = () => {
       ),
     );
   }, []);
-
   const removeUserRole = useCallback((userName, roleId) => {
     setUsers((prev) =>
       prev.map((u) =>
@@ -29,7 +26,6 @@ const useRBACManagement = () => {
       ),
     );
   }, []);
-
   const dropUserRole = useCallback(
     (userName, data) => {
       if (data?.type === 'role') {
@@ -39,7 +35,6 @@ const useRBACManagement = () => {
     },
     [addUserRole],
   );
-
   // 角色权限管理
   const addRolePermission = useCallback((roleId, permissionId) => {
     setRoles((prev) =>
@@ -50,7 +45,6 @@ const useRBACManagement = () => {
       ),
     );
   }, []);
-
   const removeRolePermission = useCallback((roleId, permissionId) => {
     setRoles((prev) =>
       prev.map((r) =>
@@ -62,8 +56,7 @@ const useRBACManagement = () => {
           : r,
       ),
     );
-  }, []);
-
+  }, [])
   const dropRolePermission = useCallback(
     (roleId, data) => {
       if (data?.type === 'permission') {
@@ -73,35 +66,43 @@ const useRBACManagement = () => {
     },
     [addRolePermission],
   );
-
   useEffect(() => {
     const loadUsers = async () => {
       try {
-        const userNamesResponse = await loadAllUserNames();
-        setUserNames(userNamesResponse.data.data);
+        const response = await loadAllUserNames();
+        if(response.success) {
+          setUserNames(response.data);
+        } else {
+          console.error('加载用户名失败:', response.message);
+        }
       } catch (error) {
         console.error('加载用户名失败:', error);
       }
     };
-
     const loadRoles = async () => {
       try {
-        const RoleIdsR = await loadAllRoleIds();
-        setRoleIds(RoleIdsR.data.data);
+        const response = await loadAllRoleIds();
+        if(response.success) {
+          setRoleIds(response.data);
+        } else {
+          console.error('加载角色名失败:', response.message);
+        }
       } catch (error) {
         console.error('加载角色名失败:', error);
       }
     };
-
     const loadPermissions = async () => {
       try {
-        const PermissionIdsR = await loadAllPermissionIds();
-        setPermissionIds(PermissionIdsR.data.data);
+        const response = await loadAllPermissionIds();
+        if(response.success) {
+          setPermissionIds(response.data);
+        } else {
+          console.error('加载权限名失败:', response.message);
+        }
       } catch (error) {
-        console.error('加载权限失败:', error);
+        console.error('加载权限名失败:', error);
       }
     };
-
     loadUsers();
     loadRoles();
     loadPermissions();

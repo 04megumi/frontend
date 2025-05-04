@@ -17,7 +17,6 @@ const UserDetails = ({ userName, onAddRole, onRemoveRole }) => {
   useEffect(() => {
     if (!userName) return;
     setLoading(true);
-
     const handleGlobalDragOver = (e) => {
       e.preventDefault();
       e.dataTransfer.dropEffect = 'move';
@@ -26,25 +25,28 @@ const UserDetails = ({ userName, onAddRole, onRemoveRole }) => {
     const fetchUserRoles = async () => {
       try {
         const response = await loadUser(userName);
+        console.log(response);
         if (response.success) {
           const rolesWithPermissions = await Promise.all(
-            response.data.data?.roleIds.map(async (roleId) => {
+            response.data?.roleIds.map(async (roleId) => {
               const roleResponse = await loadRole(roleId);
+              console.log(roleResponse);
               return {
                 title: `角色: ${roleId}`, // 显示友好名称
                 key: `role-${roleId}`,
                 roleId: roleId, // 存储原始ID用于逻辑操作
                 children:
-                  roleResponse.data.data?.permissionIds?.map((permissionId) => ({
+                  roleResponse.data?.permissionIds?.map((permissionId) => ({
                     title: `权限: ${permissionId}`,
                     key: `perm-${roleId}-${permissionId}`,
                   })) || [],
               };
             }),
           );
+          console.log("111");
           setRoleIds(rolesWithPermissions);
         } else {
-          throw new Error(response.data?.msg || '加载用户角色失败');
+          throw new Error(response.msg || '加载用户角色失败');
         }
       } catch (err) {
         setError(err.message);
