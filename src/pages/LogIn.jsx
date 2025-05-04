@@ -32,11 +32,11 @@ function LogIn() {
       const response = await login(userLogInDTO);
       if (response.success) {
         localStorage.setItem('jwt', response.data);
-        const policies = (await me()).data.polices;
-        if (policies['rbac.login']) {
-          navigate('/dashboard');
-        } else {
+        const meResponse = await me();
+        if (!meResponse.success || !meResponse.data.policies['rbac.login']) {
           navigate('/imageCarousel');
+        } else {
+          navigate('/dashboard');
         }
       } else {
         setError(response.message || '登录请求失败，请稍后再试');
