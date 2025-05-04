@@ -6,13 +6,13 @@ export const addPermission = async (loginDTO) => {
 };
 
 // 删除权限
-export const deletePermission = async (idDTO) => {
-  return await sendRequest('/admin/permissions/delete', 'post', idDTO);
+export const deletePermission = async (permissionId) => {
+  return await sendRequest('/admin/permissions/delete', 'post', permissionId);
 };
 
 // 加载权限
-export const loadPermission = async (idDTO) => {
-  return await sendRequest('/admin/permissions/load', 'post', idDTO);
+export const loadPermission = async (permissionId) => {
+  return await sendRequest('/admin/permissions/load', 'post', permissionId);
 };
 
 // 获取全部

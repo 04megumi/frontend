@@ -6,38 +6,33 @@ export const login = async (userLogInDTO) => {
 };
 
 // 用户详细信息（权限）接口
-export const me = async (userNameDTO) => {
-  return await sendRequest('/admin/users/me', 'post', userNameDTO);
+export const me = async () => {
+  return await sendRequest('/admin/users/me', 'get');
 };
 
 // 用户加载信息接口
-export const loadUser = async (userNameDTO) => {
-  return await sendRequest('/admin/users/load', 'post', userNameDTO);
-};
-
-// jwt加载信息接口
-export const jwt = async (jwtToken) => {
-  return await sendRequest('/admin/users/jwt', 'post', jwtToken);
+export const loadUser = async (name) => {
+  return await sendRequest('/admin/users/load', 'post', name);
 };
 
 // 用户注册接口
-export const register = async (userLogInDTO) => {
-  return await sendRequest('/admin/users/register', 'post', userLogInDTO);
+export const register = async (userDTO) => {
+  return await sendRequest('/admin/users/register', 'post', userDTO);
 };
 
 // 添加用户
-export const addUser = async (userLogInDTO) => {
-  return await sendRequest('/admin/users/add', 'post', userLogInDTO);
+export const addUser = async (userDTO) => {
+  return await sendRequest('/admin/users/add', 'post', userDTO);
 };
 
 // 删除用户
-export const deleteUser = async (userNameDTO) => {
-  return await sendRequest('/admin/users/delete', 'post', userNameDTO);
+export const deleteUser = async (name) => {
+  return await sendRequest('/admin/users/delete', 'post', name);
 };
 
 // 修改用户
-export const modifyUser = async (userLogInDTO) => {
-  return await sendRequest('/admin/users/modify', 'post', userLogInDTO);
+export const modifyUser = async (userDTO) => {
+  return await sendRequest('/admin/users/modify', 'post', userDTO);
 };
 
 // 获取全部

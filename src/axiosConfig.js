@@ -23,7 +23,12 @@ api.interceptors.request.use(
 
 const sendRequest = async (url, method = 'post', data = null) => {
   try {
-    const response = await api[method](url, data);
+    let response;
+    if (method.toLowerCase() === 'get') {
+      response = await api.get(url, { params: data });
+    } else {
+      response = await api[method](url, data);
+    }
     if (response.status === 200) {
       if (response.data.code === 100000) {
         return { success: true, data: response.data.data };

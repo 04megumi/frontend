@@ -6,13 +6,13 @@ export const addRole = async (roleLoginDTO) => {
 };
 
 // 删除角色
-export const deleteRole = async (roleIdDTO) => {
-  return await sendRequest('/admin/roles/delete', 'post', roleIdDTO);
+export const deleteRole = async (roleId) => {
+  return await sendRequest('/admin/roles/delete', 'post', roleId);
 };
 
 // 加载角色信息
-export const loadRole = async (roleIdDTO) => {
-  return await sendRequest('/admin/roles/load', 'post', roleIdDTO);
+export const loadRole = async (roleId) => {
+  return await sendRequest('/admin/roles/load', 'post', roleId);
 };
 
 // 获取全部
