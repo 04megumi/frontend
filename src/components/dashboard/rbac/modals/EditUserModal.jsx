@@ -1,23 +1,45 @@
 import React, { useState, useEffect } from 'react';
-//import { editUser } from '../../../../api/user';
+import { loadUser, modifyUser } from '../../../../api/user'
 
-function EditUserModal({ onClose, onEditSuccess }) {
-  const [userName, setUserName] = useState('');
+function EditUserModal({ name, onClose, onEditSuccess }) {
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
   const [message, setMessage] = useState(null); // 改为通用消息状态
   const [isSuccess, setIsSuccess] = useState(false); // 新增成功状态标识
-
-  useEffect(() => {
-    if (userName) {
-      setUserName(user.userName);
-      // 注意：通常密码不会回显，这里只是示例
-      setPassword('');
+  const fetch = async () => {
+    const response = await loadUser(name);
+    if (response.success) {
+      setPassword(response.data.password);
+      setEmail(response.data.email);
     }
-  }, [userName]);
-
-  //@wzy改改
+  };
+  const push = async () => {
+    const response = await modifyUser({
+      "name": name,
+      "password": password,
+      "email": email
+    });
+    if(response.success) {
+      setIsSuccess(true);
+      setMessage('用户修改成功');
+      setTimeout(() => {
+        onClose();
+      }, 1000);
+    } else {
+      setIsSuccess(false);
+      setMessage(response.message);
+      setTimeout(() => {
+        onClose();
+      }, 1000);
+    }
+  };
+  useEffect(() => {
+    if (name) {
+      fetch();
+    }
+  }, [name]);
   const handleEditUser = () => {
-
+    push();
   };
 
   return (
@@ -41,24 +63,26 @@ function EditUserModal({ onClose, onEditSuccess }) {
             {message}
           </div>
         )}
-
         <form className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
-            <input
-              type="text"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              required
-            />
+          <div className="w-full px-3 py-2 border rounded-md bg-gray-100 text-gray-700">
+            {name}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <input
-              type="password"
+              type="text"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              placeholder="留空则不修改"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               placeholder="留空则不修改"
             />

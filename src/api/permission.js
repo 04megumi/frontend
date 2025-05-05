@@ -5,6 +5,11 @@ export const addPermission = async (loginDTO) => {
   return await sendRequest('/admin/permissions/add', 'post', loginDTO);
 };
 
+// 修改权限
+export const modifyPermission = async (loginDTO) => {
+  return await sendRequest('/admin/permissions/modify', 'post', loginDTO);
+};
+
 // 删除权限
 export const deletePermission = async (permissionId) => {
   return await sendRequest('/admin/permissions/delete', 'post', permissionId);

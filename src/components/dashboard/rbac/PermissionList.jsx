@@ -104,7 +104,7 @@ const PermissionList = ({ permissionIds, setPermissionIds, isDraggable, onSelect
       )}
       {showEditModal && (
         <EditPermissionModal
-          permission={selectedPermission}
+          permissionId={selectedPermission}
           onClose={() => setShowEditModal(false)}
           onEditSuccess={handleEditSuccess}
         />

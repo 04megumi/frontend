@@ -1,15 +1,46 @@
 import React, { useState, useEffect } from 'react';
-//import { editPermission } from '../../../../api/permission';
+import { loadPermission, modifyPermission } from '../../../../api/permission'
 
-function EditPermissionModal({ onClose, onEditSuccess }) {
-  const [permissionId, setPermissionId] = useState('');
+function EditPermissionModal({ permissionId, onClose, onEditSuccess }) {
   const [permissionName, setPermissionName] = useState('');
   const [description, setDescription] = useState('');
   const [message, setMessage] = useState(null); // 改为通用消息状态
   const [isSuccess, setIsSuccess] = useState(false); // 新增成功状态标识
-
-  const handleEditPermission = () => { };
-
+  const fetch = async () => {
+    const response = await loadPermission(permissionId);
+    if (response.success) {
+      setPermissionName(response.data.name);
+      setDescription(response.data.description);
+    }
+  };
+  const push = async () => {
+    const response = await modifyPermission({
+      "id": permissionId,
+      "name": permissionName,
+      "description": description
+    });
+    if(response.success) {
+      setIsSuccess(true);
+      setMessage('权限修改成功');
+      setTimeout(() => {
+        onClose();
+      }, 1000);
+    } else {
+      setIsSuccess(false);
+      setMessage(response.message);
+      setTimeout(() => {
+        onClose();
+      }, 1000);
+    }
+  };
+  useEffect(() => {
+    if (permissionId) {
+      fetch();
+    }
+  }, [permissionId]);
+  const handleEditPermission = () => {
+    push();
+  };
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
@@ -33,14 +64,8 @@ function EditPermissionModal({ onClose, onEditSuccess }) {
         )}
 
         <form className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Id</label>
-            <input
-              type="text"
-              value={permissionId}
-              onChange={(e) => setPermissionId(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            />
+          <div className="w-full px-3 py-2 border rounded-md bg-gray-100 text-gray-700">
+            {permissionId}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>

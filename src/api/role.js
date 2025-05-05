@@ -5,6 +5,11 @@ export const addRole = async (roleLoginDTO) => {
   return await sendRequest('/admin/roles/add', 'post', roleLoginDTO);
 };
 
+// 修改角色
+export const modifyRole = async (roleLoginDTO) => {
+  return await sendRequest('/admin/roles/modify', 'post', roleLoginDTO);
+};
+
 // 删除角色
 export const deleteRole = async (roleId) => {
   return await sendRequest('/admin/roles/delete', 'post', roleId);

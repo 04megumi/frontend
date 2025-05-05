@@ -68,7 +68,6 @@ const UserList = ({ userNames, setUserNames, onSelectUser, onContextMenu }) => {
           ))}
         </div>
       </div>
-
       {showContextMenu && (
         <ContextMenu
           userName={selectedUser}
@@ -85,10 +84,9 @@ const UserList = ({ userNames, setUserNames, onSelectUser, onContextMenu }) => {
           onDeleteClick={handleDeleteUser}
         />
       )}
-
       {showEditModal && (
         <EditUserModal
-          user={selectedUser} // 传递当前用户数据
+          name={selectedUser} // 传递当前用户数据
           onClose={() => setShowEditModal(false)}
           onEditSuccess={handleEditSuccess} // 编辑成功后的回调
         />

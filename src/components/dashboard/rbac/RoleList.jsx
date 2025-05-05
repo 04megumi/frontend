@@ -103,7 +103,7 @@ const RoleList = ({ roleIds, setRoleIds, isDraggable, onSelectRole, onContextMen
       )}
       {showEditModal && (
         <EditRoleModal
-          role={selectedRole}
+          roleId={selectedRole}
           onClose={() => setShowEditModal(false)}
           onEditSuccess={handleEditSuccess}
         />
