@@ -26,10 +26,6 @@ const RoleList = ({ roleIds, setRoleIds, isDraggable, onSelectRole, onContextMen
 
   const handleCloseContextMenu = () => setShowContextMenu(false);
 
-  const handleDeleteRole = () => {
-    onContextMenu('delete', selectedRole);
-  };
-
   const handleEditSuccess = () => {
     setShowEditModal(false);
     onContextMenu('refresh');
@@ -93,12 +89,6 @@ const RoleList = ({ roleIds, setRoleIds, isDraggable, onSelectRole, onContextMen
             setShowEditModal(true);
             onContextMenu('edit', selectedRole);
           }}
-          onDeleteClick={handleDeleteRole}
-          menuItems={[
-            { label: '编辑角色', action: 'edit' },
-            { label: '删除角色', action: 'delete' },
-            { label: '复制ID', action: 'copyId' },
-          ]}
         />
       )}
       {showEditModal && (
@@ -120,7 +110,6 @@ RoleList.propTypes = {
   selectedUserId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onContextMenu: PropTypes.func,
   onEditClick: PropTypes.func.isRequired,
-  onDeleteClick: PropTypes.func.isRequired,
 };
 
 RoleList.defaultProps = {

@@ -3,6 +3,7 @@ import styles from './ContextMenu.module.css';
 import { deleteUser } from '../../../api/user';
 import { deleteRole } from '../../../api/role';
 import { deletePermission } from '../../../api/permission';
+import useRBACManagement from '../../../hooks/useRBACManagement';
 
 const ContextMenu = ({
   onClose,
@@ -11,7 +12,6 @@ const ContextMenu = ({
   setuserNames,
   contextMenuPosition,
   onEditClick,
-  onDeleteClick,
   userName,
   roleId,
   permissionId,
@@ -75,7 +75,7 @@ const ContextMenu = ({
         <i className="fas fa-edit mr-2"></i> 编辑
       </div>
       <div className={styles.contextMenuItem} onClick={() => {
-        onDeleteClick();
+        handleDelete(); 
         onClose();
       }}>
         <i className="fas fa-trash mr-2"></i> 删除

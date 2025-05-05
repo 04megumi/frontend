@@ -10,8 +10,6 @@ import useSiteMonitor from '../hooks/useSiteMonitor.js';
 import styles from '../css/dashboard/Dashboard.module.css';
 import { me } from '../api/user.js';
 import { useNavigate } from 'react-router-dom';
-import { AppSidebar } from '../components/app-sidebar1.tsx';
-import { SidebarInset, SidebarProvider, SidebarTrigger } from '../components/ui/sidebar';
 
 const Dashboard = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
