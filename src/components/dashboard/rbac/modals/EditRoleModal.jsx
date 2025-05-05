@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { loadRole } from '../../../../api/role'
+import { loadRole, modifyRole } from '../../../../api/role'
 
 function EditRoleModal({ roleId, onClose, onEditSuccess }) {
-  const [Id, setId] = useState('');
   const [roleName, setRoleName] = useState('');
   const [description, setDescription] = useState('');
   const [message, setMessage] = useState(null); // 改为通用消息状态
@@ -14,14 +13,38 @@ function EditRoleModal({ roleId, onClose, onEditSuccess }) {
       setDescription(response.data.description);
     }
   };
+  const push = async () => {
+      console.log({
+        "id": roleId,
+        "name": roleName,
+        "description": description
+      });
+      const response = await modifyRole({
+        "id": roleId,
+        "name": roleName,
+        "description": description
+      });
+      if(response.success) {
+        setIsSuccess(true);
+        setMessage('用户修改成功');
+        setTimeout(() => {
+          onClose();
+        }, 1000);
+      } else {
+        setIsSuccess(false);
+        setMessage(response.message);
+        setTimeout(() => {
+          onClose();
+        }, 1000);
+      }
+    };
   useEffect(() => {
     if (roleId) {
-      setId(roleId);
       fetch();
     }
   }, [roleId]);
   const handleEditRole = () => { 
-    
+    push();
   };
 
   return (
@@ -33,7 +56,6 @@ function EditRoleModal({ roleId, onClose, onEditSuccess }) {
             <i className="fas fa-times"></i>
           </button>
         </div>
-
         {/* 消息提示区 - 根据状态显示不同样式 */}
         {message && (
           <div
@@ -45,16 +67,9 @@ function EditRoleModal({ roleId, onClose, onEditSuccess }) {
             {message}
           </div>
         )}
-
         <form className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Id</label>
-            <input
-              type="text"
-              value={Id}
-              onChange={(e) => setId(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            />
+          <div className="w-full px-3 py-2 border rounded-md bg-gray-100 text-gray-700">
+            {roleId}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>

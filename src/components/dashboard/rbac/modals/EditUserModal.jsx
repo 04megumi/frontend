@@ -1,30 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import { loadUser } from '../../../../api/user'
+import { loadUser, modifyUser } from '../../../../api/user'
 
 function EditUserModal({ name, onClose, onEditSuccess }) {
-  const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState(null); // 改为通用消息状态
   const [isSuccess, setIsSuccess] = useState(false); // 新增成功状态标识
   const fetch = async () => {
     const response = await loadUser(name);
-    console.log(response);
     if (response.success) {
       setPassword(response.data.password);
       setEmail(response.data.email);
     }
   };
+  const push = async () => {
+    const response = await modifyUser({
+      "name": name,
+      "password": password,
+      "email": email
+    });
+    if(response.success) {
+      setIsSuccess(true);
+      setMessage('用户修改成功');
+      setTimeout(() => {
+        onClose();
+      }, 1000);
+    } else {
+      setIsSuccess(false);
+      setMessage(response.message);
+      setTimeout(() => {
+        onClose();
+      }, 1000);
+    }
+  };
   useEffect(() => {
     if (name) {
-      setUserName(name);
       fetch();
     }
-  }, [userName]);
-
-  //@wzy改改
+  }, [name]);
   const handleEditUser = () => {
-
+    push();
   };
 
   return (
@@ -48,17 +63,9 @@ function EditUserModal({ name, onClose, onEditSuccess }) {
             {message}
           </div>
         )}
-
         <form className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
-            <input
-              type="text"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              required
-            />
+          <div className="w-full px-3 py-2 border rounded-md bg-gray-100 text-gray-700">
+            {name}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
