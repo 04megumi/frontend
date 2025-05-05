@@ -28,6 +28,7 @@ function LogIn() {
       setError('密码不能为空!');
       return;
     }
+    localStorage.removeItem("jwt");
     try {
       const response = await login(userLogInDTO);
       if (response.success) {

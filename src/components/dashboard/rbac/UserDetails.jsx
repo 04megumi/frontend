@@ -13,7 +13,36 @@ const UserDetails = ({ userName, onAddRole, onRemoveRole }) => {
   const { handleDragStart, handleDragOver, handleDrop } = useDragDrop();
   const containerRef = useRef(null);
   const draggedRoleIdRef = useRef(null); // 更改变量名以明确存储的是角色ID
-
+  const fetchUserRoles = async () => {
+    try {
+      const response = await loadUser(userName);
+      if (response.success) {
+        const rolesWithPermissions = await Promise.all(
+          response.data?.roleIds.map(async (roleId) => {
+            const roleResponse = await loadRole(roleId);
+            return {
+              title: `角色: ${roleId}`, // 显示友好名称
+              key: `role-${roleId}`,
+              roleId: roleId, // 存储原始ID用于逻辑操作
+              children:
+                roleResponse.data?.permissionIds?.map((permissionId) => ({
+                  title: `权限: ${permissionId}`,
+                  key: `perm-${roleId}-${permissionId}`,
+                })) || [],
+            };
+          }),
+        );
+        setRoleIds(rolesWithPermissions);
+      } else {
+        throw new Error(response.msg || '加载用户角色失败');
+      }
+    } catch (err) {
+      setError(err.message);
+      message.error(`加载失败: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     if (!userName) return;
     setLoading(true);
@@ -25,12 +54,10 @@ const UserDetails = ({ userName, onAddRole, onRemoveRole }) => {
     const fetchUserRoles = async () => {
       try {
         const response = await loadUser(userName);
-        console.log(response);
         if (response.success) {
           const rolesWithPermissions = await Promise.all(
             response.data?.roleIds.map(async (roleId) => {
               const roleResponse = await loadRole(roleId);
-              console.log(roleResponse);
               return {
                 title: `角色: ${roleId}`, // 显示友好名称
                 key: `role-${roleId}`,
@@ -83,9 +110,9 @@ const UserDetails = ({ userName, onAddRole, onRemoveRole }) => {
             name: userName,
             roleId: roleId,
           });
-          if (response.success && response.data.code === 100000) {
+          if (response.success) {
             onRemoveRole(roleId);
-            setRoleIds((prev) => prev.filter((role) => role.roleId !== roleId));
+            setRoleIds((prev) => prev.filter((item) => item.roleId !== roleId));
             message.success('角色删除成功');
           } else {
             message.error('角色删除失败');
@@ -112,7 +139,7 @@ const UserDetails = ({ userName, onAddRole, onRemoveRole }) => {
               name: userName,
               roleId: roleId,
             });
-            if (response.success && response.data.code === 100000) {
+            if (response.success) {
               onAddRole(roleId);
               setRoleIds((prev) => [
                 ...prev,
