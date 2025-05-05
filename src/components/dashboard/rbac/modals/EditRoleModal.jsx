@@ -1,22 +1,28 @@
 import React, { useState, useEffect } from 'react';
-//import { editRole } from '../../../../api/role';
+import { loadRole } from '../../../../api/role'
 
-function EditRoleModal({ onClose, onEditSuccess }) {
-  const [roleId, setRoleId] = useState('');
+function EditRoleModal({ roleId, onClose, onEditSuccess }) {
+  const [Id, setId] = useState('');
   const [roleName, setRoleName] = useState('');
   const [description, setDescription] = useState('');
   const [message, setMessage] = useState(null); // 改为通用消息状态
   const [isSuccess, setIsSuccess] = useState(false); // 新增成功状态标识
-
+  const fetch = async () => {
+    const response = await loadRole(roleId);
+    if (response.success) {
+      setRoleName(response.data.name);
+      setDescription(response.data.description);
+    }
+  };
   useEffect(() => {
     if (roleId) {
-      setRoleId(role.roleId);
-      setDescription(role.description);
+      setId(roleId);
+      fetch();
     }
   }, [roleId]);
-
-  //@wzy改改
-  const handleEditRole = () => { };
+  const handleEditRole = () => { 
+    
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -45,8 +51,8 @@ function EditRoleModal({ onClose, onEditSuccess }) {
             <label className="block text-sm font-medium text-gray-700 mb-1">Id</label>
             <input
               type="text"
-              value={roleId}
-              onChange={(e) => setRoleId(e.target.value)}
+              value={Id}
+              onChange={(e) => setId(e.target.value)}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             />
           </div>

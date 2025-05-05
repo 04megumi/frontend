@@ -1,13 +1,25 @@
 import React, { useState, useEffect } from 'react';
-//import { editPermission } from '../../../../api/permission';
+import { loadPermission } from '../../../../api/permission'
 
-function EditPermissionModal({ onClose, onEditSuccess }) {
-  const [permissionId, setPermissionId] = useState('');
+function EditPermissionModal({ permissionId, onClose, onEditSuccess }) {
+  const [Id, setId] = useState('');
   const [permissionName, setPermissionName] = useState('');
   const [description, setDescription] = useState('');
   const [message, setMessage] = useState(null); // 改为通用消息状态
   const [isSuccess, setIsSuccess] = useState(false); // 新增成功状态标识
-
+  const fetch = async () => {
+      const response = await loadPermission(permissionId);
+      if (response.success) {
+        setPermissionName(response.data.name);
+        setDescription(response.data.description);
+      }
+    };
+    useEffect(() => {
+      if (permissionId) {
+        setId(permissionId);
+        fetch();
+      }
+    }, [permissionId]);
   const handleEditPermission = () => { };
 
   return (
@@ -37,8 +49,8 @@ function EditPermissionModal({ onClose, onEditSuccess }) {
             <label className="block text-sm font-medium text-gray-700 mb-1">Id</label>
             <input
               type="text"
-              value={permissionId}
-              onChange={(e) => setPermissionId(e.target.value)}
+              value={Id}
+              onChange={(e) => setId(e.target.value)}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             />
           </div>

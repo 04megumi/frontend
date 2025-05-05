@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from 'react';
-//import { editUser } from '../../../../api/user';
+import { loadUser } from '../../../../api/user'
 
-function EditUserModal({ onClose, onEditSuccess }) {
+function EditUserModal({ name, onClose, onEditSuccess }) {
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
   const [message, setMessage] = useState(null); // 改为通用消息状态
   const [isSuccess, setIsSuccess] = useState(false); // 新增成功状态标识
-
+  const fetch = async () => {
+    const response = await loadUser(name);
+    console.log(response);
+    if (response.success) {
+      setPassword(response.data.password);
+      setEmail(response.data.email);
+    }
+  };
   useEffect(() => {
-    if (userName) {
-      setUserName(user.userName);
-      // 注意：通常密码不会回显，这里只是示例
-      setPassword('');
+    if (name) {
+      setUserName(name);
+      fetch();
     }
   }, [userName]);
 
@@ -56,9 +63,19 @@ function EditUserModal({ onClose, onEditSuccess }) {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <input
-              type="password"
+              type="text"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              placeholder="留空则不修改"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               placeholder="留空则不修改"
             />
