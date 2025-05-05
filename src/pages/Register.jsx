@@ -45,6 +45,7 @@ function Register() {
       setError('密码强度不够, 请重新设置密码');
       return;
     }
+    localStorage.removeItem("jwt");
     try {
       const response = await register({
         name: formData.name,
@@ -52,7 +53,6 @@ function Register() {
         email: formData.email
       });
       if (response.success) {
-        localStorage.removeItem("jwt");
         navigate('/LogIn');
       } else {
         setError(response.message || '注册请求失败，请稍后再试');

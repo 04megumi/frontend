@@ -13,34 +13,24 @@ function AddPermissionModal({ onClose, onSuccess }) {
       // 清空之前的状态
       setMessage(null);
       setIsSuccess(false);
-
       // 基础验证
       if (!permissionId.trim()) {
         setMessage('权限Id不能为空');
         return;
       }
-
       const response = await addPermission({
         id: permissionId,
         name: permissionName,
         description: description,
       });
-
       if (response.success) {
-        const code = response.data?.code;
-        const msg = response.data?.msg || '权限添加成功';
-
-        if (code === 100000) {
-          setIsSuccess(true);
-          setMessage(msg);
-          // 1秒后自动关闭
-          onSuccess(permissionId);
-          setTimeout(() => {
-            onClose();
-          }, 1000);
-        } else {
-          setMessage(msg || '操作失败');
-        }
+        setIsSuccess(true);
+        setMessage('权限添加成功');
+        // 1秒后自动关闭
+        onSuccess(permissionId);
+        setTimeout(() => {
+          onClose();
+        }, 1000);
       } else {
         setMessage(response.error?.message || '请求失败，请稍后再试');
       }
@@ -58,7 +48,6 @@ function AddPermissionModal({ onClose, onSuccess }) {
             <i className="fas fa-times"></i>
           </button>
         </div>
-
         {/* 消息提示区 - 根据状态显示不同样式 */}
         {message && (
           <div
@@ -71,7 +60,6 @@ function AddPermissionModal({ onClose, onSuccess }) {
             {message}
           </div>
         )}
-
         <form className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Id</label>

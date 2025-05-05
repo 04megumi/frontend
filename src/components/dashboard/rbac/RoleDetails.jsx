@@ -16,17 +16,15 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
   useEffect(() => {
     if (!roleId) return;
     setLoading(true);
-
     const handleGlobalDragOver = (e) => {
       e.preventDefault();
       e.dataTransfer.dropEffect = 'move';
     };
-
     const fetchRolePermissions = async () => {
       try {
         const response = await loadRole(roleId);
-        if (response.success && response.data.code === 100000) {
-          const permissionIds = response.data.data?.permissionIds || [];
+        if (response.success) {
+          const permissionIds = response.data.permissionIds || [];
           const permissionNodes = permissionIds
             .filter((pid) => pid != null)
             .map((pid) => ({
@@ -35,7 +33,7 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
             }));
           setPermissions(permissionNodes);
         } else {
-          throw new Error(response.data?.msg || '加载角色权限失败');
+          throw new Error(response.message || '加载角色权限失败');
         }
       } catch (err) {
         setError(err.message);
@@ -44,12 +42,10 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
         setLoading(false);
       }
     };
-
     fetchRolePermissions();
     document.addEventListener('dragover', handleGlobalDragOver);
     return () => document.removeEventListener('dragover', handleGlobalDragOver);
   }, [roleId]);
-
   const handleDragEnd = useCallback(
     async (e) => {
       const nativeEvent = e.event; // 获取 AntD 传递的原生事件
@@ -59,20 +55,18 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
       const pid = draggedPermRef.current;
 
       if (!pid || !rect) return;
-
       const isOutside =
         clientX < rect.left - 10 ||
         clientX > rect.right + 10 ||
         clientY < rect.top - 10 ||
         clientY > rect.bottom + 10;
-
       if (isOutside) {
         try {
           const response = await deleteRolePermission({
             roleId,
             permissionId: pid,
           });
-          if (response.success && response.data.code === 100000) {
+          if (response.success) {
             onRemovePermission(pid);
             setPermissions((prev) => prev.filter((p) => p.title !== pid));
             message.success('权限删除成功');
@@ -87,7 +81,6 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
     },
     [onRemovePermission, roleId],
   );
-
   const handleContainerDrop = useCallback(
     async (e) => {
       e.preventDefault();
@@ -100,7 +93,7 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
               roleId,
               permissionId: pid,
             });
-            if (response.success && response.data.code === 100000) {
+            if (response.success) {
               onAddPermission(pid);
               setPermissions((prev) => [...prev, { title: pid, key: `perm-${pid}` }]);
             } else {
@@ -114,7 +107,6 @@ const RoleDetails = ({ roleId, onAddPermission, onRemovePermission }) => {
     },
     [handleDrop, onAddPermission, permissions, roleId],
   );
-
   if (!roleId) return <div className={styles.noRoleSelected}>请选择一个角色</div>;
   if (loading) {
     return (

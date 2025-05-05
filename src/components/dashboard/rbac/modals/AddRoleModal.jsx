@@ -13,34 +13,24 @@ function AddRoleModal({ onClose, onSuccess }) {
       // 清空之前的状态
       setMessage(null);
       setIsSuccess(false);
-
       // 基础验证
       if (!roleId.trim()) {
         setMessage('角色Id不能为空');
         return;
       }
-
       const response = await addRole({
         id: roleId,
         name: roleName,
         description: description,
       });
-
       if (response.success) {
-        const code = response.data?.code;
-        const msg = response.data?.msg || '角色添加成功';
-
-        if (code === 100000) {
-          setIsSuccess(true);
-          setMessage(msg);
-          // 1秒后自动关闭
-          onSuccess(roleId);
-          setTimeout(() => {
-            onClose();
-          }, 1000);
-        } else {
-          setMessage(msg || '操作失败');
-        }
+        setIsSuccess(true);
+        setMessage('添加成功');
+        // 1秒后自动关闭
+        onSuccess(roleId);
+        setTimeout(() => {
+          onClose();
+        }, 1000);
       } else {
         setMessage(response.error?.message || '请求失败，请稍后再试');
       }
@@ -48,7 +38,6 @@ function AddRoleModal({ onClose, onSuccess }) {
       setMessage('系统错误: ' + (err.message || '未知错误'));
     }
   };
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">

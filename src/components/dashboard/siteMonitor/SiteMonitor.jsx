@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { monitor } from '../../../api/user';
-import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,7 +10,6 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 function SiteMonitor() {
@@ -26,25 +24,20 @@ function SiteMonitor() {
     const fetchData = async () => {
       const response = await monitor();
       if (response.success) {
-        const data = response.data.data;
+        const data = response.data;
         //console.log(data);
         setCpuUsage(data.cpuUsage);
         setMemoryUsage(data.memoryUsage);
         setDiskUsage(data.diskUsage);
-
         setLoading(false);
       } else {
         setErrors((prevErrors) => [...prevErrors, response.message]);
         setLoading(false);
       }
     };
-
-    // 初始加载数据
     fetchData();
-
     // 每2秒更新一次数据
     const interval = setInterval(fetchData, 2000);
-
     // 清理定时器
     return () => clearInterval(interval);
   }, []);
