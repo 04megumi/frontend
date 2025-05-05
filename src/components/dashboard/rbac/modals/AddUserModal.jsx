@@ -4,6 +4,7 @@ import { addUser } from '../../../../api/user';
 function AddUserModal({ onClose, onSuccess }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
   const [message, setMessage] = useState(null); // 改为通用消息状态
   const [isSuccess, setIsSuccess] = useState(false); // 新增成功状态标识
 
@@ -12,39 +13,29 @@ function AddUserModal({ onClose, onSuccess }) {
       // 清空之前的状态
       setMessage(null);
       setIsSuccess(false);
-
       // 基础验证
       if (!username.trim()) {
         setMessage('用户名不能为空');
         return;
       }
-
       if (!password.trim()) {
         setMessage('密码不能为空');
         return;
       }
-
       const response = await addUser({
         name: username,
         password: password,
+        email: email
       });
-
       if (response.success) {
-        const code = response.data?.code;
-        const msg = response.data?.msg || '用户添加成功';
-
-        if (code === 100000) {
-          setIsSuccess(true);
-          setMessage(msg);
-          // 调用onSuccess回调，传递新用户名
-          onSuccess(username); // 添加这行
-          // 1秒后自动关闭
-          setTimeout(() => {
-            onClose();
-          }, 1000);
-        } else {
-          setMessage(msg || '操作失败');
-        }
+        setIsSuccess(true);
+        setMessage('用户添加成功');
+        // 调用onSuccess回调，传递新用户名
+        onSuccess(username); // 添加这行
+        // 1秒后自动关闭
+        setTimeout(() => {
+          onClose();
+        }, 1000);
       } else {
         setMessage(response.error?.message || '请求失败，请稍后再试');
       }
@@ -62,7 +53,6 @@ function AddUserModal({ onClose, onSuccess }) {
             <i className="fas fa-times"></i>
           </button>
         </div>
-
         {/* 消息提示区 - 根据状态显示不同样式 */}
         {message && (
           <div
@@ -75,7 +65,6 @@ function AddUserModal({ onClose, onSuccess }) {
             {message}
           </div>
         )}
-
         <form className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
@@ -89,9 +78,18 @@ function AddUserModal({ onClose, onSuccess }) {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <input
-              type="password"
+              type="text"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             />
           </div>

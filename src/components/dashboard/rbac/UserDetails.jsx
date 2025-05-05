@@ -50,44 +50,10 @@ const UserDetails = ({ userName, onAddRole, onRemoveRole }) => {
       e.preventDefault();
       e.dataTransfer.dropEffect = 'move';
     };
-
-    const fetchUserRoles = async () => {
-      try {
-        const response = await loadUser(userName);
-        if (response.success) {
-          const rolesWithPermissions = await Promise.all(
-            response.data?.roleIds.map(async (roleId) => {
-              const roleResponse = await loadRole(roleId);
-              return {
-                title: `角色: ${roleId}`, // 显示友好名称
-                key: `role-${roleId}`,
-                roleId: roleId, // 存储原始ID用于逻辑操作
-                children:
-                  roleResponse.data?.permissionIds?.map((permissionId) => ({
-                    title: `权限: ${permissionId}`,
-                    key: `perm-${roleId}-${permissionId}`,
-                  })) || [],
-              };
-            }),
-          );
-          console.log("111");
-          setRoleIds(rolesWithPermissions);
-        } else {
-          throw new Error(response.msg || '加载用户角色失败');
-        }
-      } catch (err) {
-        setError(err.message);
-        message.error(`加载失败: ${err.message}`);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchUserRoles();
     document.addEventListener('dragover', handleGlobalDragOver);
     return () => document.removeEventListener('dragover', handleGlobalDragOver);
   }, [userName]);
-
   const handleDragEnd = useCallback(
     async (e) => {
       const nativeEvent = e.event;
