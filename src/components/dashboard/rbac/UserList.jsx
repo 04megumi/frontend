@@ -26,10 +26,6 @@ const UserList = ({ userNames, setUserNames, onSelectUser, onContextMenu }) => {
     setShowContextMenu(false);
   };
 
-  const handleDeleteUser = () => {
-    onContextMenu('delete', selectedUser);
-  };
-
   const handleEditSuccess = () => {
     setShowEditModal(false);
     onContextMenu('refresh');
@@ -81,7 +77,6 @@ const UserList = ({ userNames, setUserNames, onSelectUser, onContextMenu }) => {
             setShowEditModal(true);
             onContextMenu('edit', selectedUser); // 如果需要通知父组件
           }}
-          onDeleteClick={handleDeleteUser}
         />
       )}
       {showEditModal && (
@@ -100,7 +95,6 @@ UserList.propTypes = {
   onSelectUser: PropTypes.func,
   onContextMenu: PropTypes.func.isRequired,
   onEditClick: PropTypes.func.isRequired,
-  onDeleteClick: PropTypes.func.isRequired,
 };
 
 export default UserList;

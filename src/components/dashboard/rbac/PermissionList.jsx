@@ -25,10 +25,6 @@ const PermissionList = ({ permissionIds, setPermissionIds, isDraggable, onSelect
     setShowContextMenu(false);
   };
 
-  const handleDeletePermission = () => {
-    onContextMenu('delete', selectedPermission);
-  };
-
   const handleEditSuccess = () => {
     setShowEditModal(false);
     onContextMenu('refresh');
@@ -94,12 +90,6 @@ const PermissionList = ({ permissionIds, setPermissionIds, isDraggable, onSelect
             setShowEditModal(true);
             onContextMenu('edit', selectedPermission);
           }}
-          onDeleteClick={handleDeletePermission}
-          menuItems={[
-            { label: '编辑权限', action: 'edit' },
-            { label: '删除权限', action: 'delete' },
-            { label: '复制ID', action: 'copyId' },
-          ]}
         />
       )}
       {showEditModal && (
@@ -119,7 +109,6 @@ PermissionList.propTypes = {
   onSelectPermission: PropTypes.func,
   onContextMenu: PropTypes.func,
   onEditClick: PropTypes.func.isRequired,
-  onDeleteClick: PropTypes.func.isRequired,
 };
 
 PermissionList.defaultProps = {

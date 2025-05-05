@@ -7,7 +7,7 @@
 ## 一 环境说明
 
 OS: Windows 10 npm version: 10.9.2 yarn version: 1.22.22 node version: v22.14.0 vite version: 6.2.6
-react 19 react-dom: ^19.0.0 axios: ^1.8.4 tailwindcss: v4.1.3
+react 19 react-dom: ^19.0.0 axios: ^1.8.4 tailwindcss: v4.1.3 @tanstack/react-query: 5.75.2
 
 prop-types: 15.8.1
 
