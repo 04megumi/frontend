@@ -25,3 +25,8 @@ dist-ssr
 
 # 忽略 src 目录下的 axiosConfig.js
 src/axiosConfig.js
+
+# 配置文件
+src/axiosConfig.js
+vite.config.js
+package-lock.json
